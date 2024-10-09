@@ -39,14 +39,18 @@ resource "aws_iam_role_policy_attachment" "attach_getObject" {
 data "archive_file" "lambda" {
   type        = "zip"
   source_dir = var.path_to_source_folder
-  #source_file = var.path_to_source_file #"../../etl/extract/extract_data.py"
-  output_path = var.path_to_output #"lambda_function_extract_data.zip"
+  
+  output_path = var.path_to_output 
 }
+
+#source_file = var.path_to_source_file #"../../etl/extract/extract_data.py"
+#"lambda_function_extract_data.zip"
 
 resource "aws_lambda_function" "lambda" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
-  filename      = var.path_to_output #"lambda_function_extract_data.zip"
+  #filename      = var.path_to_output #"lambda_function_extract_data.zip"
+  filename = data.archive_file.lambda.output_path
   function_name = var.function_name #"lambda_extract_fromAPI"
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = var.function_handler #"extract_data.lambda_handler"

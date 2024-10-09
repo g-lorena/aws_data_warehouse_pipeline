@@ -4,7 +4,7 @@ module "s3bucket" {
   bucket_name   = local.bucket_name
 
 }
-
+/*
 module "rds" {
   source      = "./modules/rds"
   db_username = local.db_username
@@ -12,6 +12,7 @@ module "rds" {
   db_name     = local.db_name
 
 }
+*/
 module "lambdaLayer" {
   source = "./modules/lambda_layer"
 
@@ -43,7 +44,7 @@ module "lambdaFunction" {
   db_username       = local.db_username
   db_password       = local.db_password
   db_name           = local.db_name
-  rds_endpoint      = module.rds.rds_host
+  rds_endpoint      = local.db_name #module.rds.rds_host
   #raw_repertory     = local.raw_repertory
   lambda_layer_arns = [module.lambdaLayer.lamnda_layer_arn]
   aws_region        = local.aws_region

@@ -13,6 +13,7 @@ Infra/.terraform/*
 Infra/lambda_function_extract_data.zip
 Infra/requirements.zip
 Infra/python.zip
+Infra/python/*
 
 .DS_Store
 Infra/.terraform.lock.hcl

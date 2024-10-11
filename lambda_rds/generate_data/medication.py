@@ -1,5 +1,6 @@
 from faker import Faker
 import random
+from pandas import pd
 
 fake = Faker()
 
@@ -13,7 +14,7 @@ def generate_medications(num_medications):
             #'name': fake.unique.word().capitalize(),  # Generate a unique medication name
             'name': f'Medication-{medication_id}',
             'category': random.choice(medication_categories),  # Choose a category
-            'cost': round(random.uniform(5.0, 500.0), 2)  # Medication cost between $5 and $500
+            'cost': round(random.uniform(5.0, 500.0), 2),  # Medication cost between $5 and $500
             'created_at': datetime.now(), 
             'update_at': datetime.now() 
         })

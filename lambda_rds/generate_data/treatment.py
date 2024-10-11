@@ -1,10 +1,11 @@
 from faker import Faker
 import random
+from pandas import pd
 
 fake = Faker()
 
 #treatments (treatment_id, appointment_id, medication, procedure_code, treatment_date)
-def generate_treatments(num_treatments, num_visits):
+def generate_treatments(num_treatments, num_visits, num_medications):
     treatments = []
     for _ in range(num_treatments):
         treatments.append({
@@ -12,7 +13,7 @@ def generate_treatments(num_treatments, num_visits):
             'appointment_id': random.randint(1, num_visits),
             'treatment_name': random.choice(['Surgery', 'Therapy', 'Consultation', 'Imaging']),
             #'medication': f'Medication-{random.randint(1, 50)}',
-            'medication' : 'test', # will come back to 
+            'medication_id' : random.randint(1, num_medications), #'test', # will come back to 
             'procedure_code': f'PRC-{random.randint(100, 999)}',
             'treatment_date': fake.date_between(start_date='-1y', end_date='today'),
             #'cost': round(random.uniform(100, 5000), 2)

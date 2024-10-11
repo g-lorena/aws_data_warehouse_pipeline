@@ -1,6 +1,6 @@
 from faker import Faker
 import random
-
+from pandas import pd
 fake = Faker()
 
 #patients (patient_id, name, age, gender, address)...
@@ -17,6 +17,6 @@ def generate_patients(num_patients=100):
             'city': fake.city(),
             'country': fake.country(),
             'created_at': datetime.now(), 
-            'update_at': datetime.now() 
+            'updated_at': datetime.now() 
         })
     return pd.DataFrame(patients)

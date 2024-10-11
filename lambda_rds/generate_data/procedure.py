@@ -1,5 +1,6 @@
 from faker import Faker
 import random
+from pandas import pd
 
 fake = Faker()
 

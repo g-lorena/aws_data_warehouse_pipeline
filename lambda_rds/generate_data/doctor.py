@@ -1,6 +1,7 @@
 from faker import Faker
 import random
-from department import generate_departments
+from .department import generate_departments
+from pandas import pd
 
 fake = Faker()
     
@@ -14,10 +15,10 @@ def generate_doctors(num_doctors):
             'first_name': fake.first_name(),
             'last_name': fake.last_name(),
             'specialization': random.choice(['Cardiologist', 'Neurologist', 'Pediatrician', 'Orthopedist']),
-            'department_id': random.choice(departments['department_id'])
-            'hire_date': fake.date_between(start_date='-10y', end_date='today')
+            'department_id': random.choice(departments['department_id']),
+            'hire_date': fake.date_between(start_date='-10y', end_date='today'),
             'created_at': datetime.now(), 
-            'update_at': datetime.now() 
+            'updated_at': datetime.now() 
         })
         
     return pd.DataFrame(doctors)

@@ -1,12 +1,12 @@
-import psycopg2
-
 from sqlalchemy import create_engine 
 
-from generate_data.patients import generate_patients
-from generate_data.doctors import generate_doctors
-from generate_data.appointments import generate_appointments
-from generate_data.treatments import generate_treatments 
-
+from generate_data.patient import generate_patients
+from generate_data.doctor import generate_doctors
+from generate_data.appointment import generate_appointments
+from generate_data.treatment import generate_treatments 
+from generate_data.procedure import generate_procedures
+from generate_data.medication import generate_medications
+from generate_data.department import generate_departments
 # connect to 
 
 DB_USERNAME = os.environ.get("DB_USERNAME")
@@ -42,12 +42,15 @@ def lambda_handler(event, context):
     df_patients = generate_patients(100)
     df_treatment = generate_treatments(300, 200)
     df_doctors = generate_doctors(20)
-    df_appointment = generate_appointments(200, 100, 20)
+    df_appointment = generate_appointments(200, 100, 20, 10)
+    df_medication = generate_medications(10)
+    df_departement = generate_departments(5)
 
     push_dataframe_to_rds(df_patients, 'patients', engine)
     push_dataframe_to_rds(df_treatment, 'treatments', engine)
     push_dataframe_to_rds(df_doctors, 'doctors', engine)
     push_dataframe_to_rds(df_appointment, 'appointment', engine)
+    push_dataframe_to_rds(df_medication, 'medication', engine)
     
     engine.dispose
     

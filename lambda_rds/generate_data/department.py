@@ -1,9 +1,10 @@
 from faker import Faker
 import random
+from pandas import pd
 
 fake = Faker()
 
-def generate_departments(5):
+def generate_departments(num_departement):
     departments = []
     for _ in range(num_departements):
         departments.append({

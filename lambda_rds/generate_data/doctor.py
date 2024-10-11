@@ -1,7 +1,7 @@
 from faker import Faker
 import random
 from .department import generate_departments
-from pandas import pd
+import pandas as pd
 
 fake = Faker()
     

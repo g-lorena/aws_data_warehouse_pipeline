@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine 
+import os
 
 from generate_data.patient import generate_patients
 from generate_data.doctor import generate_doctors
@@ -12,7 +13,7 @@ from generate_data.department import generate_departments
 DB_USERNAME = os.environ.get("DB_USERNAME")
 DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_NAME = os.environ.get("DB_NAME")
-DB_HOST = 'os.environ.get("DB_HOST")'
+DB_HOST = os.environ.get("DB_HOST")
 REGION = os.environ.get("REGION")
 DB_PORT = '5432'
 
@@ -39,12 +40,12 @@ def push_dataframe_to_rds(df, table_name, engine):
 def lambda_handler(event, context):
     engine = connect_to_postgres()
     
-    df_patients = generate_patients(100)
-    df_treatment = generate_treatments(300, 200)
-    df_doctors = generate_doctors(20)
-    df_appointment = generate_appointments(200, 100, 20, 10)
-    df_medication = generate_medications(10)
     df_departement = generate_departments(5)
+    df_medication = generate_medications(10)
+    df_doctors = generate_doctors(20, 5)
+    df_patients = generate_patients(100)
+    df_treatment = generate_treatments(300, 200, 10)
+    df_appointment = generate_appointments(200, 100, 20)
 
     push_dataframe_to_rds(df_patients, 'patients', engine)
     push_dataframe_to_rds(df_treatment, 'treatments', engine)

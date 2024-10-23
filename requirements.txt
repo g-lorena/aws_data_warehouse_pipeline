@@ -1,4 +1,3 @@
 Faker
-pandas
 sqlalchemy
-
+psycopg2

@@ -91,3 +91,13 @@ variable "s3_bucket_arn" {
   description = "lambda_layer_arns"
   type        = string
 }
+
+variable "vpc_subnet_ids" {
+  description = "vpc_subnet_ids"
+  type        = list(string)
+}
+
+variable "vpc_security_group_ids" {
+  description = "vpc_security_group_ids"
+  type        = string
+}

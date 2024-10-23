@@ -4,15 +4,23 @@ module "s3bucket" {
   bucket_name   = local.bucket_name
 
 }
-/*
+
+module "vpc" {
+  source = "./modules/vpc"
+  
+}
+
 module "rds" {
   source      = "./modules/rds"
   db_username = local.db_username
   db_password = local.db_password
   db_name     = local.db_name
+  db_subnet_group_name = module.vpc.database_subnet_group_name
+  availability_zone = module.vpc.availability_zone_name
+  vpc_security_group_ids = module.vpc.database_security_group_id
 
 }
-*/
+
 module "lambdaLayer" {
   source = "./modules/lambda_layer"
 
@@ -50,12 +58,17 @@ module "lambdaFunction" {
   aws_region        = local.aws_region
   s3_bucket_arn         = module.s3bucket.s3_bucket_arn
 
+  vpc_subnet_ids = module.vpc.subnet_ids
+  vpc_security_group_ids = module.vpc.lambda_security_group_id
+
 }
 
+
+/*
 module "cloudwatch_schedule_module" {
   source                   = "./modules/eventbridge"
   schedule_name            = local.schedule_name
   schedule_value           = local.schedule_value
   aws_lambda_arn           = module.lambdaFunction.lambda_function_arn
   aws_lambda_function_name = module.lambdaFunction.lambda_function_name
-}
+}*/

@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 data "aws_iam_policy_document" "lambda_policy" {
 statement {
     effect    = "Allow"
-    actions   = ["s3:GetObject","s3:ListBucket", "s3:PutObject"]
+    actions   = ["s3:GetObject","s3:ListBucket", "s3:PutObject", "rds:Connect","ec2:CreateNetworkInterface","ec2:DeleteNetworkInterface", "ec2:AttachNetworkInterface", "ec2:DetachNetworkInterface", "ec2:DescribeNetworkInterfaces"]
     resources = ["*"]
   }
 }
@@ -62,6 +62,11 @@ resource "aws_lambda_function" "lambda" {
 
   runtime = var.runtime #"python3.10"
   layers = var.lambda_layer_arns # à modifier
+
+  vpc_config {
+    subnet_ids = var.vpc_subnet_ids
+    security_group_ids = [var.vpc_security_group_ids]
+  }
 
   #s3_bucket = var.bucket_name
   #s3_key = aws_s3_object.lambda_layer_zip.key

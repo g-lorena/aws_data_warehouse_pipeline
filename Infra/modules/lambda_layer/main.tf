@@ -8,12 +8,13 @@ resource "null_resource" "lambda_layer" {
   provisioner "local-exec" {
     command = <<EOT
       set -e
-      rm -rf python
+      rm -rf python venv_layer
       mkdir python
       python3 -m venv venv_layer
       . venv_layer/bin/activate 
-      pip3 install -r ${var.requirements_path}
-      cp -r venv_layer/lib python
+      python3 -m pip install --upgrade pip
+      pip3 install --no-cache-dir -r ${var.requirements_path}
+      cp -r venv_layer/lib/python*/site-packages/* python
       zip -r ${var.layer_zip_path} python/
       rm -rf venv_layer
       rm -rf python

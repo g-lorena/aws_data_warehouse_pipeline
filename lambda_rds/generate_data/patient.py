@@ -1,6 +1,8 @@
 from faker import Faker
 import random
 import pandas as pd
+from datetime import datetime
+
 fake = Faker()
 
 #patients (patient_id, name, age, gender, address)...

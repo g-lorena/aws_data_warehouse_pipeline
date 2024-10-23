@@ -6,7 +6,7 @@ fake = Faker()
 
 def generate_departments(num_departement):
     departments = []
-    for _ in range(num_departements):
+    for _ in range(num_departement):
         departments.append({
             'department_id': _ + 1,
             'department_name': fake.job(),

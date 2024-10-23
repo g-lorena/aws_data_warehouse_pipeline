@@ -14,18 +14,18 @@ locals{
   layer_name        = "my_lambda_requirements_layer"
   requirements_path = "../requirements.txt"
 
-  compatible_layer_runtimes = ["python3.10"]
+  compatible_layer_runtimes = ["python3.9"]
   compatible_architectures  = ["x86_64"] 
 
   # lambda 
   path_to_source_folder = "../lambda_rds"
   #path_to_source_file = "../etl/extract"
   path_to_output   = "lambda_function_extract_data.zip"
-  function_name    = "rds_to_redshift"
-  function_handler = "rds_to_redshift.lambda_handler"
+  function_name    = "rds_ingestion"
+  function_handler = "rds_ingestion.lambda_handler"
   memory_size      = 512
   timeout          = 300
-  runtime          = "python3.10"
+  runtime          = "python3.9"
   aws_region = "eu-west-3"
 
   #rds

@@ -2,12 +2,14 @@ from faker import Faker
 import random
 from .department import generate_departments
 import pandas as pd
+from datetime import datetime
+
 
 fake = Faker()
     
 #doctors (doctor_id, name, specialty, department, hire_date)
-def generate_doctors(num_doctors):
-    departments = generate_departments()
+def generate_doctors(num_doctors, num_departement):
+    departments = generate_departments(num_departement)
     doctors = []
     for _ in range(num_doctors):
         doctors.append({

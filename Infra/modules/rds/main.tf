@@ -1,4 +1,16 @@
 # create the rds instance
+
+resource "aws_db_parameter_group" "defaultpostgres" {
+  name   = "defaultpostgres"
+  family = "postgres16"
+
+  parameter {
+    name  = "rds.force_ssl"
+    value = "0"
+  }
+
+}
+
 resource "aws_db_instance" "db_instance" {
   engine                  = "postgres"
   engine_version          = "16.4"
@@ -12,5 +24,6 @@ resource "aws_db_instance" "db_instance" {
   vpc_security_group_ids  = [var.vpc_security_group_ids] #[aws_security_group.database_security_group.id]
   availability_zone       = var.availability_zone #data.aws_availability_zones.available_zones.names[0]
   db_name                 = var.db_name
+  parameter_group_name = aws_db_parameter_group.defaultpostgres.name
   skip_final_snapshot     = true
 }

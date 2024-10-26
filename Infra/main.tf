@@ -10,6 +10,10 @@ module "vpc" {
   
 }
 
+module "dynamodb" {
+  source = "./modules/dynamodb"
+}
+
 module "rds" {
   source      = "./modules/rds"
   db_username = local.db_username
@@ -53,6 +57,7 @@ module "lambdaFunction" {
   db_password       = local.db_password
   db_name           = local.db_name
   rds_endpoint      = module.rds.rds_host
+  DynamoDB_table_name = module.dynamodb.last_extraction_table_name
   #raw_repertory     = local.raw_repertory
   lambda_layer_arns = [module.lambdaLayer.lamnda_layer_arn]
   aws_region        = local.aws_region

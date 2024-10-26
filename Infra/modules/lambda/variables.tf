@@ -101,3 +101,8 @@ variable "vpc_security_group_ids" {
   description = "vpc_security_group_ids"
   type        = string
 }
+
+variable "DynamoDB_table_name" {
+  description = "DynamoDB_table_name"
+  type        = string
+}

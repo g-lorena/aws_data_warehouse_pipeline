@@ -78,6 +78,8 @@ resource "aws_lambda_function" "lambda" {
       DB_NAME = var.db_name
       DB_HOST = var.rds_endpoint
       REGION = var.aws_region
+      DynamoDB_NAME = var.DynamoDB_table_name
+
       #RAW_FOLDER = var.raw_repertory
     }
   }

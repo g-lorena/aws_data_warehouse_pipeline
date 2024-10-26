@@ -52,12 +52,22 @@ variable "runtime" {
   type        = string
 }
 
-variable "function_handler" {
+variable "function_handler_1" {
   description = "Name of Lambda Function Handler"
   type        = string
 }
 
-variable "function_name" {
+variable "function_handler_2" {
+  description = "Name of Lambda Function Handler"
+  type        = string
+}
+
+variable "function_name_1" {
+  description = "Name of Lambda Function"
+  type        = string
+}
+
+variable "function_name_2" {
   description = "Name of Lambda Function"
   type        = string
 }
@@ -72,7 +82,17 @@ variable "path_to_source_folder" {
   type        = string
 }
 
+variable "path_to_source_folder_2" {
+  description = "Path to Lambda Fucntion Source Code"
+  type        = string
+}
+
 variable "path_to_output" {
+  description = "Path to ZIP artifact"
+  type        = string
+}
+
+variable "path_to_output_2" {
   description = "Path to ZIP artifact"
   type        = string
 }
@@ -92,6 +112,16 @@ variable "s3_bucket_arn" {
   type        = string
 }
 
+variable "s3_bucket_redshift_integration_arn" {
+  description = "s3_bucket_redshift_integration_arn"
+  type        = string
+}
+
+variable "raw_repertory" {
+  description = "raw_repertory"
+  type = string
+}
+
 variable "vpc_subnet_ids" {
   description = "vpc_subnet_ids"
   type        = list(string)
@@ -103,6 +133,11 @@ variable "vpc_security_group_ids" {
 }
 
 variable "DynamoDB_table_name" {
+  description = "DynamoDB_table_name"
+  type        = string
+}
+
+variable "dst_bucket_name" {
   description = "DynamoDB_table_name"
   type        = string
 }

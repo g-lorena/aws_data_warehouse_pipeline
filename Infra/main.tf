@@ -47,8 +47,8 @@ module "lambdaFunction" {
 
   path_to_source_folder = local.path_to_source_folder
   path_to_output        = local.path_to_output
-  function_name         = local.function_name
-  function_handler      = local.function_handler
+  function_name_1         = local.function_name_1
+  function_handler_1      = local.function_handler_1
   memory_size           = local.memory_size
   timeout               = local.timeout
   runtime               = local.runtime
@@ -65,6 +65,17 @@ module "lambdaFunction" {
 
   vpc_subnet_ids = module.vpc.subnet_ids
   vpc_security_group_ids = module.vpc.lambda_security_group_id
+
+
+  # ------
+
+  path_to_source_folder_2 = local.path_to_source_folder_2
+  path_to_output_2 = local.path_to_output_2
+  function_name_2 = local.function_name_2
+  function_handler_2 = local.function_handler_2
+  dst_bucket_name = local.redshift_integration_bucket_name
+  raw_repertory = local.raw_repertory
+  s3_bucket_redshift_integration_arn = module.s3bucket.s3_bucket_redshift_integration_arn
 
 }
 

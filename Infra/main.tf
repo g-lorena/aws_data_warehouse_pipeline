@@ -1,13 +1,15 @@
+module "vpc" {
+  source = "./modules/vpc"
+  
+}
+
 module "s3bucket" {
   source = "./modules/s3"
 
   bucket_name   = local.bucket_name
+  redshift_integration_bucket_name = local.redshift_integration_bucket_name
+  raw_repertory = local.raw_repertory
 
-}
-
-module "vpc" {
-  source = "./modules/vpc"
-  
 }
 
 module "dynamodb" {
@@ -78,7 +80,6 @@ module "lambdaFunction" {
   s3_bucket_redshift_integration_arn = module.s3bucket.s3_bucket_redshift_integration_arn
 
 }
-
 
 /*
 module "cloudwatch_schedule_module" {

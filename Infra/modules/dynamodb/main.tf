@@ -10,9 +10,4 @@ resource "aws_dynamodb_table" "last_extraction_table" {
     type = "S"
   }
 
-  attribute {
-    name = "last_extraction"
-    type = "S" # S fro string
-  }
-
 }

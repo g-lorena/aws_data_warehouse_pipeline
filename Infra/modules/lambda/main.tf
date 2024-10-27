@@ -23,7 +23,7 @@ statement {
 data "aws_iam_policy_document" "lambda_policy_2" {
 statement {
     effect    = "Allow"
-    actions   = ["s3:GetObject","s3:ListBucket", "s3:PutObject", "rds:Connect", "dynamodb:GetItem"]
+    actions   = ["s3:GetObject","s3:ListBucket", "s3:PutObject", "rds:Connect", "dynamodb:GetItem", "ec2:CreateNetworkInterface","ec2:DeleteNetworkInterface", "ec2:AttachNetworkInterface", "ec2:DetachNetworkInterface", "ec2:DescribeNetworkInterfaces", "dynamodb:PutItem"]
     resources = ["*"]
   }
 }
@@ -39,7 +39,7 @@ resource "aws_iam_role" "iam_for_lambda_2" {
 }
 
 resource "aws_iam_policy" "lambda_policy_1" {
-  name        = "lambda-policy_2"
+  name        = "lambda-policy_1"
   description = "allow lambda to get and list object into the bucket"
   policy      = data.aws_iam_policy_document.lambda_policy_1.json
 }
@@ -142,6 +142,10 @@ resource "aws_lambda_function" "lambda_2" {
   source_code_hash = data.archive_file.lambda_2.output_base64sha256
 
   runtime = var.runtime #"python3.10"
+  vpc_config {
+    subnet_ids = var.vpc_subnet_ids
+    security_group_ids = [var.vpc_security_group_ids]
+  }
 
   environment {
     variables = {
@@ -156,7 +160,7 @@ resource "aws_lambda_function" "lambda_2" {
   }
 }
 
-resource "aws_lambda_permission" "s3" {
+resource "aws_lambda_permission" "s3_2" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda_2.arn

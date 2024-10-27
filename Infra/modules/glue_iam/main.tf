@@ -48,6 +48,14 @@ data "aws_iam_policy_document" "glue_policy_document" {
         "arn:aws:logs:*:*:*:/aws-glue/*"
         ] #to be specify later
     }
+  statement {
+      effect    = "Allow"
+      actions   = [
+        "redshift:*"
+        ]
+      resources = ["*"] #to be specify later
+    }
+  
 }
 
 resource "aws_iam_policy" "glue_policy" {

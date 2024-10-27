@@ -13,3 +13,8 @@ variable "tables" {
   type        = list(string)
   #default     = ["patients", "treatments", "doctors", "appointment", "medication"]
 }
+
+variable "s3_dst_bucket" {
+  description = "s3_dst_bucket"
+  type        = string
+}

@@ -27,7 +27,7 @@ def update_generate_departments(update_ids, engine):
             except Exception as e:
                 print(f"Error updating department_id {department_id}: {e}")
     
-def update_patients(engine):
+def update_departement(engine):
     update_ids = update_records(engine, 'department', 'department_id')
     update_generate_departments(update_ids, engine)
     

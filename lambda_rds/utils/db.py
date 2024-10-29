@@ -1,4 +1,5 @@
 import pandas as pd 
+from sqlalchemy import create_engine, text
 
 
 def connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME):

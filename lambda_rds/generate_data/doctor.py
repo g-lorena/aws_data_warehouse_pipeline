@@ -15,7 +15,6 @@ def generate_concatenated_id():
     unique_id = f"{prefix}_{timestamp}_{random_suffix}"
     return unique_id
     
-#doctors (doctor_id, name, specialty, department, hire_date)
 def generate_doctors(num_doctors, num_departement):
    
     departments = generate_departments(num_departement) # à modifier => recuperer les donn&es deja stockées pas de nouvelles generations

@@ -39,6 +39,19 @@ def update_records(engine, table_name, table_key_id):
     
     update_ids = random.sample(dept_ids, num_updates)
     return update_ids
+
+
+def delete_records(table_name, table_key_id, delete_ids):
+    
+    delete_query = text(f"DELETE FROM {table_name} WHERE {table_key_id} = :id")
+    with engine.connect() as connection:
+        for delete_id in delete_ids:
+            try:
+                connection.execute(delete_query, {'id': delete_id})
+                print(f"Deleted record with {table_key_id}: {delete_id}")
+                connection.commit()
+            except Exception as e:
+                    print(f"Error deleting record with {table_key_id} {delete_id}: {e}")
     
     
         

@@ -19,6 +19,12 @@ from update_data.update_medication import update_medications
 from update_data.update_patient import update_patients
 from update_data.update_procedure import update_procedures
 
+from delete_data.delete_departement import delete_departement
+from delete_data.delete_doctor import delete_doctors
+from delete_data.delete_medication import delete_medications
+from delete_data.delete_patient import delete_patients
+from delete_data.delete_procedure import delete_procedures
+
 
 DB_USERNAME = os.environ.get("DB_USERNAME")
 DB_PASSWORD = os.environ.get("DB_PASSWORD")
@@ -47,7 +53,7 @@ def lambda_handler(event, context):
     try:
         engine = connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
         
-        operation_choice = random.choice(['insert', 'update'])
+        operation_choice = random.choice(['insert', 'update', 'delete'])
         
         if operation_choice == 'insert':
             try: 
@@ -72,6 +78,20 @@ def lambda_handler(event, context):
                 update_doctors(engine)
                 update_departement(engine)
                 return {'statusCode': 200, 'body': 'Update operation completed.'}
+            except Exception as e:
+                print(f"Error during update operation: {e}")
+                return {
+                    'statusCode': 500,
+                    'body': f'Update operation failed: {str(e)}'
+                }
+        if operation_choice == 'delete':
+            try:
+                delete_medications(engine)
+                delete_procedures(engine)
+                delete_patients(engine)
+                delete_doctors(engine)
+                delete_departement(engine)
+                return {'statusCode': 200, 'body': 'delete operation completed.'}
             except Exception as e:
                 print(f"Error during update operation: {e}")
                 return {

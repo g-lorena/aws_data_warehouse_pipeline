@@ -31,6 +31,6 @@ def generate_appointments(num_visits, num_patients, num_doctors):
             'appointment_type': random.choice(appointment_types),
             'diagnosis': random.choice(diagnoses),
             'created_at': datetime.now(), 
-            'update_at': datetime.now() 
+            'updated_at': datetime.now() 
         })
     return pd.DataFrame(appointments)

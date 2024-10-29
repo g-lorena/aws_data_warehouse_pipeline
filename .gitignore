@@ -57,3 +57,7 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+lambda_to_s3.zip
+lambda_rds.zip
+python.zip

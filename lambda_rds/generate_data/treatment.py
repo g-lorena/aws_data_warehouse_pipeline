@@ -19,6 +19,6 @@ def generate_treatments(num_treatments, num_visits, num_medications):
             'treatment_date': fake.date_between(start_date='-1y', end_date='today'),
             #'cost': round(random.uniform(100, 5000), 2)
             'created_at': datetime.now(), 
-            'update_at': datetime.now() 
+            'updated_at': datetime.now() 
         })
     return pd.DataFrame(treatments)

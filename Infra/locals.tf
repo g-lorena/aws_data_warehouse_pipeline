@@ -42,5 +42,12 @@ locals{
   db_password = "YourStrongPass12345!"
   db_name = "medical_database"
 
+  #redshift
+  cluster_identifier = "my_healthcare_redshift_cluster"
+  database_name = "my_healthcare_datawarehouse"
+  master_username = "exampleuser"
+  master_password = "Mustbe8characters"
+  node_type = "dc1.large"
+  cluster_type = "single-node"
 
 }

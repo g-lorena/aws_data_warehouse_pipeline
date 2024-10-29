@@ -80,7 +80,20 @@ module "lambdaFunction" {
   s3_bucket_redshift_integration_arn = module.s3bucket.s3_bucket_redshift_integration_arn
 
 }
+/*
+module "redshift" {
+  source                   = "./modules/redshift"
+  cluster_identifier = local.cluster_identifier
+  database_name = local.database_name
+  master_username = local.master_username
+  master_password = local.master_password
+  node_type = local.node_type
+  cluster_type = local.cluster_type
+  vpc_security_group_ids = module.vpc.redshift_sg_id
+  cluster_subnet_group_name = module.vpc.aws_redshift_subnet_group_name
 
+}
+*/
 /*
 module "cloudwatch_schedule_module" {
   source                   = "./modules/eventbridge"

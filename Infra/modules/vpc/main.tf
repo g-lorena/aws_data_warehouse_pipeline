@@ -229,6 +229,31 @@ resource "aws_security_group" "database_security_group" {
   }
 }
 
+resource "aws_security_group" "redshift_sg" {
+  name        = "redshift_sg"
+  description = "Allow access to Redshift"
+
+  ingress {
+    from_port   = 5439  # Redshift default port
+    to_port     = 5439
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_redshift_subnet_group" "redshift_subnet_group" {
+  name       = "redshift-subnets"
+  subnet_ids = [aws_subnet.subnet_az1.id, aws_subnet.subnet_az2.id]  
+}
+
+
 resource "aws_db_subnet_group" "database_subnet_group" {
   name         = "database-subnets"
   subnet_ids   = [aws_subnet.subnet_az1.id, aws_subnet.subnet_az2.id]

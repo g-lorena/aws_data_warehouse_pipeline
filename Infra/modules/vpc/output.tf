@@ -21,3 +21,10 @@ output "database_subnet_group_name" {
 output "availability_zone_name" {
   value = data.aws_availability_zones.available_zones.names[0]
 }
+
+output "aws_redshift_subnet_group_name" {
+  value = aws_redshift_subnet_group.redshift_subnet_group.name
+}
+output "redshift_sg_id" {
+  value = aws_security_group.redshift_sg.id
+}

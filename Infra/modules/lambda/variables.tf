@@ -61,7 +61,12 @@ variable "function_handler_2" {
   description = "Name of Lambda Function Handler"
   type        = string
 }
-
+/*
+variable "function_handler_3" {
+  description = "Name of Lambda Function Handler"
+  type        = string
+}
+*/
 variable "function_name_1" {
   description = "Name of Lambda Function"
   type        = string
@@ -71,6 +76,12 @@ variable "function_name_2" {
   description = "Name of Lambda Function"
   type        = string
 }
+/*
+variable "function_name_3" {
+  description = "Name of Lambda Function"
+  type        = string
+}
+*/
 /*
 variable "path_to_source_file" {
   description = "Path to Lambda Fucntion Source Code"
@@ -86,7 +97,12 @@ variable "path_to_source_folder_2" {
   description = "Path to Lambda Fucntion Source Code"
   type        = string
 }
-
+/*
+variable "path_to_source_folder_3" {
+  description = "Path to Lambda Fucntion Source Code"
+  type        = string
+}
+*/
 variable "path_to_output" {
   description = "Path to ZIP artifact"
   type        = string
@@ -96,7 +112,12 @@ variable "path_to_output_2" {
   description = "Path to ZIP artifact"
   type        = string
 }
-
+/*
+variable "path_to_output_3" {
+  description = "Path to ZIP artifact"
+  type        = string
+}
+*/
 variable "memory_size" {
   description = "Lambda Memory"
   type        = number

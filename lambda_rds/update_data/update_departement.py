@@ -6,11 +6,17 @@ from faker import Faker
 
 fake = Faker()
 
+department_names = [
+    "Internal Medicine", "Pediatrics", "Surgery", "Cardiology", "Neurology",
+    "Oncology", "Radiology", "Pathology", "Emergency Medicine", "Administration",
+    "Finance", "Human Resources", "Marketing", "IT", "Legal"
+]
+
 def update_generate_departments(update_ids, engine):
     with engine.connect() as connection:
         for department_id in update_ids:
             updated_department = {
-                'department_name': fake.job(),
+                'department_name': random.choice(department_names),
                 'updated_at': datetime.now() 
             }
             

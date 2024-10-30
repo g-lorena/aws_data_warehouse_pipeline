@@ -4,7 +4,7 @@ import boto3
 from datetime import datetime
 import random
 
-from utils.db import connect_to_postgres
+from utils.db import connect_to_postgres, update_last_extraction_time
 
 from insert_data.insert_departement import insert_departement_data
 from insert_data.insert_doctor import insert_doctors_data
@@ -34,20 +34,11 @@ DB_HOST = os.environ.get("DB_HOST")
 
 DB_PORT = '5432'
 
-'''
+
 DynamoDB_NAME = os.environ.get("DynamoDB_NAME")
 dynamodb = boto3.resource('dynamodb')
 dynamo_table = dynamodb.Table(DynamoDB_NAME)
 
-def update_last_extraction_time(table_name):
-    dynamo_table.put_item(
-        Item={
-            "table_name":table_name,
-            "last_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
-    )
-    
-'''
 
 def lambda_handler(event, context):
     engine = connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
@@ -63,10 +54,20 @@ def lambda_handler(event, context):
         if operation_choice == 'insert':
             try: 
                 insert_medications_data(engine)
+                update_last_extraction_time("medications", dynamo_table)
+                
                 insert_procedure_data(engine)
+                update_last_extraction_time("procedure", dynamo_table)
+
                 insert_patient_data(engine)
+                update_last_extraction_time("patients", dynamo_table)
+                
                 insert_departement_data(engine)
+                update_last_extraction_time("department", dynamo_table)
+                
                 insert_doctors_data(engine)
+                update_last_extraction_time("doctors", dynamo_table)
+                
                 return {'statusCode': 200, 'body': 'Insert operation completed.'}
             except Exception as e:
                 print(f"Error during insert operation: {e}")
@@ -78,10 +79,20 @@ def lambda_handler(event, context):
         if operation_choice == 'update':
             try:
                 update_medications(engine)
+                update_last_extraction_time("medications", dynamo_table)
+
                 update_procedures(engine)
+                update_last_extraction_time("procedure", dynamo_table)
+                
                 update_patients(engine)
+                update_last_extraction_time("patients", dynamo_table)
+                
                 update_departement(engine)
+                update_last_extraction_time("department", dynamo_table)
+                
                 update_doctors(engine)
+                update_last_extraction_time("doctors", dynamo_table)
+                
                 return {'statusCode': 200, 'body': 'Update operation completed.'}
             except Exception as e:
                 print(f"Error during update operation: {e}")
@@ -92,10 +103,18 @@ def lambda_handler(event, context):
         if operation_choice == 'delete':
             try:
                 delete_medications(engine)
+                update_last_extraction_time("medications", dynamo_table)
+                
                 delete_procedures(engine)
+                update_last_extraction_time("procedure", dynamo_table)
+                
                 delete_patients(engine)
+                update_last_extraction_time("patients", dynamo_table)
+                
                 #delete_departement(engine)
                 delete_doctors(engine)
+                update_last_extraction_time("doctors", dynamo_table)
+                
                 return {'statusCode': 200, 'body': 'delete operation completed.'}
             except Exception as e:
                 print(f"Error during update operation: {e}")
@@ -114,30 +133,5 @@ def lambda_handler(event, context):
     finally:
         engine.dispose()
         
-    """
-        # Update last extraction time for each table
-        update_last_extraction_time("patients")
-        update_last_extraction_time("treatments")
-        update_last_extraction_time("doctors")
-        update_last_extraction_time("appointment")
-        update_last_extraction_time("medication")
-        '''
-        update_last_extraction_time("department")
-
-        return {
-            'statusCode': 200,
-            'body': 'Data successfully generated and loaded into RDS.'
-        }
-    except Exception as e:
-        print(f"Error in lambda_handler: {e}")
-        return {
-            'statusCode': 500,
-            'body': f'Error occurred: {str(e)}'
-        }
-        
-    finally:
-        engine.dispose()
-    
-   """ 
     
     

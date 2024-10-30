@@ -1,6 +1,6 @@
 import pandas as pd 
 from sqlalchemy import create_engine, text, inspect
-
+from datetime import datetime
 
 def connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME):
     try:
@@ -11,7 +11,15 @@ def connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME):
 
     except Exception as e:
         print(f"Error connecting to PostgreSQL database: {e}")
-        
+       
+def update_last_extraction_time(table_name, dynamo_table):
+    dynamo_table.put_item(
+        Item={
+            "table_name":table_name,
+            "last_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+    )
+     
         
 def push_dataframe_to_rds(df, table_name, engine):
     try:

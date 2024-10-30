@@ -1,6 +1,7 @@
 import pandas as pd 
 from sqlalchemy import create_engine, text, inspect
 from datetime import datetime
+import random
 
 def connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME):
     try:
@@ -66,7 +67,7 @@ def update_records(engine, table_name, table_key_id):
         return []
 
 
-def delete_records(table_name, table_key_id, delete_ids):
+def delete_records(engine, table_name, table_key_id, delete_ids):
     if engine is None:
         print("No database connection available.")
         return
@@ -75,13 +76,19 @@ def delete_records(table_name, table_key_id, delete_ids):
     with engine.connect() as connection:
         for delete_id in delete_ids:
             try:
-                connection.execute(delete_query, {'id': delete_id})
-                print(f"Deleted record with {table_key_id}: {delete_id}")
+                result = connection.execute(delete_query, {'id': delete_id})
+                
+                if result.rowcount == 0:
+                    print(f"No record found with {table_key_id} = {delete_id} in table {table_name}. Skipping deletion.")
+                else:
+                    print(f"Deleted record with {table_key_id}: {delete_id} in table {table_name}")
+                
+            
                 connection.commit()
             except Exception as e:
                     print(f"Error deleting record with {table_key_id} {delete_id}: {e}")
     
-def delete_departement(table_name, table_key_id, doctor_table_name, delete_ids):
+def delete_departement(engine, table_name, table_key_id, doctor_table_name, delete_ids):
     if engine is None:
         print("No database connection available.")
         return

@@ -14,14 +14,14 @@ def connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME):
         print(f"Error connecting to PostgreSQL database: {e}")
         
 
-def get_last_extraction_time(table_name):
+def get_last_extraction_time(dynamo_table, table_name):
     response = dynamo_table.get_item(Key={"table_name": table_name})
     if 'Item' in response:
         return response['Item'].get('last_extraction')
     else: 
         return None
     
-def update_last_extraction_time(table_name):
+def update_last_extraction_time(dynamo_table, table_name):
     dynamo_table.put_item(
         Item={
             "table_name":table_name,
@@ -30,7 +30,7 @@ def update_last_extraction_time(table_name):
     )
     
 def fetch_and_upload_to_s3(table_name, dynamo_table, engine, DST_BUCKET, RAW_FOLDER):
-    last_extraction_time = get_last_extraction_time(table_name)
+    last_extraction_time = get_last_extraction_time(dynamo_table, table_name)
     
     query = f"""
         SELECT * FROM {table_name} 
@@ -52,4 +52,4 @@ def fetch_and_upload_to_s3(table_name, dynamo_table, engine, DST_BUCKET, RAW_FOL
                 Body=csv_buffer.getvalue()
             )
         
-    print(f"New data successfully extracted for table '{table_name}' and uploaded to S3.")
+            print(f"New data successfully extracted for table '{table_name}' and uploaded to S3.")

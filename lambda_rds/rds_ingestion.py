@@ -48,7 +48,7 @@ def lambda_handler(event, context):
         print("Database connection failed.")
         return {'statusCode': 500, 'body': 'Database connection failed.'}
     
-    operation_choice = random.choice(['insert', 'update', 'delete'])
+    operation_choice = random.choice(['insert', 'update'])
     
     try:
         if operation_choice == 'insert':
@@ -100,6 +100,7 @@ def lambda_handler(event, context):
                     'statusCode': 500,
                     'body': f'Update operation failed: {str(e)}'
                 }
+        '''
         if operation_choice == 'delete':
             try:
                 delete_medications(engine)
@@ -122,7 +123,7 @@ def lambda_handler(event, context):
                     'statusCode': 500,
                     'body': f'Update operation failed: {str(e)}'
                 }
-        
+        '''
     except Exception as e:
         print(f"Error in lambda_handler: {e}")
         return {

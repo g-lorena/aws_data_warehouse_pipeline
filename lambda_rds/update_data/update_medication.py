@@ -28,9 +28,9 @@ def update_generate_medications(update_ids, engine):
                     'medication_id': medication_id
                 })
                 connection.commit()
-                print(f"Updated doctor_id: {medication_id} with new values.")
+                print(f"Updated medication_id: {medication_id} with new values.")
             except Exception as e:
-                print(f"Error updating doctor_id {medication_id}: {e}")
+                print(f"Error updating medication_id {medication_id}: {e}")
     
      
 def update_medications(engine):

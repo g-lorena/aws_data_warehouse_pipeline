@@ -4,6 +4,10 @@ import random
 from utils.db import update_records
 from sqlalchemy import create_engine, text
 
+from faker import Faker
+
+fake = Faker()
+
 def update_generate_patients(update_ids, engine):
     with engine.connect() as connection:
         for patient_id in update_ids:

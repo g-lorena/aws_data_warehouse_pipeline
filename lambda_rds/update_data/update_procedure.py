@@ -4,6 +4,7 @@ import random
 from utils.db import update_records
 from sqlalchemy import create_engine, text
 
+
 def update_generate_procedures(update_ids, engine):
     with engine.connect() as connection:
         for procedure_code in update_ids:

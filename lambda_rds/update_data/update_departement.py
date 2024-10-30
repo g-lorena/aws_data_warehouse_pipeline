@@ -1,6 +1,10 @@
 from datetime import datetime
 import random
+from utils.db import update_records
 from sqlalchemy import create_engine, text
+from faker import Faker
+
+fake = Faker()
 
 def update_generate_departments(update_ids, engine):
     with engine.connect() as connection:

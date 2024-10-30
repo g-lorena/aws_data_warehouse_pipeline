@@ -50,18 +50,23 @@ def update_last_extraction_time(table_name):
 '''
 
 def lambda_handler(event, context):
+    engine = connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
+
+    if engine is None:
+        # Return early if engine couldn't connect
+        print("Database connection failed.")
+        return {'statusCode': 500, 'body': 'Database connection failed.'}
+    
+    operation_choice = random.choice(['insert', 'update', 'delete'])
+    
     try:
-        engine = connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
-        
-        operation_choice = random.choice(['insert', 'update', 'delete'])
-        
         if operation_choice == 'insert':
             try: 
                 insert_medications_data(engine)
                 insert_procedure_data(engine)
                 insert_patient_data(engine)
-                insert_doctors_data(engine)
                 insert_departement_data(engine)
+                insert_doctors_data(engine)
                 return {'statusCode': 200, 'body': 'Insert operation completed.'}
             except Exception as e:
                 print(f"Error during insert operation: {e}")
@@ -75,8 +80,8 @@ def lambda_handler(event, context):
                 update_medications(engine)
                 update_procedures(engine)
                 update_patients(engine)
-                update_doctors(engine)
                 update_departement(engine)
+                update_doctors(engine)
                 return {'statusCode': 200, 'body': 'Update operation completed.'}
             except Exception as e:
                 print(f"Error during update operation: {e}")
@@ -89,8 +94,8 @@ def lambda_handler(event, context):
                 delete_medications(engine)
                 delete_procedures(engine)
                 delete_patients(engine)
+                #delete_departement(engine)
                 delete_doctors(engine)
-                delete_departement(engine)
                 return {'statusCode': 200, 'body': 'delete operation completed.'}
             except Exception as e:
                 print(f"Error during update operation: {e}")

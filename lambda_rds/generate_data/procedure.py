@@ -2,6 +2,7 @@ from faker import Faker
 import random
 import pandas as pd
 from datetime import datetime
+import string
 
 fake = Faker()
 
@@ -22,4 +23,4 @@ def generate_procedures(num_procedures):
             'created_at': datetime.now(), 
             'updated_at': datetime.now() 
         })
-    return procedures
+    return pd.DataFrame(procedures) 

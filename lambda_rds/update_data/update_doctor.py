@@ -2,8 +2,10 @@ import pandas as pd
 from datetime import datetime
 import random
 from utils.db import update_records
-from sqlalchemy import create_engine, text, inspector
+from sqlalchemy import create_engine, text
+from faker import Faker
 
+fake = Faker()
 
 def update_generate_doctors(update_ids, engine):
     with engine.connect() as connection:

@@ -7,7 +7,7 @@ locals{
 
   redshift_integration_bucket_name = "my-redshift-integration-bucket-001"
   raw_repertory            = "raw_data"
-
+  
    # cloudwatch
   schedule_name  = "schedule"
   schedule_value = "cron(0 8 ? * MON-FRI *)" 
@@ -42,11 +42,6 @@ locals{
   path_to_output_3 = "load_to_redshift.zip"
   function_name_3 = "load_to_redshift"
   function_handler_3 = "load_to_redshift.lambda_handler"
-
-  path_to_source_folder_redshift = "../initialize_redshift_schema_tables"
-  path_to_output_redshift = "lambda_redshift_schema_initializer.zip"
-  function_name_redshift_initializer = "lambda_redshift_schema_initializer"
-  function_handler_redshift_initializer = "lambda_redshift_schema_initializer.lambda_handler"
   
   #rds
   db_username = "lorena"

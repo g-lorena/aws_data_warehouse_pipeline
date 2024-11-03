@@ -86,15 +86,17 @@ module "lambdaFunction" {
   path_to_output_3 = local.path_to_output_3
   function_name_3 = local.function_name_3
   function_handler_3 = local.function_handler_3
-  redshift_role_arn = module.redshift.redshift_role_arn
+  REDSHIFT_ROLE_ARN = module.redshift.redshift_role_arn
 
   redshift_integration_bucket_id = module.s3bucket.s3_bucket_redshift_integration_id
 
-  db_redshift_name = local.database_name
-  db_redshift_user = local.master_username
-  db_redshift_password = local.master_password
-  db_redshift_host = module.redshift.redshift_hostname
+  REDSHIFT_DB = local.database_name
+  REDSHIFT_USER = local.master_username
+  REDSHIFT_PASSWORD = local.master_password
+  REDSHIFT_HOST = module.redshift.redshift_hostname
   aws_redshift_cluster_endpoint = module.redshift.redshift_endpoint
+
+  bucket_id = module.s3bucket.s3_bucket_redshift_integration_id
 
 }
 
@@ -111,11 +113,10 @@ module "redshift" {
 
 }
 
-/*
 module "cloudwatch_schedule_module" {
   source                   = "./modules/eventbridge"
   schedule_name            = local.schedule_name
   schedule_value           = local.schedule_value
   aws_lambda_arn           = module.lambdaFunction.lambda_function_arn
   aws_lambda_function_name = module.lambdaFunction.lambda_function_name
-}*/
+}

@@ -40,41 +40,6 @@ resource "aws_subnet" "subnet_az2" {
   }
 
 }
-/*
-locals {
-  subnets = {
-    "subnet_az1" = {
-      cidr_block        = aws_subnet.subnet_az1.cidr_block
-      availability_zone = aws_subnet.subnet_az1.availability_zone
-      tag_name          = aws_subnet.subnet_az1.tags["Name"]
-    }
-    "subnet_az2" = {
-      cidr_block        = aws_subnet.subnet_az2.cidr_block
-      availability_zone = aws_subnet.subnet_az2.availability_zone
-      tag_name          = aws_subnet.subnet_az2.tags["Name"]
-    }
-  }
-}
-
-resource "aws_subnet" "private-subnets" {
-  for_each = local.subnets
-
-  cidr_block        = each.value.cidr_block
-  vpc_id            = aws_vpc.custom_vpc.id
-  availability_zone = each.value.availability_zone
-
-  tags = {
-    Name = each.value.tag_name
-  }
-}
-
-
-
-resource "aws_route_table_association" "public_subnet_association" {
-  subnet_id      = aws_subnet.public_subnet.id
-  route_table_id = aws_route_table.public_route_table.id
-}
-*/
 
 resource "aws_internet_gateway" "my_igw" {
   vpc_id = aws_vpc.custom_vpc.id
@@ -245,7 +210,8 @@ resource "aws_security_group" "redshift_sg" {
     from_port   = 5439  # Redshift default port
     to_port     = 5439
     protocol    = "tcp"
-    cidr_blocks = ["147.161.184.119/32"]  
+    security_groups  = [aws_security_group.lambda_security_group.id]
+    
   }
 
   egress {

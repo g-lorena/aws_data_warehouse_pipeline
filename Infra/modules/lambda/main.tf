@@ -27,6 +27,7 @@ statement {
       "ec2:DescribeNetworkInterfaces", 
       "dynamodb:PutItem", 
       "dynamodb:GetItem",
+      "dynamodb:UpdateItem",
       "redshift:GetClusterCredentials",
       "redshift:DescribeClusters",
       "redshift:ExecuteStatement",
@@ -220,7 +221,11 @@ resource "aws_lambda_function" "lambda_3" {
 
   environment {
     variables = {
-      redshift_role_arn = var.redshift_role_arn
+      REDSHIFT_HOST = var.REDSHIFT_HOST
+      REDSHIFT_DB = var.REDSHIFT_DB
+      REDSHIFT_USER = var.REDSHIFT_USER
+      REDSHIFT_PASSWORD = var.REDSHIFT_PASSWORD
+      REDSHIFT_ROLE_ARN = var.REDSHIFT_ROLE_ARN
       DST_BUCKET = var.dst_bucket_name
       RAW_FOLDER = var.raw_repertory
     }
@@ -234,4 +239,16 @@ resource "aws_lambda_permission" "s3_3" {
   principal     = "s3.amazonaws.com"
 
   source_arn = var.s3_bucket_redshift_integration_arn
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = var.bucket_id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.lambda_3.arn
+    events = ["s3:ObjectCreated:*"]
+    filter_prefix = "raw_data/"
+  }
+
+  depends_on = [aws_lambda_permission.s3_3]
 }

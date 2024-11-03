@@ -82,11 +82,6 @@ variable "function_name_3" {
   type        = string
 }
 
-variable "redshift_role_arn" {
-  description = "redshift role arn"
-  type        = string
-}
-
 /*
 variable "path_to_source_file" {
   description = "Path to Lambda Fucntion Source Code"
@@ -168,47 +163,37 @@ variable "dst_bucket_name" {
   type        = string
 }
 
-variable "db_redshift_name" {
-  description = "db_redshift_name"
-  type        = string
-}
-
-variable "db_redshift_user" {
-  description = "db_redshift_user"
-  type        = string
-}
-
-variable "db_redshift_password" {
-  description = "db_redshift_password"
-  type        = string
-}
-
-variable "db_redshift_host" {
-  description = "db_redshift_host"
-  type        = string
-}
-
-variable "path_to_source_folder_redshift" {
-  description = "path_to_source_folder_redshift"
-  type        = string
-}
-
-variable "path_to_output_redshift" {
-  description = "path_to_output_redshift"
-  type        = string
-}
-
 variable "aws_redshift_cluster_endpoint" {
   description = "aws_redshift_cluster_endpoint"
   type        = string
 }
 
-variable "function_handler_redshift_initializer" {
-  description = "function_handler_redshift_initializer"
-  type        = string
+variable "bucket_id" {
+  description = "description bucket id "
+  type = string
 }
 
-variable "function_name_redshift_initializer" {
-  description = "function_name_redshift_initializer"
-  type        = string
+variable "REDSHIFT_HOST" {
+  description = "REDSHIFT_HOST "
+  type = string
+}
+
+variable "REDSHIFT_DB" {
+  description = "REDSHIFT_DB "
+  type = string
+}
+
+variable "REDSHIFT_USER" {
+  description = "REDSHIFT_USER "
+  type = string
+}
+
+variable "REDSHIFT_PASSWORD" {
+  description = "REDSHIFT_PASSWORD "
+  type = string
+}
+
+variable "REDSHIFT_ROLE_ARN" {
+  description = "REDSHIFT_ROLE_ARN "
+  type = string
 }

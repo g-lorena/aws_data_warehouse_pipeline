@@ -12,14 +12,28 @@ def connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME):
 
     except Exception as e:
         print(f"Error connecting to PostgreSQL database: {e}")
-       
-def update_last_extraction_time(table_name, dynamo_table):
-    dynamo_table.put_item(
-        Item={
-            "table_name":table_name,
-            "last_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
-    )
+
+def update_last_extraction_time(table_name, dynamo_table): 
+    try:
+        dynamo_table.update_item(
+            Key={'table_name': table_name},
+            UpdateExpression="SET last_update_time = :update_time",
+            ExpressionAttributeValues={
+                ':update_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S")  
+            },
+            ConditionExpression="attribute_exists(table_name)" 
+        )
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+            dynamo_table.put_item(
+                Item={
+                    "table_name": table_name,
+                    "last_update_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "last_extraction_time": ""  # Initialise avec une chaîne vide pour la première iteration
+                }
+            )
+        else:
+            raise
      
         
 def push_dataframe_to_rds(df, table_name, engine):

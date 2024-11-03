@@ -17,25 +17,39 @@ def connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME):
 def get_last_extraction_time(dynamo_table, table_name):
     response = dynamo_table.get_item(Key={"table_name": table_name})
     if 'Item' in response:
-        return response['Item'].get('last_extraction')
+        return response['Item'].get('last_extraction_time')
     else: 
         return None
     
 def update_last_extraction_time(dynamo_table, table_name):
+    
+    dynamo_table.update_item(
+        Key={'table_name': table_name},
+        UpdateExpression="SET last_extraction_time = :extraction_time",
+        ExpressionAttributeValues={
+            ':extraction_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+    )
+    '''
     dynamo_table.put_item(
         Item={
             "table_name":table_name,
-            "last_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "last_extraction_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
     )
-    
+    '''
 def fetch_and_upload_to_s3(table_name, dynamo_table, engine, DST_BUCKET, RAW_FOLDER):
     last_extraction_time = get_last_extraction_time(dynamo_table, table_name)
     
-    query = f"""
-        SELECT * FROM {table_name} 
-        WHERE updated_at > '{last_extraction_time}'
-    """
+    if last_extraction_time in (None, ""): # premiere extraction
+        query = f"""
+            SELECT * FROM {table_name} 
+        """
+    else: 
+        query = f"""
+            SELECT * FROM {table_name} 
+            WHERE updated_at > '{last_extraction_time}'
+        """
     #created_at > '{last_extraction_time}'
     with engine.connect() as conn:
         df = pd.read_sql(query, conn)
@@ -44,6 +58,8 @@ def fetch_and_upload_to_s3(table_name, dynamo_table, engine, DST_BUCKET, RAW_FOL
             print(f"No new data to extract for table '{table_name}'.")
             
         else:
+            update_last_extraction_time(dynamo_table, table_name)
+            
             csv_buffer = io.StringIO()
             df.to_csv(csv_buffer, index=False)
             s3.put_object(
@@ -53,3 +69,5 @@ def fetch_and_upload_to_s3(table_name, dynamo_table, engine, DST_BUCKET, RAW_FOL
             )
         
             print(f"New data successfully extracted for table '{table_name}' and uploaded to S3.")
+            
+    

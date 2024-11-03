@@ -1,4 +1,4 @@
-import pandas as pd 
+import psycopg2
 
 def connect_to_redshift(REDSHIFT_DB, REDSHIFT_USER, REDSHIFT_PASSWORD, REDSHIFT_HOST):
     try:

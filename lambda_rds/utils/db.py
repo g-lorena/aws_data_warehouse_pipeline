@@ -1,6 +1,7 @@
 import pandas as pd 
 from sqlalchemy import create_engine, text, inspect
 from datetime import datetime
+from botocore.exceptions import ClientError
 import random
 
 def connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME):

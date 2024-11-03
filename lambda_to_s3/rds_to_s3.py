@@ -28,7 +28,7 @@ def lambda_handler(event, context):
         tables = ['patients', 'doctors', 'medications', 'department', 'procedure']
 
         for table in tables: 
-            fetch_and_upload_to_s3(table, dynamo_table, engine, DST_BUCKET, RAW_FOLDER)
+            fetch_and_upload_to_s3(table, dynamo_table, engine, DST_BUCKET, RAW_FOLDER,s3)
             
         return {
             "statusCode": 200, 

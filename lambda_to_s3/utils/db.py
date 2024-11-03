@@ -38,7 +38,7 @@ def update_last_extraction_time(dynamo_table, table_name):
         }
     )
     '''
-def fetch_and_upload_to_s3(table_name, dynamo_table, engine, DST_BUCKET, RAW_FOLDER):
+def fetch_and_upload_to_s3(table_name, dynamo_table, engine, DST_BUCKET, RAW_FOLDER, s3):
     last_extraction_time = get_last_extraction_time(dynamo_table, table_name)
     
     if last_extraction_time in (None, ""): # premiere extraction

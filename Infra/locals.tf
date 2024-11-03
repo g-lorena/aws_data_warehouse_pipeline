@@ -31,23 +31,34 @@ locals{
   runtime          = "python3.9"
   aws_region = "eu-west-3"
 
-  # lambda function 1
+  # lambda function 2
   path_to_source_folder_2 = "../lambda_to_s3"
   path_to_output_2 = "lambda_to_s3.zip"
   function_name_2 = "rds_to_s3"
   function_handler_2 = "rds_to_s3.lambda_handler"
 
+  # lambda function 3
+  path_to_source_folder_3 = "../lambda_to_redshift"
+  path_to_output_3 = "load_to_redshift.zip"
+  function_name_3 = "load_to_redshift"
+  function_handler_3 = "load_to_redshift.lambda_handler"
+
+  path_to_source_folder_redshift = "../initialize_redshift_schema_tables"
+  path_to_output_redshift = "lambda_redshift_schema_initializer.zip"
+  function_name_redshift_initializer = "lambda_redshift_schema_initializer"
+  function_handler_redshift_initializer = "lambda_redshift_schema_initializer.lambda_handler"
+  
   #rds
   db_username = "lorena"
   db_password = "YourStrongPass12345!"
   db_name = "medical_database"
 
   #redshift
-  cluster_identifier = "my_healthcare_redshift_cluster"
+  cluster_identifier = "my-healthcare-redshift-cluster"
   database_name = "my_healthcare_datawarehouse"
   master_username = "exampleuser"
   master_password = "Mustbe8characters"
-  node_type = "dc1.large"
+  node_type = "dc2.large"
   cluster_type = "single-node"
 
 }

@@ -78,6 +78,7 @@ resource "aws_iam_role_policy_attachment" "attach_lambda_policy_2" {
   policy_arn = aws_iam_policy.lambda_policy_2.arn
 }
 */
+
 data "archive_file" "lambda_1" {
   type        = "zip"
   source_dir = var.path_to_source_folder
@@ -91,18 +92,20 @@ data "archive_file" "lambda_2" {
   
   output_path = var.path_to_output_2
 }
-/*
+
 data "archive_file" "lambda_3" {
   type        = "zip"
   source_dir = var.path_to_source_folder_3
   
   output_path = var.path_to_output_3
 }
-*/
+
 #source_file = var.path_to_source_file #"../../etl/extract/extract_data.py"
 #"lambda_function_extract_data.zip"
 
 # from rds to lambda
+
+
 resource "aws_lambda_function" "lambda_1" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
@@ -152,6 +155,7 @@ resource "aws_lambda_permission" "s3" {
   source_arn = var.s3_bucket_arn
 }
 
+
 resource "aws_lambda_function" "lambda_2" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
@@ -193,7 +197,7 @@ resource "aws_lambda_permission" "s3_2" {
 
   source_arn = var.s3_bucket_redshift_integration_arn
 }
-/*
+
 resource "aws_lambda_function" "lambda_3" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
@@ -216,22 +220,18 @@ resource "aws_lambda_function" "lambda_3" {
 
   environment {
     variables = {
-      DB_USERNAME = var.db_username
-      DB_PASSWORD = var.db_password
-      DB_NAME = var.db_name
-      DB_HOST = var.rds_endpoint
-      DynamoDB_NAME = var.DynamoDB_table_name
-
-      
-      #redshift_password = 
-      #redshift_host = 
-      #redshift_port = 
-      #REDSHIFT_DB_USER = 
-      #REDSHIFT_TABLE = 
-
+      redshift_role_arn = var.redshift_role_arn
       DST_BUCKET = var.dst_bucket_name
       RAW_FOLDER = var.raw_repertory
     }
   }
 }
-*/
+
+resource "aws_lambda_permission" "s3_3" {
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda_3.arn
+  principal     = "s3.amazonaws.com"
+
+  source_arn = var.s3_bucket_redshift_integration_arn
+}

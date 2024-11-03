@@ -46,32 +46,17 @@ resource "aws_iam_role_policy_attachment" "attach_lambda_policy_1" {
 }
 
 resource "aws_redshift_cluster" "my_healthcare_redshift" {
-  cluster_identifier = var.cluster_identifier #"my_healthcare_redshift_cluster"
-  database_name      = var.database_name #"my_healthcare_datawarehouse"
-  master_username    = var.master_username #"exampleuser"
-  master_password    = var.master_password #"Mustbe8characters"
-  node_type          = var.node_type #"dc1.large"
-  cluster_type       = var.cluster_type#"single-node"
+  cluster_identifier = var.cluster_identifier 
+  database_name      = var.database_name 
+  master_username    = var.master_username 
+  master_password    = var.master_password 
+  node_type          = var.node_type 
+  cluster_type       = var.cluster_type
   number_of_nodes         = 1
-  publicly_accessible     = true
+  publicly_accessible     = false
   iam_roles               = [aws_iam_role.iam_for_redshift.arn]
   vpc_security_group_ids  = [var.vpc_security_group_ids]
   skip_final_snapshot     = true
   cluster_subnet_group_name = var.cluster_subnet_group_name
 
-}
-
-resource "null_resource" "init_redshift_tables" {
-  provisioner "local-exec" {
-    command = <<EOT
-    psql -h ${aws_redshift_cluster.my_healthcare_redshift.endpoint} \
-    -U ${aws_redshift_cluster.my_healthcare_redshift.master_username} \
-    -d ${aws_redshift_cluster.my_healthcare_redshift.database_name} \
-    -f ./sql/create_tables.sql
-    EOT
-    environment = {
-      PGPASSWORD = aws_redshift_cluster.my_healthcare_redshift.master_password
-    }
-  }
-  depends_on = [aws_redshift_cluster.my_healthcare_redshift]
 }

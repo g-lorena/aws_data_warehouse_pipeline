@@ -9,3 +9,7 @@ output "s3_bucket_redshift_integration_arn" {
 output "aws_s3_bucket_uri" {
   value = "${aws_s3_bucket.redshift_integration_bucket.bucket}/${aws_s3_object.raw_zone.key}"
 }
+
+output "s3_bucket_redshift_integration_id" {
+  value = aws_s3_bucket.redshift_integration_bucket.id
+}

@@ -1,3 +1,4 @@
+
 module "vpc" {
   source = "./modules/vpc"
   
@@ -51,6 +52,7 @@ module "lambdaFunction" {
   path_to_output        = local.path_to_output
   function_name_1         = local.function_name_1
   function_handler_1      = local.function_handler_1
+
   memory_size           = local.memory_size
   timeout               = local.timeout
   runtime               = local.runtime
@@ -61,12 +63,13 @@ module "lambdaFunction" {
   rds_endpoint      = module.rds.rds_host
   DynamoDB_table_name = module.dynamodb.last_extraction_table_name
   #raw_repertory     = local.raw_repertory
-  lambda_layer_arns = [module.lambdaLayer.lamnda_layer_arn]
+  
   aws_region        = local.aws_region
   s3_bucket_arn         = module.s3bucket.s3_bucket_arn
 
   vpc_subnet_ids = module.vpc.subnet_ids
   vpc_security_group_ids = module.vpc.lambda_security_group_id
+  lambda_layer_arns = [module.lambdaLayer.lamnda_layer_arn]
 
 
   # ------
@@ -79,8 +82,22 @@ module "lambdaFunction" {
   raw_repertory = local.raw_repertory
   s3_bucket_redshift_integration_arn = module.s3bucket.s3_bucket_redshift_integration_arn
 
+  path_to_source_folder_3 = local.path_to_source_folder_3
+  path_to_output_3 = local.path_to_output_3
+  function_name_3 = local.function_name_3
+  function_handler_3 = local.function_handler_3
+  redshift_role_arn = module.redshift.redshift_role_arn
+
+  redshift_integration_bucket_id = module.s3bucket.s3_bucket_redshift_integration_id
+
+  db_redshift_name = local.database_name
+  db_redshift_user = local.master_username
+  db_redshift_password = local.master_password
+  db_redshift_host = module.redshift.redshift_hostname
+  aws_redshift_cluster_endpoint = module.redshift.redshift_endpoint
+
 }
-/*
+
 module "redshift" {
   source                   = "./modules/redshift"
   cluster_identifier = local.cluster_identifier
@@ -93,7 +110,7 @@ module "redshift" {
   cluster_subnet_group_name = module.vpc.aws_redshift_subnet_group_name
 
 }
-*/
+
 /*
 module "cloudwatch_schedule_module" {
   source                   = "./modules/eventbridge"

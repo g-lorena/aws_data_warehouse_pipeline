@@ -68,6 +68,14 @@ resource "aws_subnet" "private-subnets" {
   }
 }
 
+
+
+resource "aws_route_table_association" "public_subnet_association" {
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.public_route_table.id
+}
+*/
+
 resource "aws_internet_gateway" "my_igw" {
   vpc_id = aws_vpc.custom_vpc.id
 
@@ -89,18 +97,17 @@ resource "aws_route_table" "public_route_table" {
   }
 }
 
-resource "aws_route_table_association" "public_subnet_association" {
-  subnet_id      = aws_subnet.public_subnet.id
-  route_table_id = aws_route_table.public_route_table.id
-}
-*/
-
 resource "aws_route_table" "private_route_table" {
     vpc_id = aws_vpc.custom_vpc.id
 
     tags = {
         Name = "Private Route Table"
     }
+}
+
+resource "aws_route_table_association" "public_subnet_association"{
+  subnet_id = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.public_route_table.id
 }
 
 resource "aws_route_table_association" "private_subnet1_association" {
@@ -232,12 +239,13 @@ resource "aws_security_group" "database_security_group" {
 resource "aws_security_group" "redshift_sg" {
   name        = "redshift_sg"
   description = "Allow access to Redshift"
+  vpc_id      = aws_vpc.custom_vpc.id
 
   ingress {
     from_port   = 5439  # Redshift default port
     to_port     = 5439
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  
+    cidr_blocks = ["147.161.184.119/32"]  
   }
 
   egress {

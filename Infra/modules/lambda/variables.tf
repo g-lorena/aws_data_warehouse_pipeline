@@ -28,13 +28,13 @@ variable "rds_endpoint" {
   #default = "eu-west-3"
 }
 
-/*
-variable "bucket_name" {
-  description = "principal bucket name"
+
+variable "redshift_integration_bucket_id" {
+  description = "redshift_integration_bucket_id"
   type        = string
   #default     = "real-estate-etl-101"
 }
-
+/*
 # A VERIFIER : UTILITÉ
 variable "raw_repertory" {
   description = "raws data repertory"
@@ -61,12 +61,12 @@ variable "function_handler_2" {
   description = "Name of Lambda Function Handler"
   type        = string
 }
-/*
+
 variable "function_handler_3" {
   description = "Name of Lambda Function Handler"
   type        = string
 }
-*/
+
 variable "function_name_1" {
   description = "Name of Lambda Function"
   type        = string
@@ -76,12 +76,17 @@ variable "function_name_2" {
   description = "Name of Lambda Function"
   type        = string
 }
-/*
+
 variable "function_name_3" {
   description = "Name of Lambda Function"
   type        = string
 }
-*/
+
+variable "redshift_role_arn" {
+  description = "redshift role arn"
+  type        = string
+}
+
 /*
 variable "path_to_source_file" {
   description = "Path to Lambda Fucntion Source Code"
@@ -97,12 +102,12 @@ variable "path_to_source_folder_2" {
   description = "Path to Lambda Fucntion Source Code"
   type        = string
 }
-/*
+
 variable "path_to_source_folder_3" {
   description = "Path to Lambda Fucntion Source Code"
   type        = string
 }
-*/
+
 variable "path_to_output" {
   description = "Path to ZIP artifact"
   type        = string
@@ -112,12 +117,12 @@ variable "path_to_output_2" {
   description = "Path to ZIP artifact"
   type        = string
 }
-/*
+
 variable "path_to_output_3" {
   description = "Path to ZIP artifact"
   type        = string
 }
-*/
+
 variable "memory_size" {
   description = "Lambda Memory"
   type        = number
@@ -160,5 +165,50 @@ variable "DynamoDB_table_name" {
 
 variable "dst_bucket_name" {
   description = "DynamoDB_table_name"
+  type        = string
+}
+
+variable "db_redshift_name" {
+  description = "db_redshift_name"
+  type        = string
+}
+
+variable "db_redshift_user" {
+  description = "db_redshift_user"
+  type        = string
+}
+
+variable "db_redshift_password" {
+  description = "db_redshift_password"
+  type        = string
+}
+
+variable "db_redshift_host" {
+  description = "db_redshift_host"
+  type        = string
+}
+
+variable "path_to_source_folder_redshift" {
+  description = "path_to_source_folder_redshift"
+  type        = string
+}
+
+variable "path_to_output_redshift" {
+  description = "path_to_output_redshift"
+  type        = string
+}
+
+variable "aws_redshift_cluster_endpoint" {
+  description = "aws_redshift_cluster_endpoint"
+  type        = string
+}
+
+variable "function_handler_redshift_initializer" {
+  description = "function_handler_redshift_initializer"
+  type        = string
+}
+
+variable "function_name_redshift_initializer" {
+  description = "function_name_redshift_initializer"
   type        = string
 }

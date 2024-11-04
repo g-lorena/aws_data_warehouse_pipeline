@@ -6,8 +6,15 @@ from datetime import datetime
 
 fake = Faker()
 
+def generate_concatenated_id():
+    prefix="APP"
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    random_suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5)) # Random string of length 5
+    unique_id = f"{prefix}_{timestamp}_{random_suffix}"
+    return unique_id
+
 #appointments (appointment_id, patient_id, doctor_id, appointment_date, diagnosis)...appointment_type
-def generate_appointments(num_visits, num_patients, num_doctors):
+def generate_appointments(num_appointments, doctors_ids, patients_ids):
     appointments = []
     
     diagnoses = [
@@ -22,11 +29,11 @@ def generate_appointments(num_visits, num_patients, num_doctors):
         'Telemedicine', 'Surgery', 'Vaccination'
     ]
     
-    for _ in range(num_visits):
+    for _ in range(num_appointments):
         appointments.append({
-            'appointment_id': _ + 1,
-            'patient_id': random.randint(1, num_patients),
-            'doctor_id': random.randint(1, num_doctors),
+            'appointment_id': generate_concatenated_id(),
+            'patient_id': random.choice(patients_ids), 
+            'doctor_id': random.choice(doctors_ids),
             'appointment_date': fake.date_between(start_date='-2y', end_date='today'),
             'appointment_type': random.choice(appointment_types),
             'diagnosis': random.choice(diagnoses),

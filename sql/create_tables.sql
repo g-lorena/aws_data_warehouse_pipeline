@@ -62,6 +62,17 @@ CREATE TABLE IF NOT EXISTS fact_appointment (
     FOREIGN KEY (doctor_id) REFERENCES dim_doctors(doctor_id)
 );
 
+CREATE TABLE IF NOT EXISTS stage_fact_appointment(
+    appointment_id VARCHAR(50) PRIMARY KEY,
+    patient_id VARCHAR(50),
+    doctor_id VARCHAR(50), 
+    appointment_date DATE, 
+    appointment_type VARCHAR(100), 
+    diagnosis VARCHAR(100), 
+    created_at TIMESTAMP, 
+    updated_at TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS fact_treatment (
     treatment_id VARCHAR(50) PRIMARY KEY,
     appointment_id VARCHAR(50), 
@@ -73,6 +84,16 @@ CREATE TABLE IF NOT EXISTS fact_treatment (
     FOREIGN KEY (appointment_id) REFERENCES fact_appointment(appointment_id),
     FOREIGN KEY (medication_id) REFERENCES dim_medication(medication_id),
     FOREIGN KEY (procedure_code) REFERENCES dim_procedure(procedure_code)
+);
+
+CREATE TABLE IF NOT EXISTS stage_fact_treatment(
+    treatment_id VARCHAR(50) PRIMARY KEY,
+    appointment_id VARCHAR(50), 
+    medication_id VARCHAR(50), 
+    procedure_code VARCHAR(50), 
+    treatment_date DATE,
+    created_at TIMESTAMP, 
+    updated_at TIMESTAMP
 );
 
 
@@ -116,7 +137,7 @@ CREATE TABLE stage_dim_patients (
     patient_id VARCHAR(50) PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100),
-    gender VARCHAR(100)
+    gender VARCHAR(100),
     dob DATE,
     patient_address VARCHAR(100),
     city VARCHAR(100),

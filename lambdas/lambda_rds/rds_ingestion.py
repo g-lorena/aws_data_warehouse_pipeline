@@ -11,6 +11,8 @@ from insert_data.insert_doctor import insert_doctors_data
 from insert_data.insert_patient import insert_patient_data
 from insert_data.insert_procedure import insert_procedure_data
 from insert_data.insert_medication import insert_medications_data
+from insert_data.insert_appointment import insert_appointments_data 
+from insert_data.insert_treatment import insert_treatment_data
 # connect to 
 
 from update_data.update_departement import update_departement
@@ -18,6 +20,8 @@ from update_data.update_doctor import update_doctors
 from update_data.update_medication import update_medications
 from update_data.update_patient import update_patients
 from update_data.update_procedure import update_procedures
+from update_data.update_appointement import update_appointments
+from update_data.update_treatment import update_treatments
 
 from delete_data.delete_departement import delete_departement
 from delete_data.delete_doctor import delete_doctors
@@ -68,6 +72,12 @@ def lambda_handler(event, context):
                 insert_doctors_data(engine)
                 update_last_extraction_time("doctors", dynamo_table)
                 
+                insert_appointments_data(engine)
+                update_last_extraction_time("appointments", dynamo_table)
+                
+                insert_treatment_data(engine)
+                update_last_extraction_time("treatement", dynamo_table)
+
                 return {'statusCode': 200, 'body': 'Insert operation completed.'}
             except Exception as e:
                 print(f"Error during insert operation: {e}")
@@ -92,6 +102,12 @@ def lambda_handler(event, context):
                 
                 update_doctors(engine)
                 update_last_extraction_time("doctors", dynamo_table)
+                
+                update_appointments(engine)
+                update_last_extraction_time("appointments", dynamo_table)
+                
+                update_treatments(engine)
+                update_last_extraction_time("treatement", dynamo_table)
                 
                 return {'statusCode': 200, 'body': 'Update operation completed.'}
             except Exception as e:

@@ -144,5 +144,24 @@ def get_departement_ids(engine):
     except Exception as e:
         print(f"Error fetching department IDs: {e}")
         return []
+    
+def get_tables_ids(engine, key_id, table_name):
+    if engine is None:
+        print("No database connection available.")
+        return
+    
+    try:
+        existing_ids = pd.read_sql(f"SELECT {key_id} FROM {table_name}", engine)
+        if existing_ids is not None or not existing_ids.empty:
+            ids = existing_ids[key_id].tolist()
+            return ids
+        else:
+            print('No ids found.')
+            return []
+    except Exception as e:
+        print(f"Error fetching department IDs: {e}")
+        return []
+        
+    
 
       

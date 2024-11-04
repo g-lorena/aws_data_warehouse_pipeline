@@ -1,7 +1,14 @@
 import json
 import os
 import boto3
-from utils.db import connect_to_redshift
+from utils.db import connect_to_redshift, get_last_extraction_time
+from utils.merge_appointement import merge_appointement_table
+from utils.merge_departement import merge_departement_table
+from utils.merge_doctor import merge_doctor_table
+from utils.merge_patient import merge_patient_table
+from utils.merge_procedure import merge_procedure_table
+from utils.merge_treatment import merge_treatment_table
+from utils.merge_medication import merge_medication_table
 from datetime import datetime
 
 
@@ -43,78 +50,22 @@ def load_into_staging_area(staging_table, s3_key, cursor):
     except Exception as e:
         print(f"Error loading data into staging area: {e}")
 
-    
-def merge_doctor_table(cursor):
-    '''
-    merge_query = """
-        MERGE INTO dim_doctors 
-        USING stage_dim_doctors 
-        ON dim_doctors.doctor_id = stage_dim_doctors.doctor_id
-        WHEN MATCHED AND dim_doctors.updated_at < stage_dim_doctors.updated_at THEN
-            UPDATE SET 
-                first_name = stage_dim_doctors.first_name,
-                last_name = stage_dim_doctors.last_name,
-                specialization = stage_dim_doctors.specialization,
-                department_id = stage_dim_doctors.department_id,
-                hire_date = stage_dim_doctors.hire_date,
-                created_at = stage_dim_doctors.created_at,
-                updated_at = stage_dim_doctors.updated_at 
-        WHEN NOT MATCHED THEN
-            INSERT (doctor_id, first_name, last_name, specialization, department_id, hire_date, created_at, updated_at)
-            VALUES (stage_dim_doctors.doctor_id, stage_dim_doctors.first_name, stage_dim_doctors.last_name, stage_dim_doctors.specialization, stage_dim_doctors.department_id, stage_dim_doctors.hire_date, stage_dim_doctors.created_at, stage_dim_doctors.updated_at);
-    """
-    cursor.execute(merge_query)
-    '''
-    cursor.execute("BEGIN;")
-
-    update_query = """
-        UPDATE dim_doctors
-        SET 
-            first_name = stage_dim_doctors.first_name,
-            last_name = stage_dim_doctors.last_name,
-            specialization = stage_dim_doctors.specialization,
-            department_id = stage_dim_doctors.department_id,
-            hire_date = stage_dim_doctors.hire_date,
-            created_at = stage_dim_doctors.created_at,
-            updated_at = stage_dim_doctors.updated_at
-        FROM stage_dim_doctors
-        WHERE dim_doctors.doctor_id = stage_dim_doctors.doctor_id
-        AND dim_doctors.updated_at < stage_dim_doctors.updated_at;
-    """
-    cursor.execute(update_query)
-    cursor.execute("COMMIT;")
-
-    insert_query = """
-        INSERT INTO dim_doctors (doctor_id, first_name, last_name, specialization, department_id, hire_date, created_at, updated_at)
-        SELECT * FROM stage_dim_doctors
-        WHERE doctor_id NOT IN (SELECT doctor_id FROM dim_doctors);
-    """
-    cursor.execute(insert_query)
-    cursor.execute("COMMIT;")
-
-    cursor.execute("TRUNCATE TABLE stage_dim_doctors;")
-    print("Merge completed and staging table cleared.")
-    
-def get_last_extraction_time(table_name):
-    response = dynamo_table.get_item(Key={"table_name": table_name})
-    if 'Item' in response:
-        return response['Item'].get('last_extraction_time')
-    else: 
-        return None
-    
+        
 def lambda_handler(event, context):
     try:
         conn = connect_to_redshift(REDSHIFT_DB, REDSHIFT_USER, REDSHIFT_PASSWORD, REDSHIFT_HOST)
         cursor = conn.cursor()
         
         staging_s3_mapping = {
-            #"stage_dim_patients" : "patients",
-            "stage_dim_doctors"  : "doctors" #,
-            #"stage_dim_medication" : "medications",
-            #"stage_dim_departement" : "departement",
-            #"stage_dim_procedure" : "procedure"
-                
+            "stage_dim_patients" : "patients",
+            "stage_dim_doctors"  : "doctors" ,
+            "stage_dim_medication" : "medications",
+            "stage_dim_departement" : "departement",
+            "stage_dim_procedure" : "procedure",
+            "stage_fact_treatment" :  "treatment", 
+            "stage_fact_appointment" : "appointment" 
         } 
+        
         DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
         # load data into 
@@ -134,7 +85,13 @@ def lambda_handler(event, context):
                 #print(file_key)
                 load_into_staging_area(staging_table, file_key, cursor)
             
+        merge_patient_table(cursor)
         merge_doctor_table(cursor)
+        merge_medication_table(cursor)
+        merge_departement_table(cursor)
+        merge_procedure_table(cursor)
+        merge_treatment_table(cursor)
+        merge_appointement_table(cursor)
         
        # staging_tables = ['stage_dim_patients', 'stage_dim_doctors', 'stage_dim_medication', 'stage_dim_departement', 'stage_dim_procedure']
     except Exception as e:

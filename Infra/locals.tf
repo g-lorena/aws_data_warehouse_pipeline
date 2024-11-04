@@ -21,7 +21,7 @@ locals{
   compatible_architectures  = ["x86_64"] 
 
   # lambda function 1
-  path_to_source_folder = "../lambda_rds"
+  path_to_source_folder = "../lambdas/lambda_rds"
   #path_to_source_file = "../etl/extract"
   path_to_output   = "lambda_rds.zip"
   function_name_1    = "rds_ingestion"
@@ -32,13 +32,13 @@ locals{
   aws_region = "eu-west-3"
 
   # lambda function 2
-  path_to_source_folder_2 = "../lambda_to_s3"
+  path_to_source_folder_2 = "../lambdas/lambda_to_s3"
   path_to_output_2 = "lambda_to_s3.zip"
   function_name_2 = "rds_to_s3"
   function_handler_2 = "rds_to_s3.lambda_handler"
 
   # lambda function 3
-  path_to_source_folder_3 = "../lambda_to_redshift"
+  path_to_source_folder_3 = "../lambdas/lambda_to_redshift"
   path_to_output_3 = "load_to_redshift.zip"
   function_name_3 = "load_to_redshift"
   function_handler_3 = "load_to_redshift.lambda_handler"

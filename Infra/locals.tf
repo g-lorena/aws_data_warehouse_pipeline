@@ -9,8 +9,8 @@ locals{
   raw_repertory            = "raw_data"
   
    # cloudwatch
-  schedule_name  = "schedule"
-  schedule_value = "cron(0 8 ? * MON-FRI *)" 
+  #schedule_name  = "schedule rds" # "schedule extraction"]
+  #schedule_value = "cron(0 8 ? * MON-FRI *)" #, "cron(0 8 ? * MON-FRI *)"] 
 
   # lambda layer
   layer_zip_path    = "python.zip"

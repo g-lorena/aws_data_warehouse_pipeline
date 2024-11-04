@@ -115,8 +115,16 @@ module "redshift" {
 
 module "cloudwatch_schedule_module" {
   source                   = "./modules/eventbridge"
-  schedule_name            = local.schedule_name
-  schedule_value           = local.schedule_value
-  aws_lambda_arn           = module.lambdaFunction.lambda_function_arn
-  aws_lambda_function_name = module.lambdaFunction.lambda_function_name
+  schedule_name            = "trigger every 1 hour"
+  schedule_value           = "cron(0 * * * ? *)"
+  aws_lambda_arn           = module.lambdaFunction.lambda1_function_arn 
+  aws_lambda_function_name = module.lambdaFunction.lambda1_function_name 
+}
+
+module "cloudwatch_schedule_module" {
+  source                   = "./modules/eventbridge"
+  schedule_name            = "trigger daily"
+  schedule_value           = "cron(0 0 * * ? *)"
+  aws_lambda_arn           = module.lambdaFunction.lambda2_function_arn
+  aws_lambda_function_name = module.lambdaFunction.lambda2_function_name
 }

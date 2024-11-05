@@ -2,7 +2,7 @@ name: "Terraform destroy"
 on:
   push:
     branches:
-      - feat*/*
+      - feat/destroy_branch
   workflow_dispatch:
 permissions:
   id-token: write # This is required for aws oidc connection

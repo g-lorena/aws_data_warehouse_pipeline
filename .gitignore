@@ -1,9 +1,6 @@
 venv
 venv/*
 
-env
-env/*
-
 Infra/requirements
 Infra/requirements/*
 

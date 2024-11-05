@@ -18,4 +18,4 @@ ARCHITECTURE
 In this project, I created a pipeline to build a data warehouse for SMEs. 
 
 For more information, you can check this Meduim artcile
-    - [How I build](link)
+    - [How I Built an Effective Data Warehouse for SMEs](https://medium.com/data-engineer-things/how-i-built-an-effective-data-warehouse-for-smes-0fbc3272e0de)

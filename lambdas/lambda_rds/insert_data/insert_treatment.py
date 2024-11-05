@@ -1,4 +1,4 @@
-from utils.db import push_dataframe_to_rds
+from utils.db import push_dataframe_to_rds, get_tables_ids
 from generate_data.treatment import generate_treatments
 
 def insert_treatment_data(engine):

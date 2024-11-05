@@ -14,7 +14,7 @@ def update_generate_procedures(update_ids, engine):
             }
             
             update_query = text("""
-            UPDATE procedures
+            UPDATE procedure
             SET procedure_cost = :procedure_cost, updated_at = :updated_at
             WHERE procedure_code = :procedure_code
             """)
@@ -31,7 +31,7 @@ def update_generate_procedures(update_ids, engine):
     
 
 def update_procedures(engine):
-    update_ids = update_records(engine, 'procedures', 'procedure_code')
+    update_ids = update_records(engine, 'procedure', 'procedure_code')
     update_generate_procedures(update_ids, engine)
     
     

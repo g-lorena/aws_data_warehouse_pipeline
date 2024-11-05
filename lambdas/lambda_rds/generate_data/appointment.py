@@ -2,6 +2,7 @@ from faker import Faker
 import pandas as pd
 import random
 from datetime import datetime
+import string
 
 
 fake = Faker()

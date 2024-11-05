@@ -25,7 +25,7 @@ def lambda_handler(event, context):
             print("No database connection available.")
             return
     
-        tables = ['patients', 'doctors', 'medications', 'department', 'procedure', 'treatment', 'appointment']
+        tables = ['patients', 'doctors', 'medications', 'department', 'procedure', 'treatement', 'appointments']
 
         for table in tables: 
             fetch_and_upload_to_s3(table, dynamo_table, engine, DST_BUCKET, RAW_FOLDER,s3)

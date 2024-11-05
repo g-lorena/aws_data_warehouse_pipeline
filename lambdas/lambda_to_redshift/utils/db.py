@@ -13,3 +13,9 @@ def connect_to_redshift(REDSHIFT_DB, REDSHIFT_USER, REDSHIFT_PASSWORD, REDSHIFT_
     except Exception as e:
         print(f"Error connecting to PostgreSQL database: {e}")
      
+def get_last_extraction_time(table_name):
+    response = dynamo_table.get_item(Key={"table_name": table_name})
+    if 'Item' in response:
+        return response['Item'].get('last_extraction_time')
+    else: 
+        return None

@@ -144,6 +144,7 @@ resource "aws_lambda_function" "lambda_1" {
       #RAW_FOLDER = var.raw_repertory
     }
   }
+  
 }
 
 
@@ -172,6 +173,7 @@ resource "aws_lambda_function" "lambda_2" {
   source_code_hash = data.archive_file.lambda_2.output_base64sha256
 
   runtime = var.runtime #"python3.10"
+ 
   vpc_config {
     subnet_ids = var.vpc_subnet_ids
     security_group_ids = [var.vpc_security_group_ids]
@@ -188,6 +190,7 @@ resource "aws_lambda_function" "lambda_2" {
       RAW_FOLDER = var.raw_repertory
     }
   }
+  
 }
 
 resource "aws_lambda_permission" "s3_2" {

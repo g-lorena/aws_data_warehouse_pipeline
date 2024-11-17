@@ -28,13 +28,13 @@ variable "rds_endpoint" {
   #default = "eu-west-3"
 }
 
-
+/*
 variable "redshift_integration_bucket_id" {
   description = "redshift_integration_bucket_id"
   type        = string
   #default     = "real-estate-etl-101"
 }
-/*
+
 # A VERIFIER : UTILITÉ
 variable "raw_repertory" {
   description = "raws data repertory"
@@ -56,7 +56,7 @@ variable "function_handler_1" {
   description = "Name of Lambda Function Handler"
   type        = string
 }
-
+/*
 variable "function_handler_2" {
   description = "Name of Lambda Function Handler"
   type        = string
@@ -66,12 +66,12 @@ variable "function_handler_3" {
   description = "Name of Lambda Function Handler"
   type        = string
 }
-
+*/
 variable "function_name_1" {
   description = "Name of Lambda Function"
   type        = string
 }
-
+/*
 variable "function_name_2" {
   description = "Name of Lambda Function"
   type        = string
@@ -81,7 +81,7 @@ variable "function_name_3" {
   description = "Name of Lambda Function"
   type        = string
 }
-
+*/
 /*
 variable "path_to_source_file" {
   description = "Path to Lambda Fucntion Source Code"
@@ -92,7 +92,7 @@ variable "path_to_source_folder" {
   description = "Path to Lambda Fucntion Source Code"
   type        = string
 }
-
+/*
 variable "path_to_source_folder_2" {
   description = "Path to Lambda Fucntion Source Code"
   type        = string
@@ -102,12 +102,12 @@ variable "path_to_source_folder_3" {
   description = "Path to Lambda Fucntion Source Code"
   type        = string
 }
-
+*/
 variable "path_to_output" {
   description = "Path to ZIP artifact"
   type        = string
 }
-
+/*
 variable "path_to_output_2" {
   description = "Path to ZIP artifact"
   type        = string
@@ -117,7 +117,7 @@ variable "path_to_output_3" {
   description = "Path to ZIP artifact"
   type        = string
 }
-
+*/
 variable "memory_size" {
   description = "Lambda Memory"
   type        = number
@@ -132,7 +132,7 @@ variable "s3_bucket_arn" {
   description = "lambda_layer_arns"
   type        = string
 }
-
+/*
 variable "s3_bucket_redshift_integration_arn" {
   description = "s3_bucket_redshift_integration_arn"
   type        = string
@@ -142,7 +142,7 @@ variable "raw_repertory" {
   description = "raw_repertory"
   type = string
 }
-
+*/
 variable "vpc_subnet_ids" {
   description = "vpc_subnet_ids"
   type        = list(string)
@@ -157,7 +157,7 @@ variable "DynamoDB_table_name" {
   description = "DynamoDB_table_name"
   type        = string
 }
-
+/*
 variable "dst_bucket_name" {
   description = "DynamoDB_table_name"
   type        = string
@@ -197,3 +197,4 @@ variable "REDSHIFT_ROLE_ARN" {
   description = "REDSHIFT_ROLE_ARN "
   type = string
 }
+*/

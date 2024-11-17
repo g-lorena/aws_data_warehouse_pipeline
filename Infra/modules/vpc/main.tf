@@ -76,20 +76,12 @@ resource "aws_route_table_association" "public_subnet_association"{
 }
 
 resource "aws_route_table_association" "private_subnet1_association" {
-    #for_each       = aws_subnet.private-subnets
-    #subnet_id      = each.value.id
-    #route_table_id = aws_route_table.private_route_table.id
-
-    subnet_id      = aws_subnet.subnet_az1.id # Replace with your private subnet ID
+    subnet_id      = aws_subnet.subnet_az1.id 
     route_table_id = aws_route_table.private_route_table.id
 }
 
 resource "aws_route_table_association" "private_subnet2_association" {
-    #for_each       = aws_subnet.private-subnets
-    #subnet_id      = each.value.id
-    #route_table_id = aws_route_table.private_route_table.id
-
-    subnet_id      = aws_subnet.subnet_az2.id # Replace with your private subnet ID
+    subnet_id      = aws_subnet.subnet_az2.id 
     route_table_id = aws_route_table.private_route_table.id
 }
 
@@ -97,9 +89,7 @@ resource "aws_vpc_endpoint" "dynamodb" {
   vpc_id          = aws_vpc.custom_vpc.id
   vpc_endpoint_type = "Gateway"
   service_name    = "com.amazonaws.eu-west-3.dynamodb"
-  #security_group_ids = [aws_security_group.lambda_security_group.id]
   route_table_ids = [aws_route_table.private_route_table.id]
-  #subnet_ids        = [aws_subnet.subnet_az1.id, aws_subnet.subnet_az2.id]
   tags = {
     Name = "DynamoDB VPC Endpoint"
   }
@@ -115,10 +105,6 @@ resource "aws_vpc_endpoint" "s3" {
     Name = "S3 VPC Endpoint"
   }
 }
-
-  #route_table_ids = [aws_route_table.private_route_table.id] # If your Lambda runs in private subnets, you might use a private route table instead
-
-
 
 # create security group for the web server => we don't need this for our usecase
 resource "aws_security_group" "webserver_security_group" {
@@ -186,7 +172,10 @@ resource "aws_security_group" "database_security_group" {
     to_port          = 5432
     protocol         = "tcp"
     security_groups  = [aws_security_group.lambda_security_group.id]
-    #cidr_blocks      = ["0.0.0.0/0"] #
+    cidr_blocks      = [
+      "13.37.4.46/32",
+      "13.37.142.60/32",
+      "35.181.124.238/32"] #
   }
 
   egress {
@@ -200,6 +189,77 @@ resource "aws_security_group" "database_security_group" {
     Name = "database security group"
   }
 }
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
+# Create a key pair for SSH access
+resource "tls_private_key" "bastion_custom_key" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
+resource "aws_key_pair" "generated_bastion_key" {
+  key_name   = "generated-bastion-key"
+  public_key = tls_private_key.bastion_custom_key.public_key_openssh
+}
+
+# Security group for the bastion
+resource "aws_security_group" "bastion_sg" {
+  name        = "bastion-sg"
+  vpc_id      = aws_vpc.custom_vpc.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Replace with specific IP ranges for better security
+  }
+
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+        Name = "bastion-ec2"
+    }
+}
+
+resource "aws_instance" "bastion" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t2.micro"
+  subnet_id = aws_subnet.public_subnet.id
+  key_name = aws_key_pair.generated_bastion_key.key_name
+
+  vpc_security_group_ids = [aws_security_group.bastion_sg.id]
+
+  tags = {
+    Name = "BastionHost"
+  }
+}
+
 
 resource "aws_security_group" "redshift_sg" {
   name        = "redshift_sg"
@@ -221,6 +281,7 @@ resource "aws_security_group" "redshift_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 
 resource "aws_redshift_subnet_group" "redshift_subnet_group" {
   name       = "redshift-subnets"

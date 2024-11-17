@@ -86,7 +86,7 @@ data "archive_file" "lambda_1" {
   
   output_path = var.path_to_output 
 }
-
+/*
 data "archive_file" "lambda_2" {
   type        = "zip"
   source_dir = var.path_to_source_folder_2
@@ -100,7 +100,7 @@ data "archive_file" "lambda_3" {
   
   output_path = var.path_to_output_3
 }
-
+*/
 #source_file = var.path_to_source_file #"../../etl/extract/extract_data.py"
 #"lambda_function_extract_data.zip"
 
@@ -157,7 +157,7 @@ resource "aws_lambda_permission" "s3" {
   source_arn = var.s3_bucket_arn
 }
 
-
+/*
 resource "aws_lambda_function" "lambda_2" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
@@ -255,3 +255,4 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
 
   depends_on = [aws_lambda_permission.s3_3]
 }
+*/

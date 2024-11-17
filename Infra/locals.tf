@@ -31,6 +31,7 @@ locals{
   runtime          = "python3.9"
   aws_region = "eu-west-3"
 
+/*
   # lambda function 2
   path_to_source_folder_2 = "../lambdas/lambda_to_s3"
   path_to_output_2 = "lambda_to_s3.zip"
@@ -42,7 +43,7 @@ locals{
   path_to_output_3 = "load_to_redshift.zip"
   function_name_3 = "load_to_redshift"
   function_handler_3 = "load_to_redshift.lambda_handler"
-  
+*/  
   #rds
   db_username = "lorena"
   db_password = "YourStrongPass12345!"
@@ -56,4 +57,14 @@ locals{
   node_type = "dc2.large"
   cluster_type = "single-node"
 
+  #airbyte
+  workspace_id = "bcdba97b-fd12-4885-a9b1-e7887315b6b6"
+  source_name = "heathcare_db"
+  destination_name = "redshift_dw"
+  airbyte_connection_name = "rds to redshift"
+
+  #redshift_host = "zoz"
+  #postgres_host = "zoz"
+
+  bastion_ssh_user = "ubuntu"
 }

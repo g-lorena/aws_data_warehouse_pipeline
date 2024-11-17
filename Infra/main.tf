@@ -3,7 +3,7 @@ module "vpc" {
   source = "./modules/vpc"
   
 }
-
+/*
 module "s3bucket" {
   source = "./modules/s3"
 
@@ -44,8 +44,11 @@ module "lambdaLayer" {
   compatible_architectures  = local.compatible_architectures
 
 }
+*/
 
+/*
 module "lambdaFunction" {
+  
   source = "./modules/lambda"
 
   path_to_source_folder = local.path_to_source_folder
@@ -73,7 +76,7 @@ module "lambdaFunction" {
 
 
   # ------
-
+/*
   path_to_source_folder_2 = local.path_to_source_folder_2
   path_to_output_2 = local.path_to_output_2
   function_name_2 = local.function_name_2
@@ -88,7 +91,7 @@ module "lambdaFunction" {
   function_handler_3 = local.function_handler_3
   REDSHIFT_ROLE_ARN = module.redshift.redshift_role_arn
 
-  redshift_integration_bucket_id = module.s3bucket.s3_bucket_redshift_integration_id
+#  redshift_integration_bucket_id = module.s3bucket.s3_bucket_redshift_integration_id
 
   REDSHIFT_DB = local.database_name
   REDSHIFT_USER = local.master_username
@@ -96,10 +99,12 @@ module "lambdaFunction" {
   REDSHIFT_HOST = module.redshift.redshift_hostname
   aws_redshift_cluster_endpoint = module.redshift.redshift_endpoint
 
-  bucket_id = module.s3bucket.s3_bucket_redshift_integration_id
-
+  #bucket_id = module.s3bucket.s3_bucket_redshift_integration_id
+*/
+/*
 }
 
+/*
 module "redshift" {
   source                   = "./modules/redshift"
   cluster_identifier = local.cluster_identifier
@@ -110,6 +115,29 @@ module "redshift" {
   cluster_type = local.cluster_type
   vpc_security_group_ids = module.vpc.redshift_sg_id
   cluster_subnet_group_name = module.vpc.aws_redshift_subnet_group_name
+
+}
+
+module "airbyte" {
+  source = "./modules/airbyte"
+
+  source_name = local.source_name
+  #destination_name = local.destination_name
+  #airbyte_connection_name = local.airbyte_connection_name
+  postgres_db_password = local.db_password
+  postgres_db_name = local.db_name
+  postgres_host = module.rds.rds_host
+  postgres_db_username = local.db_username
+  ssh_key = module.vpc.private_key
+  tunnel_host = module.vpc.tunnel_host
+  tunnel_user = local.bastion_ssh_user
+
+  workspace_id = local.workspace_id
+
+  #redshift_host = local.redshift_host #module.redshift.redshift_hostname
+  #redshift_password = local.master_password
+  #redshift_database_name = local.database_name
+  #redshift_database_username = local.master_username
 
 }
 
@@ -128,3 +156,4 @@ module "cloudwatch_schedule_module_lambda2" {
   aws_lambda_arn           = module.lambdaFunction.lambda2_function_arn
   aws_lambda_function_name = module.lambdaFunction.lambda2_function_name
 }
+*/

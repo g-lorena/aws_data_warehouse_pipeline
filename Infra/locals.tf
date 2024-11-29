@@ -69,6 +69,6 @@ locals{
   bastion_ssh_user = "ubuntu"
 
   # VPC 
-  instance_keypair = "aws-bastion-key"
   private_key_path = "../aws_key/aws-bastion-key.pem"
+  public_key_path = "../aws_key/aws-bastion-key.pub"
 }

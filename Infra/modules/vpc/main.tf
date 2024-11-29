@@ -233,12 +233,12 @@ resource "tls_private_key" "bastion_custom_key" {
   algorithm = "RSA"
   rsa_bits  = 2048
 }
-
-resource "aws_key_pair" "generated_bastion_key" {
-  key_name   = "generated-bastion-key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCt+aGiVXYwPhMroRPFZ8xuLSpq366KpQwxOvX+yuWuQJokTHglruf0S+0dzF4B3XFRbHKvZeFiwJmND5ZMJGeGQCrY/8Y4UW7mDwphFPegi5fxjc3CgOO9MhmgFMLIS8XzoOULMqtqm6Cx+g7LqY5/jiylldYqyFdZb+sJJcB6/EKOiFqdxWP72luIRJ8Q8Md1mckUiVpkvkurIEJAXr7JQMe2JJdSLqsDDkz9p2L3bFNEY87eDaAUI/IX4LYazKRztlGuDU06yQNCGJM3HAJAilE+HPiWHEtsgLHTeXNlJK1eP3e9r4w30nqCd25QVdsvK6R5FDHxa44NsATWDyDOeCNQ5nJ5BhJnq05ZLyZzGYBMZUYdSMk+TG0ovkb0PSOFxHTG3MZ4WS1I5NpEfNRQ1Ad/kYWR/VnHN+rhumc7zZGyTd2MvLNMBUjKEEearBQtPVs4dvTmodt0KV6HvVZ5gs0+jgl8KIpLZ2NhwVgtYV50jJwremeu4x57wsX+EIFBt6yavxoOkY+mizDGzARjmALUUzS9ZCRBBkni6GRVsZQ+yp/tM71jKMmWd90gSfX5ddEl9Z+JODUHoFGFQ1f0t/UubRsRovzuTg4mazUYeNrDi1DyEbmPa7Z06ZvWTnxrKyaisQh2yZfakN5kTnPV9oR1XdazzV9ndx5tcmilcQ== lorenagongang20@gmail.com"#tls_private_key.bastion_custom_key.public_key_openssh
-}
 */
+resource "aws_key_pair" "generated_bastion_key" {
+  key_name   = "aws-bastion-key"
+  public_key = file(var.public_key_path) #tls_private_key.bastion_custom_key.public_key_openssh
+}
+
 # Security group for the bastion
 resource "aws_security_group" "bastion_sg" {
   name        = "bastion-sg"
@@ -273,7 +273,7 @@ resource "aws_instance" "bastion" {
   ami           = data.aws_ami.amazon_linux_ami.id
   instance_type = "t2.micro"
   subnet_id = aws_subnet.public_subnet.id
-  key_name =  var.instance_keypair #aws_key_pair.generated_bastion_key.key_name
+  key_name =  aws_key_pair.generated_bastion_key.key_name #var.instance_keypair #
 
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
 
@@ -309,7 +309,7 @@ resource "null_resource" "keys_to_ec2_bastion_instance" {
       "sudo chmod 400 /tmp/aws-bastion-key.pem"
     ]
   }
-
+/*
   # local-exec provisioner (Creation-Time Provisioner - Triggered during Create Resource)
   provisioner "local-exec" {
     command = "echo VPC created on `date` and VPC ID: ${aws_vpc.custom_vpc.id} >> creation-time-vpc-id.txt"
@@ -323,7 +323,7 @@ resource "null_resource" "keys_to_ec2_bastion_instance" {
     #when = destroy
     #on_failure = continue
   }   
-
+*/
   depends_on = [
     aws_instance.bastion
   ]

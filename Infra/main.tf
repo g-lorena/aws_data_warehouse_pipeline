@@ -1,8 +1,8 @@
 
 module "vpc" {
   source = "./modules/vpc"
-  instance_keypair = local.instance_keypair
   private_key_path = local.private_key_path
+  public_key_path = local.public_key_path
 }
 
 

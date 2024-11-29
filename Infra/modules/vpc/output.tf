@@ -28,12 +28,17 @@ output "aws_redshift_subnet_group_name" {
 output "redshift_sg_id" {
   value = aws_security_group.redshift_sg.id
 }
-
+/*
 output "private_key" {
   value = tls_private_key.bastion_custom_key.private_key_pem
   sensitive = true
 }
-
+*/
 output "tunnel_host" {
   value = aws_instance.bastion.public_ip
+}
+
+output "bastion_instance_eip" {
+  description = "Elastic IP associated to the Bastion Host"
+  value = aws_eip.bastion_instance_eip.public_ip
 }

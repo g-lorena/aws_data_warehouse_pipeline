@@ -1,8 +1,11 @@
 
 module "vpc" {
   source = "./modules/vpc"
-  
+  instance_keypair = local.instance_keypair
+  private_key_path = local.private_key_path
 }
+
+
 /*
 module "s3bucket" {
   source = "./modules/s3"
@@ -16,6 +19,7 @@ module "s3bucket" {
 module "dynamodb" {
   source = "./modules/dynamodb"
 }
+
 
 module "rds" {
   source      = "./modules/rds"
@@ -117,6 +121,7 @@ module "redshift" {
   cluster_subnet_group_name = module.vpc.aws_redshift_subnet_group_name
 
 }
+
 
 module "airbyte" {
   source = "./modules/airbyte"

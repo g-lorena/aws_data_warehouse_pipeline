@@ -67,4 +67,8 @@ locals{
   #postgres_host = "zoz"
 
   bastion_ssh_user = "ubuntu"
+
+  # VPC 
+  instance_keypair = "aws-bastion-key"
+  private_key_path = "../aws_key/aws-bastion-key.pem"
 }

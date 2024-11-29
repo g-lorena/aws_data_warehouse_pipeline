@@ -1,3 +1,12 @@
+terraform {
+    required_providers {
+      null = {
+        source = "hashicorp/null"
+        version = "3.2.3"
+      }
+    }
+}
+
 # create default vpc if one does not exit
 resource "aws_vpc" "custom_vpc" {
   cidr_block = "10.0.0.0/16"
@@ -9,7 +18,9 @@ resource "aws_vpc" "custom_vpc" {
 }
 
 # use data source to get all avalablility zones in region
-data "aws_availability_zones" "available_zones" {}
+data "aws_availability_zones" "available_zones" {
+  state = "available"
+}
 
 resource "aws_subnet" "public_subnet" {
   vpc_id            = aws_vpc.custom_vpc.id
@@ -190,12 +201,22 @@ resource "aws_security_group" "database_security_group" {
   }
 }
 
-data "aws_ami" "ubuntu" {
+data "aws_ami" "amazon_linux_ami" {
   most_recent = true
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+    values = ["amzn2-ami-kernel-*-gp2"]#["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
   }
 
   filter {
@@ -203,9 +224,10 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 
-  owners = ["099720109477"] # Canonical
+  owners = ["amazon"] # Canonical
 }
 
+/*
 # Create a key pair for SSH access
 resource "tls_private_key" "bastion_custom_key" {
   algorithm = "RSA"
@@ -214,9 +236,9 @@ resource "tls_private_key" "bastion_custom_key" {
 
 resource "aws_key_pair" "generated_bastion_key" {
   key_name   = "generated-bastion-key"
-  public_key = tls_private_key.bastion_custom_key.public_key_openssh
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCt+aGiVXYwPhMroRPFZ8xuLSpq366KpQwxOvX+yuWuQJokTHglruf0S+0dzF4B3XFRbHKvZeFiwJmND5ZMJGeGQCrY/8Y4UW7mDwphFPegi5fxjc3CgOO9MhmgFMLIS8XzoOULMqtqm6Cx+g7LqY5/jiylldYqyFdZb+sJJcB6/EKOiFqdxWP72luIRJ8Q8Md1mckUiVpkvkurIEJAXr7JQMe2JJdSLqsDDkz9p2L3bFNEY87eDaAUI/IX4LYazKRztlGuDU06yQNCGJM3HAJAilE+HPiWHEtsgLHTeXNlJK1eP3e9r4w30nqCd25QVdsvK6R5FDHxa44NsATWDyDOeCNQ5nJ5BhJnq05ZLyZzGYBMZUYdSMk+TG0ovkb0PSOFxHTG3MZ4WS1I5NpEfNRQ1Ad/kYWR/VnHN+rhumc7zZGyTd2MvLNMBUjKEEearBQtPVs4dvTmodt0KV6HvVZ5gs0+jgl8KIpLZ2NhwVgtYV50jJwremeu4x57wsX+EIFBt6yavxoOkY+mizDGzARjmALUUzS9ZCRBBkni6GRVsZQ+yp/tM71jKMmWd90gSfX5ddEl9Z+JODUHoFGFQ1f0t/UubRsRovzuTg4mazUYeNrDi1DyEbmPa7Z06ZvWTnxrKyaisQh2yZfakN5kTnPV9oR1XdazzV9ndx5tcmilcQ== lorenagongang20@gmail.com"#tls_private_key.bastion_custom_key.public_key_openssh
 }
-
+*/
 # Security group for the bastion
 resource "aws_security_group" "bastion_sg" {
   name        = "bastion-sg"
@@ -248,18 +270,65 @@ resource "aws_security_group" "bastion_sg" {
 }
 
 resource "aws_instance" "bastion" {
-  ami           = data.aws_ami.ubuntu.id
+  ami           = data.aws_ami.amazon_linux_ami.id
   instance_type = "t2.micro"
   subnet_id = aws_subnet.public_subnet.id
-  key_name = aws_key_pair.generated_bastion_key.key_name
+  key_name =  var.instance_keypair #aws_key_pair.generated_bastion_key.key_name
 
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
 
   tags = {
     Name = "BastionHost"
   }
+  depends_on = [ aws_vpc.custom_vpc ]
 }
 
+resource "aws_eip" "bastion_instance_eip" {
+  instance = aws_instance.bastion.id
+  domain   = "vpc"
+  depends_on = [ aws_vpc.custom_vpc, aws_instance.bastion ]
+}
+
+resource "null_resource" "keys_to_ec2_bastion_instance" {
+
+  connection {
+    type = "ssh"
+    host = aws_eip.bastion_instance_eip.public_ip
+    user = "ec2-user"
+    password = ""
+    
+    private_key = file(var.private_key_path)
+  }
+  provisioner "file" {
+    source      = var.private_key_path
+    destination = "/tmp/aws-bastion-key.pem"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo chmod 400 /tmp/aws-bastion-key.pem"
+    ]
+  }
+
+  # local-exec provisioner (Creation-Time Provisioner - Triggered during Create Resource)
+  provisioner "local-exec" {
+    command = "echo VPC created on `date` and VPC ID: ${aws_vpc.custom_vpc.id} >> creation-time-vpc-id.txt"
+    working_dir = "local-exec-output-files/"
+    #on_failure = continue
+  }
+  ## Local Exec Provisioner:  local-exec provisioner (Destroy-Time Provisioner - Triggered during deletion of Resource)
+  provisioner "local-exec" {
+    command = "echo Destroy time prov `date` >> destroy-time-prov.txt"
+    working_dir = "local-exec-output-files/"
+    #when = destroy
+    #on_failure = continue
+  }   
+
+  depends_on = [
+    aws_instance.bastion
+  ]
+
+}
 
 resource "aws_security_group" "redshift_sg" {
   name        = "redshift_sg"

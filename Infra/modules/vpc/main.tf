@@ -109,7 +109,7 @@ resource "aws_vpc_endpoint" "dynamodb" {
 resource "aws_vpc_endpoint" "s3" {
   vpc_id             = aws_vpc.custom_vpc.id
   vpc_endpoint_type  = "Gateway"
-  service_name       = "com.amazonaws.eu-west-3.s3" # Adjust this for your region
+  service_name       = "com.amazonaws.eu-west-3.s3"
   route_table_ids    = [aws_route_table.private_route_table.id] # You can include multiple route tables
 
   tags = {
@@ -182,7 +182,7 @@ resource "aws_security_group" "database_security_group" {
     from_port        = 5432
     to_port          = 5432
     protocol         = "tcp"
-    security_groups  = [aws_security_group.lambda_security_group.id]
+    security_groups  = [aws_security_group.lambda_security_group.id, aws_security_group.bastion_sg.id]
     cidr_blocks      = [
       "13.37.4.46/32",
       "13.37.142.60/32",
@@ -227,16 +227,9 @@ data "aws_ami" "amazon_linux_ami" {
   owners = ["amazon"] # Canonical
 }
 
-/*
-# Create a key pair for SSH access
-resource "tls_private_key" "bastion_custom_key" {
-  algorithm = "RSA"
-  rsa_bits  = 2048
-}
-*/
 resource "aws_key_pair" "generated_bastion_key" {
   key_name   = "aws-bastion-key"
-  public_key = file(var.public_key_path) #tls_private_key.bastion_custom_key.public_key_openssh
+  public_key = file(var.public_key_path) 
 }
 
 # Security group for the bastion
@@ -248,7 +241,7 @@ resource "aws_security_group" "bastion_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Replace with specific IP ranges for better security
+    cidr_blocks = ["81.65.147.188/32","13.37.4.46/32", "13.37.142.60/32", "35.181.124.238/32"] 
   }
 
   ingress {
@@ -273,7 +266,7 @@ resource "aws_instance" "bastion" {
   ami           = data.aws_ami.amazon_linux_ami.id
   instance_type = "t2.micro"
   subnet_id = aws_subnet.public_subnet.id
-  key_name =  aws_key_pair.generated_bastion_key.key_name #var.instance_keypair #
+  key_name =  aws_key_pair.generated_bastion_key.key_name 
 
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
 
@@ -309,21 +302,6 @@ resource "null_resource" "keys_to_ec2_bastion_instance" {
       "sudo chmod 400 /tmp/aws-bastion-key.pem"
     ]
   }
-/*
-  # local-exec provisioner (Creation-Time Provisioner - Triggered during Create Resource)
-  provisioner "local-exec" {
-    command = "echo VPC created on `date` and VPC ID: ${aws_vpc.custom_vpc.id} >> creation-time-vpc-id.txt"
-    working_dir = "local-exec-output-files/"
-    #on_failure = continue
-  }
-  ## Local Exec Provisioner:  local-exec provisioner (Destroy-Time Provisioner - Triggered during deletion of Resource)
-  provisioner "local-exec" {
-    command = "echo Destroy time prov `date` >> destroy-time-prov.txt"
-    working_dir = "local-exec-output-files/"
-    #when = destroy
-    #on_failure = continue
-  }   
-*/
   depends_on = [
     aws_instance.bastion
   ]

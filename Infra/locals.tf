@@ -66,7 +66,7 @@ locals{
   #redshift_host = "zoz"
   #postgres_host = "zoz"
 
-  bastion_ssh_user = "ubuntu"
+  bastion_ssh_user = "ec2-user"
 
   # VPC 
   private_key_path = "../aws_key/aws-bastion-key.pem"

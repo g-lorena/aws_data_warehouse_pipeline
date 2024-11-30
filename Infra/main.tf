@@ -5,6 +5,16 @@ module "vpc" {
   public_key_path = local.public_key_path
 }
 
+module "rds" {
+  source      = "./modules/rds"
+  db_username = local.db_username
+  db_password = local.db_password
+  db_name     = local.db_name
+  db_subnet_group_name = module.vpc.database_subnet_group_name
+  availability_zone = module.vpc.availability_zone_name
+  vpc_security_group_ids = module.vpc.database_security_group_id
+
+}
 
 /*
 module "s3bucket" {
@@ -16,21 +26,12 @@ module "s3bucket" {
 
 }
 
+
+
 module "dynamodb" {
   source = "./modules/dynamodb"
 }
 
-
-module "rds" {
-  source      = "./modules/rds"
-  db_username = local.db_username
-  db_password = local.db_password
-  db_name     = local.db_name
-  db_subnet_group_name = module.vpc.database_subnet_group_name
-  availability_zone = module.vpc.availability_zone_name
-  vpc_security_group_ids = module.vpc.database_security_group_id
-
-}
 
 module "lambdaLayer" {
   source = "./modules/lambda_layer"
@@ -121,7 +122,7 @@ module "redshift" {
   cluster_subnet_group_name = module.vpc.aws_redshift_subnet_group_name
 
 }
-
+*/
 
 module "airbyte" {
   source = "./modules/airbyte"
@@ -133,7 +134,7 @@ module "airbyte" {
   postgres_db_name = local.db_name
   postgres_host = module.rds.rds_host
   postgres_db_username = local.db_username
-  ssh_key = module.vpc.private_key
+  ssh_key = file(local.private_key_path) #module.vpc.private_key
   tunnel_host = module.vpc.tunnel_host
   tunnel_user = local.bastion_ssh_user
 
@@ -146,6 +147,7 @@ module "airbyte" {
 
 }
 
+/*
 module "cloudwatch_schedule_module_lambda1" {
   source                   = "./modules/eventbridge"
   schedule_name            = "trigger_every_1_hour"

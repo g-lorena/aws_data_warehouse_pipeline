@@ -1,33 +1,33 @@
-from sqlalchemy import create_engine, text
 import os
-import boto3
-from datetime import datetime
 import random
+from datetime import datetime
 
-from utils.db import connect_to_postgres, update_last_extraction_time
-
-from insert_data.insert_departement import insert_departement_data
-from insert_data.insert_doctor import insert_doctors_data
-from insert_data.insert_patient import insert_patient_data
-from insert_data.insert_procedure import insert_procedure_data
-from insert_data.insert_medication import insert_medications_data
-from insert_data.insert_appointment import insert_appointments_data 
-from insert_data.insert_treatment import insert_treatment_data
-# connect to 
-
-from update_data.update_departement import update_departement
-from update_data.update_doctor import update_doctors
-from update_data.update_medication import update_medications
-from update_data.update_patient import update_patients
-from update_data.update_procedure import update_procedures
-from update_data.update_appointement import update_appointments
-from update_data.update_treatment import update_treatments
-
+import boto3
 from delete_data.delete_departement import delete_departement
 from delete_data.delete_doctor import delete_doctors
 from delete_data.delete_medication import delete_medications
 from delete_data.delete_patient import delete_patients
 from delete_data.delete_procedure import delete_procedures
+from insert_data.insert_appointment import insert_appointments_data
+from insert_data.insert_departement import insert_departement_data
+from insert_data.insert_doctor import insert_doctors_data
+from insert_data.insert_medication import insert_medications_data
+from insert_data.insert_patient import insert_patient_data
+from insert_data.insert_procedure import insert_procedure_data
+from insert_data.insert_treatment import insert_treatment_data
+from sqlalchemy import create_engine, text
+from update_data.update_appointement import update_appointments
+from update_data.update_departement import update_departement
+from update_data.update_doctor import update_doctors
+from update_data.update_medication import update_medications
+from update_data.update_patient import update_patients
+from update_data.update_procedure import update_procedures
+from update_data.update_treatment import update_treatments
+from utils.db import connect_to_postgres, update_last_extraction_time
+
+# connect to 
+
+
 
 
 DB_USERNAME = os.environ.get("DB_USERNAME")

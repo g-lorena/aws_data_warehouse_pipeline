@@ -56,12 +56,12 @@ variable "function_handler_1" {
   description = "Name of Lambda Function Handler"
   type        = string
 }
-/*
+
 variable "function_handler_2" {
   description = "Name of Lambda Function Handler"
   type        = string
 }
-
+/*
 variable "function_handler_3" {
   description = "Name of Lambda Function Handler"
   type        = string
@@ -71,12 +71,12 @@ variable "function_name_1" {
   description = "Name of Lambda Function"
   type        = string
 }
-/*
+
 variable "function_name_2" {
   description = "Name of Lambda Function"
   type        = string
 }
-
+/*
 variable "function_name_3" {
   description = "Name of Lambda Function"
   type        = string
@@ -127,22 +127,22 @@ variable "timeout" {
   description = "Lambda Timeout"
   type        = number
 }
-
+/*
 variable "s3_bucket_arn" {
   description = "lambda_layer_arns"
   type        = string
 }
-/*
+
 variable "s3_bucket_redshift_integration_arn" {
   description = "s3_bucket_redshift_integration_arn"
   type        = string
 }
-
+*/
 variable "raw_repertory" {
   description = "raw_repertory"
   type = string
 }
-*/
+
 variable "vpc_subnet_ids" {
   description = "vpc_subnet_ids"
   type        = list(string)
@@ -157,12 +157,12 @@ variable "DynamoDB_table_name" {
   description = "DynamoDB_table_name"
   type        = string
 }
-/*
+
 variable "dst_bucket_name" {
   description = "DynamoDB_table_name"
   type        = string
 }
-
+/*
 variable "aws_redshift_cluster_endpoint" {
   description = "aws_redshift_cluster_endpoint"
   type        = string

@@ -13,7 +13,7 @@ RAW_FOLDER = os.environ.get("RAW_FOLDER")
 def lambda_handler(event, context):
     try:
         medications_df = generate_medications(10000)
-        upload_to_s3(medications_df, DST_BUCKET, RAW_FOLDER, 'medications')
+        upload_to_s3(medications_df,DST_BUCKET, RAW_FOLDER, 'medications')
 
         procedure_df = generate_procedures(5000)
         upload_to_s3(procedure_df,DST_BUCKET, RAW_FOLDER, "procedures")

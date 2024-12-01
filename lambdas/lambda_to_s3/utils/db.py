@@ -3,6 +3,19 @@ from sqlalchemy import create_engine, text, inspect
 from datetime import datetime
 import io
 
+
+def upload_to_s3(dataframe,DST_BUCKET, RAW_FOLDER, table_name):
+
+    csv_buffer = io.StringIO()
+    df.to_csv(csv_buffer, index=False)
+    s3.put_object(
+        Bucket=DST_BUCKET,
+        Key=f"{RAW_FOLDER}/{table_name}/{table_name}_{datetime.now().strftime('%Y%m%d%H%M%S')}.csv",
+        Body=csv_buffer.getvalue()
+    )
+    print(f"Uploaded {table_name} to s3://{DST_BUCKET}/{RAW_FOLDER}/{table_name}")
+
+
 def connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME):
     try:
         conn_str = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'

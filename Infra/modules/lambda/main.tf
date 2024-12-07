@@ -86,14 +86,14 @@ data "archive_file" "lambda_1" {
   
   output_path = var.path_to_output 
 }
-/*
+
 data "archive_file" "lambda_2" {
   type        = "zip"
   source_dir = var.path_to_source_folder_2
   
   output_path = var.path_to_output_2
 }
-
+/*
 data "archive_file" "lambda_3" {
   type        = "zip"
   source_dir = var.path_to_source_folder_3

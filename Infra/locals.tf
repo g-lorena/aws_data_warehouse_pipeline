@@ -56,12 +56,16 @@ locals{
   master_password = "Mustbe8characters"
   node_type = "dc2.large"
   cluster_type = "single-node"
+  rds_to_redshift_connection_name = "rds_to_redshift"
+  s3_to_redshift_connection_name = "s3_to_redshift"
 
   #airbyte
   workspace_id = "bcdba97b-fd12-4885-a9b1-e7887315b6b6"
-  source_name = "heathcare_db"
+  db_source_name = "heathcare_db"
   destination_name = "redshift_dw"
   airbyte_connection_name = "rds to redshift"
+  s3_source_name = "s3_source_name1"
+  airbyte_s3_bucket = "airbyte-staging-bucket-lorena-101"
 
   #redshift_host = "zoz"
   #postgres_host = "zoz"

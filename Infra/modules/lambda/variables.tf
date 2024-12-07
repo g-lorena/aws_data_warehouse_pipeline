@@ -15,13 +15,13 @@ variable "db_name" {
   type        = string
   #default     = "XXXXX"
 }
-
+/*
 variable "aws_region" {
   description = "AWS Region to deploy to"
   type        = string
   #default = "eu-west-3"
 }
-
+*/
 variable "rds_endpoint" {
   description = "rds_endpoint"
   type        = string
@@ -92,12 +92,12 @@ variable "path_to_source_folder" {
   description = "Path to Lambda Fucntion Source Code"
   type        = string
 }
-/*
+
 variable "path_to_source_folder_2" {
   description = "Path to Lambda Fucntion Source Code"
   type        = string
 }
-
+/*
 variable "path_to_source_folder_3" {
   description = "Path to Lambda Fucntion Source Code"
   type        = string
@@ -107,12 +107,12 @@ variable "path_to_output" {
   description = "Path to ZIP artifact"
   type        = string
 }
-/*
+
 variable "path_to_output_2" {
   description = "Path to ZIP artifact"
   type        = string
 }
-
+/*
 variable "path_to_output_3" {
   description = "Path to ZIP artifact"
   type        = string
@@ -152,12 +152,12 @@ variable "vpc_security_group_ids" {
   description = "vpc_security_group_ids"
   type        = string
 }
-
+/*
 variable "DynamoDB_table_name" {
   description = "DynamoDB_table_name"
   type        = string
 }
-
+*/
 variable "dst_bucket_name" {
   description = "DynamoDB_table_name"
   type        = string

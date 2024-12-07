@@ -38,3 +38,8 @@ variable "vpc_security_group_ids" {
   description = "vpc_security_group_ids"
   type        = string
 }
+
+variable "availability_zone" {
+  description = "availability_zone"
+  type = string
+}

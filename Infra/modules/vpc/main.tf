@@ -184,6 +184,7 @@ resource "aws_security_group" "database_security_group" {
     protocol         = "tcp"
     security_groups  = [aws_security_group.lambda_security_group.id, aws_security_group.bastion_sg.id]
     cidr_blocks      = [
+      "93.21.130.146/32",
       "13.37.4.46/32",
       "13.37.142.60/32",
       "35.181.124.238/32"] #
@@ -241,7 +242,7 @@ resource "aws_security_group" "bastion_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["81.65.147.188/32","13.37.4.46/32", "13.37.142.60/32", "35.181.124.238/32"] 
+    cidr_blocks = ["93.21.130.146/32", "13.37.4.46/32", "13.37.142.60/32", "35.181.124.238/32"] 
   }
 
   ingress {
@@ -257,6 +258,14 @@ resource "aws_security_group" "bastion_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  egress {
+    from_port   = 5439
+    to_port     = 5439
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = {
         Name = "bastion-ec2"
     }
@@ -289,6 +298,7 @@ resource "null_resource" "keys_to_ec2_bastion_instance" {
     host = aws_eip.bastion_instance_eip.public_ip
     user = "ec2-user"
     password = ""
+    timeout  = "5m"
     
     private_key = file(var.private_key_path)
   }
@@ -317,7 +327,12 @@ resource "aws_security_group" "redshift_sg" {
     from_port   = 5439  # Redshift default port
     to_port     = 5439
     protocol    = "tcp"
-    security_groups  = [aws_security_group.lambda_security_group.id]
+    security_groups  = [aws_security_group.lambda_security_group.id, aws_security_group.bastion_sg.id]
+    cidr_blocks      = [
+      "93.21.130.146/32",
+      "13.37.4.46/32",
+      "13.37.142.60/32",
+      "35.181.124.238/32"]    
     
   }
 

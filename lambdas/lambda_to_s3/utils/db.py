@@ -4,10 +4,10 @@ from datetime import datetime
 import io
 
 
-def upload_to_s3(dataframe,DST_BUCKET, RAW_FOLDER, table_name):
+def upload_to_s3(s3,dataframe,DST_BUCKET, RAW_FOLDER, table_name):
 
     csv_buffer = io.StringIO()
-    df.to_csv(csv_buffer, index=False)
+    dataframe.to_csv(csv_buffer, index=False)
     s3.put_object(
         Bucket=DST_BUCKET,
         Key=f"{RAW_FOLDER}/{table_name}/{table_name}_{datetime.now().strftime('%Y%m%d%H%M%S')}.csv",

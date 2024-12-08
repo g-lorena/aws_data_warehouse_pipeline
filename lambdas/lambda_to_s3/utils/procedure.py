@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 import string
 
-fake = Faker()
+faker = Faker()
 
 healthcare_procedures = [
     "Knee Replacement Surgery",
@@ -48,7 +48,7 @@ def generate_procedures(num_procedures):
         procedures.append({
             'procedure_code': generate_concatenated_id(),
             'procedure_name': random.choice(healthcare_procedures),
-            'procedure_description': f"{procedure_name} performed to {faker.text(max_nb_chars=50).lower().rstrip('.')}" #fake.catch_phrase(),  # A short description
+            'procedure_description': f"{random.choice(healthcare_procedures)} performed to {faker.text(max_nb_chars=50).lower().rstrip('.')}", #fake.catch_phrase(),  # A short description
             'procedure_category':get_category(),
             'procedure_cost': round(random.uniform(100.0, 10000.0), 2),  # Procedure cost between $100 and $10,000
             'risk_level':get_risk_level(),

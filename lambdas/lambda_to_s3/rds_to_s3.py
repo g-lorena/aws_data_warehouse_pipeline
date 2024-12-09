@@ -1,11 +1,12 @@
 import os
+
 import boto3
 from utils.db import connect_to_postgres, fetch_and_upload_to_s3
 
 DST_BUCKET = os.environ.get("DST_BUCKET")
 RAW_FOLDER = os.environ.get("RAW_FOLDER")
 
-DynamoDB_NAME = os.environ.get("DynamoDB_NAME")
+#DynamoDB_NAME = os.environ.get("DynamoDB_NAME")
 DB_USERNAME = os.environ.get("DB_USERNAME")
 DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_NAME = os.environ.get("DB_NAME")
@@ -14,7 +15,7 @@ DB_PORT = '5432'
 
 dynamodb = boto3.resource('dynamodb')
 s3 = boto3.client("s3")
-dynamo_table = dynamodb.Table(DynamoDB_NAME)
+#dynamo_table = dynamodb.Table(DynamoDB_NAME)
 
 
 def lambda_handler(event, context):

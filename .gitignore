@@ -61,3 +61,9 @@ terraform.rc
 lambda_to_s3.zip
 lambda_rds.zip
 python.zip
+load_to_redshift
+aws_key/aws-bastion-key.pem
+aws_key/aws-bastion-key.pub
+
+
+transformation/logs/dbt.log

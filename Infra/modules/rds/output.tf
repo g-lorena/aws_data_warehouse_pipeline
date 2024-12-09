@@ -17,3 +17,4 @@ output "rds_port" {
   value       = split(":", aws_db_instance.db_instance.endpoint)[1]
   description = "Port of the RDS instance"
 }
+

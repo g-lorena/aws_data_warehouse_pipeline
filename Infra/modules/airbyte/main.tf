@@ -71,7 +71,7 @@ resource "airbyte_source_s3" "my_source_s3" {
         ]
 
         #primary_key = ["medication_id"]
-
+        /*
         schema = jsonencode({
           type = "object",
           properties = {
@@ -83,9 +83,7 @@ resource "airbyte_source_s3" "my_source_s3" {
             updated_at = { type = "string", format = "date-time" }
           }
         })
-
-      
-
+        */
       },
       {
         name = "procedure_data_streams"
@@ -102,7 +100,7 @@ resource "airbyte_source_s3" "my_source_s3" {
           "raw_data/procedures/*.csv",
         ]
         #primary_key = ["procedure_code"]
-
+        /*
         schema = jsonencode({
           type = "object",
           properties = {
@@ -116,7 +114,7 @@ resource "airbyte_source_s3" "my_source_s3" {
             updated_at = { type = "string", format = "date-time" }
           }
         })
-
+        */
         #schemaless        = false
       }
     ]
@@ -197,25 +195,74 @@ resource "airbyte_connection" "s3_to_redshift" {
   source_id = airbyte_source_s3.my_source_s3.source_id
   destination_id = airbyte_destination_redshift.my_destination_redshift.destination_id
   prefix                               = "dim_"
-  namespace_definition = "destination"
+  namespace_definition                 = "custom_format"
+  namespace_format                     = "public"
   status = "active" #"deprecated"
   configurations = {
     streams = [ 
       {
       name = "medication_data_stream"
-      sync_mode = "incremental_append"
-      #cursor_field = ["updated_at"]
+      sync_mode = "full_refresh_append"
       primary_key = [[ "medication_id" ]]
+      #cursor_field = ["updated_at"]
+      selected_fields = [
+        {
+        field_path = ["medication_id"]
+        },
+        {
+        field_path = ["medication_name"]
+        },
+        {
+        field_path = ["category"]
+        },
+        {
+        field_path = ["cost"]
+        },
+        {
+        field_path = ["created_at"]
+        },
+        {
+        field_path = ["updated_at"]
+        }
+      ]
+    #cursor_field = ["updated_at"]
     },
     {
       name = "procedure_data_streams"
-      sync_mode = "incremental_append"
+      sync_mode = "full_refresh_append"
       #cursor_field = ["updated_at"]
       primary_key = [[ "procedure_code" ]]
+      selected_fields = [
+        {
+        field_path = ["procedure_code"]
+        },
+        {
+        field_path = ["procedure_name"]
+        },
+        {
+        field_path = ["procedure_description"]
+        },
+        {
+        field_path = ["procedure_category"]
+        },
+        {
+        field_path = ["procedure_cost"]
+        },
+        {
+        field_path = ["risk_level"]
+        },
+        {
+        field_path = ["created_at"]
+        },
+        {
+        field_path = ["updated_at"]
+        }
+      ]
     }
     ]
   }
   schedule = {
     schedule_type = "manual"
   }
+  
 }

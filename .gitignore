@@ -64,3 +64,6 @@ python.zip
 load_to_redshift
 aws_key/aws-bastion-key.pem
 aws_key/aws-bastion-key.pub
+
+
+transformation/logs/dbt.log

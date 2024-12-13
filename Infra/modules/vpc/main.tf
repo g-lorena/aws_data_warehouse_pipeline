@@ -324,10 +324,20 @@ resource "aws_security_group" "redshift_sg" {
   vpc_id      = aws_vpc.custom_vpc.id
 
   ingress {
+  from_port   = 5439
+  to_port     = 5439
+  protocol    = "tcp"
+  security_groups = [
+    aws_security_group.lambda_security_group.id,
+    aws_security_group.bastion_sg.id
+    ]
+  } 
+
+  ingress {
     from_port   = 5439  # Redshift default port
     to_port     = 5439
     protocol    = "tcp"
-    security_groups  = [aws_security_group.lambda_security_group.id, aws_security_group.bastion_sg.id]
+    #security_groups  = [aws_security_group.lambda_security_group.id, aws_security_group.bastion_sg.id]
     cidr_blocks      = [
       "93.21.130.146/32",
       "13.37.4.46/32",

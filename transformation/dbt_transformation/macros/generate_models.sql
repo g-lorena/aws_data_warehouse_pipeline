@@ -1,12 +1,16 @@
 {% macro generate_models() %}
-    {% set target_database = env_var('DBT_DATABASE' ) %}
+    {{ log("Generate models is running!", info=True) }}
+    {% set target_database = env_var('REDSHIFT_DATABASE' ) %}
+    {{ log("REDSHIFT_DATABASE: " ~ target_database, info=True) }}
     {% set execute = env_var('DBT_EXECUTE') %}
+    {{ log("DBT_EXECUTE: " ~ execute, info=True) }}
+    {% set schema_name = 'airbyte_internal' %}
     
     {% set get_tables_query %}
-        SELECT name
-        FROM system.tables
-        WHERE database = '{{ target_database }}'
-          AND name LIKE 'public_raw__stream_%'
+        SELECT table_name
+        FROM information_schema.tables 
+        WHERE table_schema = '{{ schema_name }}' 
+                AND table_name LIKE 'public_raw__stream_%'
     {% endset %} 
     
     {% set results = run_query(get_tables_query) %}
@@ -26,4 +30,15 @@
             {% endfor %}
         {% endfor %}
     {% endif %}
+
+    --{# Return the generated SQL files for logging or debugging #}
+    --{% if all_file_contents %}
+    --    {% set result_string = all_file_contents | join('\n') %}
+    --    {{ log("Generated models:\n" ~ result_string, info=True) }}
+    --    {% do return(result_string) %}
+    --{% else %}
+    --    {% do return("No models generated.") %}
+    --{% endif %}
+    {{ log("all_file_contents: " ~ all_file_contents, info=True) }}
+    {% do return(all_file_contents) %}
 {% endmacro %}

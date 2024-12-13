@@ -14,14 +14,17 @@ WITH parsed_data AS (
             {% else %}
                 JSONExtract(_airbyte_data, '{{ key }}', '{{column_type}}') AS {{ key }}
             {% endif %}
+            {% if not loop.last %},{% endif %}
         {% endfor %}
     FROM {{dest}}
 )
 
 SELECT 
     {% for key in json_keys %}
-        {{ key }}
+        {{ key }}{% if not loop.last %},{% endif %}
     {% endfor %}
 FROM parsed_data
 {% endset %}
+
+{{ sql }}
 {% endmacro %}

@@ -1,0 +1,35 @@
+
+version: 2
+
+models:
+  - name: stg_medication_data_stream
+    description: "Medication data"
+    columns:
+      - name: medication_id
+      - name: category
+      - name: medication_name
+      - name: cost
+      - name: created_at
+      - name: updated_at
+      - name: _ab_source_file_url
+      - name: _ab_source_file_last_modified
+  - name: stg_procedure_data_streams
+    description: "procedure data"
+    columns:
+      - name: procedure_code
+      - name: procedure_description
+      - name: procedure_cost
+      - name: updated_at
+      - name: _ab_source_file_url
+      - name: procedure_name
+      - name: procedure_category
+      - name: risk_level
+      - name: created_at
+      - name: _ab_source_file_last_modified
+
+sources:
+  - name: healthcare
+    schema: airbyte_internal
+    tables:
+      - name: public_raw__stream_dim_procedure_data_streams
+      - name: public_raw__stream_dim_medication_data_stream

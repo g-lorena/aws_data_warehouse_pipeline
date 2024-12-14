@@ -23,9 +23,9 @@
                 {% set model_parts = table.split('public_raw__stream_') %}
                 {% set output_name = model_parts[1] %}  
                 {% set model_name = output_name %}
-                {% set model_file = 'models/' ~ model_name ~ '.sql' %}
+                {% set model_file = 'Generating model content for:' ~ 'models/' ~ model_name ~ '.sql' %}
                 {% set model_content = dynamic_model(table_name) %}
-                {% set file_content = model_file ~ ':\n' ~ model_content %}
+                {% set file_content = model_file ~ ':\n' ~ 'Model content:\n' ~ model_content %}
                 {% do all_file_contents.append(file_content) %}
             {% endfor %}
         {% endfor %}
@@ -39,6 +39,6 @@
     --{% else %}
     --    {% do return("No models generated.") %}
     --{% endif %}
-    {{ log("all_file_contents: " ~ all_file_contents, info=True) }}
+    --{{ log("all_file_contents: " ~ all_file_contents, info=True) }}
     {% do return(all_file_contents) %}
 {% endmacro %}

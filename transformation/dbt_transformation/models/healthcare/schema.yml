@@ -1,0 +1,83 @@
+
+version: 2
+
+models:
+  - name: stg_medication_data_stream
+    description: "Medication data"
+    columns:
+      - name: medication_id
+      - name: category
+      - name: medication_name
+      - name: cost
+      - name: created_at
+      - name: updated_at
+      - name: _ab_source_file_url
+      - name: _ab_source_file_last_modified
+  - name: stg_procedure_data_streams
+    description: "procedure data"
+    columns:
+      - name: procedure_code
+      - name: procedure_description
+      - name: procedure_cost
+      - name: updated_at
+      - name: _ab_source_file_url
+      - name: procedure_name
+      - name: procedure_category
+      - name: risk_level
+      - name: created_at
+      - name: _ab_source_file_last_modified
+  - name: stg_patients
+    description: "patients data"
+    columns:
+      - name: patient_id
+      - name: first_name
+      - name: last_name
+      - name: gender
+      - name: dob
+      - name: patient_address
+      - name: city
+      - name: country
+      - name: created_at
+      - name: updated_at
+  - name: stg_doctors
+    description: "doctors data"
+    columns:
+      - name: doctor_id
+      - name: first_name
+      - name: last_name
+      - name: specialization
+      - name: department_id
+      - name: hire_date
+      - name: created_at
+      - name: updated_at
+  - name: stg_departement
+    description: "departement data"
+    columns:
+      - name: department_id
+      - name: department_name
+      - name: department_location
+      - name: created_at
+      - name: updated_at
+  - name: stg_appointment
+    description: "appointment data"
+    columns:
+      - name: appointment_id
+      - name: patient_id
+      - name: doctor_id
+      - name: appointment_date
+      - name: appointment_type
+      - name: diagnosis
+      - name: created_at
+      - name: updated_at
+
+
+sources:
+  - name: healthcare
+    schema: airbyte_internal
+    tables:
+      - name: public_raw__stream_dim_procedure_data_streams
+      - name: public_raw__stream_dim_medication_data_stream
+      - name: public_raw__stream_dim_appointments
+      - name: public_raw__stream_dim_department
+      - name: public_raw__stream_dim_doctors
+      - name: public_raw__stream_dim_patients

@@ -1,0 +1,12 @@
+dbt_transformation:
+  outputs:
+    dev:
+      dbname: "{{ env_var('REDSHIFT_DATABASE') }}" #my_healthcare_datawarehouse env_var('DBT_DATABASE') 
+      host: localhost #"my-healthcare-redshift-cluster.cmzewdchmvkc.eu-west-3.redshift.amazonaws.com"
+      password: "{{ env_var('REDSHIFT_PWD') }}" # on cachera plus tard le password
+      port: 5439
+      schema: airbyte_internal
+      threads: 1
+      type: redshift
+      user: "exampleuser"
+  target: dev

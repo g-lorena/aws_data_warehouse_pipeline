@@ -5,7 +5,7 @@ module "vpc" {
   public_key_path = local.public_key_path
 }
 
-/*
+
 module "rds" {
   source      = "./modules/rds"
   db_username = local.db_username
@@ -16,7 +16,7 @@ module "rds" {
   vpc_security_group_ids = module.vpc.database_security_group_id
 
 }
-*/
+
 module "s3bucket" {
   source = "./modules/s3"
 
@@ -63,7 +63,7 @@ module "lambdaFunction" {
   db_username       = local.db_username
   db_password       = local.db_password
   db_name           = local.db_name
-  rds_endpoint      = local.db_name #module.rds.rds_host
+  rds_endpoint      = module.rds.rds_host
   #DynamoDB_table_name = module.dynamodb.last_extraction_table_name
   #raw_repertory     = local.raw_repertory
   
@@ -125,7 +125,7 @@ module "airbyte" {
   #airbyte_connection_name = local.airbyte_connection_name
   postgres_db_password = local.db_password
   postgres_db_name = local.db_name
-  postgres_host = local.db_name #module.rds.rds_host
+  postgres_host = module.rds.rds_host
   postgres_db_username = local.db_username
   ssh_key = file(local.private_key_path) #module.vpc.private_key
   tunnel_host = module.vpc.tunnel_host

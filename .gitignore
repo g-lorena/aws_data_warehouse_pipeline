@@ -67,3 +67,8 @@ aws_key/aws-bastion-key.pub
 
 
 transformation/logs/dbt.log
+
+transformation/dbt_transformation/target
+
+transformation/dbt_transformation/.user.yml
+transformation/logs

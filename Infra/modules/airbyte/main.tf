@@ -15,22 +15,13 @@ resource "airbyte_source_postgres" "my_source_postgres" {
     password        = var.postgres_db_password
     port            = 5432
     replication_method = {
-        read_changes_using_write_ahead_log_cdc = {
-            publication = "airbyte_publication"
-            replication_slot="airbyte_slot"
-        }
-      #detect_changes_with_xmin_system_column = {}
+        detect_changes_with_xmin_system_column = {}
     }
-    /* OPTIONAL 
+    
     schemas = [
-      "...",
+      "public"
     ]
-    ssl_mode = {
-      allow = {
-        additional_properties = "{ \"see\": \"documentation\" }"
-      }
-    }
-    */
+    
     tunnel_method = {
       ssh_key_authentication = {
         ssh_key = var.ssh_key

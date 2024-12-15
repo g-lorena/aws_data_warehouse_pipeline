@@ -24,7 +24,8 @@ statement {
       "redshift:DescribeClusters",
       "redshift:DescribeLoggingStatus",
       "redshift:EnableLogging",
-      "redshift:DisableLogging"
+      "redshift:DisableLogging",
+      "secretsmanager:*"
       ]
     resources = ["*"]
   }

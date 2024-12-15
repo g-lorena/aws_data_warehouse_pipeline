@@ -84,7 +84,7 @@ def is_log_line(line):
 def write_sql_to_file(model_name, sql_content):
     try:
         """Write the SQL content to a file."""
-        model_file_path = f'models/healthcare/{model_name}.sql'
+        model_file_path = f'models/healthcare/staging/{model_name}.sql'
         
         # Ensure the models directory exists
         os.makedirs(os.path.dirname(model_file_path), exist_ok=True)

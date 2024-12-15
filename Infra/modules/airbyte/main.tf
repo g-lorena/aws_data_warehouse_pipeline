@@ -159,26 +159,139 @@ resource "airbyte_connection" "rds_to_redshift" {
   name                 = var.rds_to_redshift_connection_name # example postgre to redshift
   source_id            = airbyte_source_postgres.my_source_postgres.source_id
   destination_id       = airbyte_destination_redshift.my_destination_redshift.destination_id
+  prefix                               = "dim_"
+  namespace_definition                 = "custom_format"
+  namespace_format                     = "public"
 
   schedule = {
     schedule_type = "manual"
-    #cron_expression = "0 0 9 * * ? UTC"
   }
 
-  status               = "active"
-  
-  /*
   configurations       = {
     streams = [
       {
-        name = "stream"
-
+        name = "dim_appointments"
+        sync_mode = "incremental_deduped_history" 
+        primary_key = [[ "appointment_id" ]]
+        selected_fields = [
+        {
+        field_path = ["appointment_id"]
+        },
+        {
+        field_path = ["patient_id"]
+        },
+        {
+        field_path = ["doctor_id"]
+        },
+        {
+        field_path = ["appointment_date"]
+        },
+        {
+        field_path = ["appointment_type"]
+        },
+        {
+        field_path = ["diagnosis"]
+        },
+        {
+        field_path = ["created_at"]
+        },
+        {
+        field_path = ["updated_at"]
+        }
+      ]
+      },
+      {
+        name = "dim_department"
+        sync_mode = "incremental_deduped_history" 
+        primary_key = [[ "department_id" ]]
+        selected_fields = [
+        {
+        field_path = ["department_id"]
+        },
+        {
+        field_path = ["department_name"]
+        },
+        {
+        field_path = ["department_location"]
+        },
+        {
+        field_path = ["created_at"]
+        },
+        {
+        field_path = ["updated_at"]
+        }
+      ]
+      },
+      {
+        name = "dim_doctors"
+        sync_mode = "incremental_deduped_history" 
+        primary_key = [[ "doctor_id" ]]
+        selected_fields = [
+        {
+        field_path = ["doctor_id"]
+        },
+        {
+        field_path = ["first_name"]
+        },
+        {
+        field_path = ["last_name"]
+        },
+        {
+        field_path = ["specialization"]
+        },
+        {
+        field_path = ["department_id"]
+        },
+        {
+        field_path = ["hire_date"]
+        },
+        {
+        field_path = ["created_at"]
+        },
+        {
+        field_path = ["updated_at"]
+        }
+      ]
+      },
+      {
+        name = "dim_patients"
+        sync_mode = "incremental_deduped_history" 
+        primary_key = [[ "patient_id" ]]
+        selected_fields = [
+        {
+        field_path = ["patient_id"]
+        },
+        {
+        field_path = ["first_name"]
+        },
+        {
+        field_path = ["last_name"]
+        },
+        {
+        field_path = ["gender"]
+        },
+        {
+        field_path = ["dob"]
+        },
+        {
+        field_path = ["patient_address"]
+        },
+        {
+        field_path = ["city"]
+        },
+        {
+        field_path = ["country"]
+        },
+        {
+        field_path = ["created_at"]
+        },
+        {
+        field_path = ["updated_at"]
+        }
+      ]
       }
     ]
   }
-  */
- # runs every day at 9:00 AM UTC
-
 }
 
 resource "airbyte_connection" "s3_to_redshift" {
@@ -188,7 +301,7 @@ resource "airbyte_connection" "s3_to_redshift" {
   prefix                               = "dim_"
   namespace_definition                 = "custom_format"
   namespace_format                     = "public"
-  status = "active" #"deprecated"
+  #status = "active" #"deprecated"
   configurations = {
     streams = [ 
       {

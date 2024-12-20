@@ -32,10 +32,3 @@ variable "lambda_layer"{
   description = "lambda layer"
   type        = string
 }
-
-/* 
-variable "path_to_system_folder"{
-  description = "path_to_system_folder"
-  type        = string
-}
-*/

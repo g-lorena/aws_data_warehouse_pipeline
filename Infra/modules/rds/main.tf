@@ -1,4 +1,3 @@
-# create the rds instance
 resource "aws_db_parameter_group" "defaultpostgres" {
   name   = "defaultpostgres"
   family = "postgres16"

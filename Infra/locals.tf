@@ -7,7 +7,11 @@ locals{
 
   redshift_integration_bucket_name = "my-redshift-integration-bucket-001"
   raw_repertory            = "raw_data"
-  
+
+  #secrets manager 
+
+  rds_secret_name = "healthcare-rds-secret-1"
+  rds_secret_description = "Credentials for RDS"
    # cloudwatch
   #schedule_name  = "schedule rds" # "schedule extraction"]
   #schedule_value = "cron(0 8 ? * MON-FRI *)" #, "cron(0 8 ? * MON-FRI *)"] 
@@ -48,6 +52,9 @@ locals{
   db_username = "lorena"
   db_password = "YourStrongPass12345!"
   db_name = "medical_database"
+
+  replica_user_name = "replica_user"
+  replica_user_password = "secure_password"
 
   #redshift
   cluster_identifier = "my-healthcare-redshift-cluster"

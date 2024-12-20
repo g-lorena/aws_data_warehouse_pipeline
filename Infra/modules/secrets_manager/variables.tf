@@ -8,7 +8,7 @@ variable "rds_secret_description" {
   type        = string
   default     = "Secret stored for rds database credentials"
 }
-
+/*
 variable "redshift_secret_name" {
   description = "redshift secret name"
   type        = string
@@ -24,3 +24,4 @@ variable "rds_secret_values" {
   description = "The key-value pairs to store in the secret"
   type = map(string)
 }
+*/

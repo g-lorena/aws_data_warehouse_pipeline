@@ -5,18 +5,23 @@ module "vpc" {
   public_key_path = local.public_key_path
 }
 
+module "secret_manager" {
+  source = "./modules/secrets_manager"
+  rds_secret_name = local.rds_secret_name
+  rds_secret_description = local.rds_secret_description
+}
 
 module "rds" {
   source      = "./modules/rds"
-  db_username = local.db_username
-  db_password = local.db_password
+  db_username = module.secret_manager.generated_username  #local.db_username
+  db_password = module.secret_manager.generated_password      #local.db_password
   db_name     = local.db_name
   db_subnet_group_name = module.vpc.database_subnet_group_name
   availability_zone = module.vpc.availability_zone_name
   vpc_security_group_ids = module.vpc.database_security_group_id
-
 }
 
+/*
 module "s3bucket" {
   source = "./modules/s3"
 
@@ -149,6 +154,7 @@ module "airbyte" {
   access_key_id = module.s3bucket.access_key_id
   secret_access_key = module.s3bucket.secret_access_key
 }
+*/
 
 /*
 module "cloudwatch_schedule_module_lambda1" {

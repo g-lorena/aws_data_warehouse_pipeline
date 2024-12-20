@@ -12,7 +12,11 @@ locals{
 
   rds_secret_name = "healthcare-rds-secret-1"
   rds_secret_description = "Credentials for RDS"
-   # cloudwatch
+
+  redshift_secret_name = "healthcare-redshift-secret-1"
+  redshift_secret_description = "Credentials for redshift"
+
+  # cloudwatch
   #schedule_name  = "schedule rds" # "schedule extraction"]
   #schedule_value = "cron(0 8 ? * MON-FRI *)" #, "cron(0 8 ? * MON-FRI *)"] 
 
@@ -49,12 +53,9 @@ locals{
   function_handler_3 = "load_to_redshift.lambda_handler"
 */  
   #rds
-  db_username = "lorena"
-  db_password = "YourStrongPass12345!"
+  #db_username = "lorena" #credentials in secret manager
+  #db_password = "YourStrongPass12345!" #credentials in secret manager
   db_name = "medical_database"
-
-  replica_user_name = "replica_user"
-  replica_user_password = "secure_password"
 
   #redshift
   cluster_identifier = "my-healthcare-redshift-cluster"

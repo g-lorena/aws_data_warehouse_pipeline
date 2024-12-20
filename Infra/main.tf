@@ -9,6 +9,8 @@ module "secret_manager" {
   source = "./modules/secrets_manager"
   rds_secret_name = local.rds_secret_name
   rds_secret_description = local.rds_secret_description
+  redshift_secret_name = local.redshift_secret_name
+  redshift_secret_description = local.redshift_secret_description
 }
 
 module "rds" {
@@ -21,7 +23,7 @@ module "rds" {
   vpc_security_group_ids = module.vpc.database_security_group_id
 }
 
-/*
+
 module "s3bucket" {
   source = "./modules/s3"
 
@@ -65,8 +67,8 @@ module "lambdaFunction" {
   timeout               = local.timeout
   runtime               = local.runtime
 
-  db_username       = local.db_username
-  db_password       = local.db_password
+  db_username       = module.secret_manager.generated_username #local.db_username
+  db_password       = module.secret_manager.generated_password #local.db_password
   db_name           = local.db_name
   rds_endpoint      = module.rds.rds_host
   #DynamoDB_table_name = module.dynamodb.last_extraction_table_name
@@ -111,8 +113,8 @@ module "redshift" {
   source                   = "./modules/redshift"
   cluster_identifier = local.cluster_identifier
   database_name = local.database_name
-  master_username = local.master_username
-  master_password = local.master_password
+  master_username = module.secret_manager.generated_redshift_username #local.master_username
+  master_password = module.secret_manager.generated_redshift_password #local.master_password
   node_type = local.node_type
   cluster_type = local.cluster_type
   availability_zone = module.vpc.availability_zone_name
@@ -120,7 +122,7 @@ module "redshift" {
   cluster_subnet_group_name = module.vpc.aws_redshift_subnet_group_name
 
 }
-
+/*
 module "airbyte" {
   source = "./modules/airbyte"
 

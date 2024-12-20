@@ -33,7 +33,9 @@ statement {
       "redshift:ExecuteStatement",
       "redshift:DescribeTable",
       "redshift-data:ExecuteStatement",
-      "redshift-data:GetStatementResult"
+      "redshift-data:GetStatementResult",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret"
     ]
     resources = ["*"]
   }

@@ -1,5 +1,3 @@
-# create zip file from requirements.txt. Triggers only when the file is updated
-# first method 
 resource "null_resource" "lambda_layer" {
   triggers = {
     requirements = filesha1(var.requirements_path)
@@ -30,16 +28,13 @@ resource "aws_s3_object" "lambda_layer_zip" {
     bucket   = aws_s3_bucket.lambda_layer_bucket.id
     key      =  "${var.lambda_layer}/${var.layer_name}/${var.layer_zip_path}"
     source     = var.layer_zip_path
-    depends_on = [null_resource.lambda_layer] # triggered only if the zip file is created
-    #content_type = "application/x-directory"  
+    depends_on = [null_resource.lambda_layer] 
 }
 
 resource "aws_lambda_layer_version" "requests_layer" {
   s3_bucket   = aws_s3_bucket.lambda_layer_bucket.id
   s3_key = aws_s3_object.lambda_layer_zip.key
   layer_name = var.layer_name
-  #source_code_hash    = filebase64sha256(var.path_to_request_layer_filename)
-
   compatible_runtimes      = var.compatible_layer_runtimes
   depends_on = [aws_s3_object.lambda_layer_zip]
   compatible_architectures = var.compatible_architectures

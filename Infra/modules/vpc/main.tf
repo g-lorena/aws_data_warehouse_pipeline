@@ -149,16 +149,6 @@ resource "aws_security_group" "lambda_security_group" {
   description = "Lambda Security Group"
   vpc_id      = aws_vpc.custom_vpc.id
 
-/*
-  ingress {
-    description      = "lambda"
-    from_port        = 5432
-    to_port          = 5432
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    #security_groups  = [aws_security_group.webserver_security_group.id]
-  }
-*/
   egress {
     from_port        = 0
     to_port          = 0
@@ -207,7 +197,7 @@ data "aws_ami" "amazon_linux_ami" {
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-kernel-*-gp2"]#["amzn2-ami-hvm-*-x86_64-gp2"]
+    values = ["amzn2-ami-kernel-*-gp2"]
   }
 
   filter {
@@ -334,10 +324,9 @@ resource "aws_security_group" "redshift_sg" {
   } 
 
   ingress {
-    from_port   = 5439  # Redshift default port
+    from_port   = 5439
     to_port     = 5439
     protocol    = "tcp"
-    #security_groups  = [aws_security_group.lambda_security_group.id, aws_security_group.bastion_sg.id]
     cidr_blocks      = [
       "93.21.130.146/32",
       "13.37.4.46/32",

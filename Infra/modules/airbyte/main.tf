@@ -11,7 +11,6 @@ resource "airbyte_source_postgres" "my_source_postgres" {
   configuration = {
     database        = var.postgres_db_name
     host            = var.postgres_host
-    #jdbc_url_params = "...my_jdbc_url_params..." it is optional
     password        = var.postgres_db_password
     port            = 5432
     replication_method = {
@@ -33,9 +32,7 @@ resource "airbyte_source_postgres" "my_source_postgres" {
     
     username = var.postgres_db_username
   }
-  #definition_id = "cfdc6fb5-04a1-42b7-b23c-bf0223ae822e" OPTIONAL
   name          = var.db_source_name
-  #secret_id     = "...my_secret_id..." OPTIONAL
   workspace_id  = var.workspace_id 
                    
 }
@@ -52,7 +49,6 @@ resource "airbyte_source_s3" "my_source_s3" {
         days_to_sync_if_history_is_full = 6
         format = {
           csv_format = {
-            #double_as_string = true
             delimiter = ","
             double_quote = true
           }
@@ -60,21 +56,6 @@ resource "airbyte_source_s3" "my_source_s3" {
         globs = [
           "raw_data/medications/*.csv",
         ]
-
-        #primary_key = ["medication_id"]
-        /*
-        schema = jsonencode({
-          type = "object",
-          properties = {
-            medication_id = { type = "string" }
-            medication_name = { type = "string" }
-            category = {type = "string"}
-            cost = {type = "number"}
-            created_at = { type = "string", format = "date-time" }
-            updated_at = { type = "string", format = "date-time" }
-          }
-        })
-        */
       },
       {
         name = "procedure_data_streams"
@@ -90,23 +71,6 @@ resource "airbyte_source_s3" "my_source_s3" {
         globs = [
           "raw_data/procedures/*.csv",
         ]
-        #primary_key = ["procedure_code"]
-        /*
-        schema = jsonencode({
-          type = "object",
-          properties = {
-            procedure_code = { type = "string" }
-            procedure_name = { type = "string" }
-            procedure_description = { type = "string" }
-            procedure_category = { type = "string" }
-            procedure_cost = {type = "number"}
-            risk_level = { type = "string" }
-            created_at = { type = "string", format = "date-time" }
-            updated_at = { type = "string", format = "date-time" }
-          }
-        })
-        */
-        #schemaless        = false
       }
     ]
   }
@@ -121,10 +85,8 @@ resource "airbyte_destination_redshift" "my_destination_redshift" {
     disable_type_dedupe = true
     drop_cascade        = false
     host                = var.redshift_host
-    #jdbc_url_params     = "...my_jdbc_url_params..." optional
     password            = var.redshift_password
     port                = 5439
-    #raw_data_schema     = "...my_raw_data_schema..." optional
     schema              = "public"
 
     tunnel_method = {

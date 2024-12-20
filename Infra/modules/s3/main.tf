@@ -23,11 +23,6 @@ resource "aws_iam_user_policy" "airbyte_user_policy" {
 
 resource "aws_iam_access_key" "airbyte_access_key" {
   user = aws_iam_user.airbyte_user.name
-
-  # Sensitive outputs are written to a file for security
-  #lifecycle {
-  #  prevent_destroy = true # Prevent accidental deletion
-  #}
 }
 
 resource "aws_s3_bucket" "bucket"{
@@ -36,7 +31,7 @@ resource "aws_s3_bucket" "bucket"{
 }
 
 resource "aws_s3_bucket" "airbyte_staging" {
-  bucket = var.airbyte_s3_bucket #"airbyte-staging-bucket"
+  bucket = var.airbyte_s3_bucket 
   force_destroy = true
 }
 

@@ -1,13 +1,11 @@
-variable "bucket_name" { # bucket with layers
+variable "bucket_name" {
   description = "principal bucket name"
   type        = string
-  #default     = "real-estate-etl-101"
 }
 
 variable "redshift_integration_bucket_name" {
   description = "redshift destination bucket name"
   type        = string
-  #default     = "real-estate-etl-101"
 }
 
 variable "raw_repertory" {

@@ -8,7 +8,7 @@ terraform {
         source = "airbytehq/airbyte"
         version = "0.6.5"
       }
-        null = {
+      null = {
         source = "hashicorp/null"
         version = "3.2.3"
       }

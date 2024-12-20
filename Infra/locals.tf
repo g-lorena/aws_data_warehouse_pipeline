@@ -7,8 +7,16 @@ locals{
 
   redshift_integration_bucket_name = "my-redshift-integration-bucket-001"
   raw_repertory            = "raw_data"
-  
-   # cloudwatch
+
+  #secrets manager 
+
+  rds_secret_name = "healthcare-rds-secret-1"
+  rds_secret_description = "Credentials for RDS"
+
+  redshift_secret_name = "healthcare-redshift-secret-1"
+  redshift_secret_description = "Credentials for redshift"
+
+  # cloudwatch
   #schedule_name  = "schedule rds" # "schedule extraction"]
   #schedule_value = "cron(0 8 ? * MON-FRI *)" #, "cron(0 8 ? * MON-FRI *)"] 
 
@@ -45,8 +53,8 @@ locals{
   function_handler_3 = "load_to_redshift.lambda_handler"
 */  
   #rds
-  db_username = "lorena"
-  db_password = "YourStrongPass12345!"
+  #db_username = "lorena" #credentials in secret manager
+  #db_password = "YourStrongPass12345!" #credentials in secret manager
   db_name = "medical_database"
 
   #redshift

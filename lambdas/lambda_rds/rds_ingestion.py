@@ -72,10 +72,10 @@ def lambda_handler(event, context):
                 insert_doctors_data(engine)
                 #update_last_extraction_time("doctors", dynamo_table)
                 
-                insert_appointments_data(engine)
+                #insert_appointments_data(engine)
                 #update_last_extraction_time("appointments", dynamo_table)
                 
-                insert_treatment_data(engine)
+                #insert_treatment_data(engine)
                 #update_last_extraction_time("treatement", dynamo_table)
 
                 return {'statusCode': 200, 'body': 'Insert operation completed.'}
@@ -103,10 +103,10 @@ def lambda_handler(event, context):
                 update_doctors(engine)
                 #update_last_extraction_time("doctors", dynamo_table)
                 
-                update_appointments(engine)
+                #update_appointments(engine)
                 #update_last_extraction_time("appointments", dynamo_table)
                 
-                update_treatments(engine)
+                #update_treatments(engine)
                 #update_last_extraction_time("treatement", dynamo_table)
                 
                 return {'statusCode': 200, 'body': 'Update operation completed.'}

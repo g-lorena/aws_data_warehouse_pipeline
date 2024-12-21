@@ -267,7 +267,7 @@ resource "airbyte_connection" "s3_to_redshift" {
   configurations = {
     streams = [ 
       {
-      name = "medication_data_stream"
+      name = "dim_medication" 
       sync_mode = "full_refresh_append"
       primary_key = [[ "medication_id" ]]
       #cursor_field = ["updated_at"]
@@ -294,7 +294,7 @@ resource "airbyte_connection" "s3_to_redshift" {
     #cursor_field = ["updated_at"]
     },
     {
-      name = "procedure_data_streams"
+      name = "dim_procedure"
       sync_mode = "full_refresh_append"
       #cursor_field = ["updated_at"]
       primary_key = [[ "procedure_code" ]]

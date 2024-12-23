@@ -1,5 +1,8 @@
 locals{
 
+  #iam 
+  user_name = "airbyte-user"
+
   # bucket 
   lambda_layer_bucket_name = "my-lambda-layer-bucket-00113"
   lambda_layer             = "lambda_layer"

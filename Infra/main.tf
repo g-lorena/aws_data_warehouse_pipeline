@@ -1,3 +1,9 @@
+module "iam_user" {
+  source = "./modules/iam"
+  user_name = local.user_name
+  redshift_integration_bucket_name = local.redshift_integration_bucket_name
+  airbyte_s3_bucket = local.airbyte_s3_bucket
+}
 
 module "vpc" {
   source = "./modules/vpc"

@@ -44,7 +44,7 @@ resource "airbyte_source_s3" "my_source_s3" {
     bucket                = var.s3bucket
     streams = [
       {
-        name = "medication_data_stream"
+        name = "medication"
         
         days_to_sync_if_history_is_full = 6
         format = {
@@ -58,7 +58,7 @@ resource "airbyte_source_s3" "my_source_s3" {
         ]
       },
       {
-        name = "procedure_data_streams"
+        name = "procedure"
         days_to_sync_if_history_is_full = 7
         format = {
           csv_format = {

@@ -1,16 +1,20 @@
+/*
 module "iam_user" {
   source = "./modules/iam"
   user_name = local.user_name
   redshift_integration_bucket_name = local.redshift_integration_bucket_name
   airbyte_s3_bucket = local.airbyte_s3_bucket
 }
+*/
 
 module "vpc" {
   source = "./modules/vpc"
   private_key_path = local.private_key_path
   public_key_path = local.public_key_path
+  script_path = local.script_path
 }
 
+/*
 module "secret_manager" {
   source = "./modules/secrets_manager"
   rds_secret_name = local.rds_secret_name
@@ -58,7 +62,8 @@ module "lambdaLayer" {
 
 }
 
-
+*/
+/*
 
 module "lambdaFunction" {
   
@@ -128,6 +133,7 @@ module "redshift" {
   cluster_subnet_group_name = module.vpc.aws_redshift_subnet_group_name
 
 }
+*/
 /*
 module "airbyte" {
   source = "./modules/airbyte"

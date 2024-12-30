@@ -7,3 +7,8 @@ variable "public_key_path" {
   type        = string
   description = "public_key_path"
 }
+
+variable "script_path" {
+  type        = string
+  description = "script_path"
+}

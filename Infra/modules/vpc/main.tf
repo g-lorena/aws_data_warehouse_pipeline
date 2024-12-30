@@ -96,6 +96,7 @@ resource "aws_route_table_association" "private_subnet2_association" {
     route_table_id = aws_route_table.private_route_table.id
 }
 
+/*
 resource "aws_vpc_endpoint" "dynamodb" {
   vpc_id          = aws_vpc.custom_vpc.id
   vpc_endpoint_type = "Gateway"
@@ -105,6 +106,7 @@ resource "aws_vpc_endpoint" "dynamodb" {
     Name = "DynamoDB VPC Endpoint"
   }
 }
+*/
 
 resource "aws_vpc_endpoint" "s3" {
   vpc_id             = aws_vpc.custom_vpc.id
@@ -343,6 +345,32 @@ resource "aws_security_group" "redshift_sg" {
   }
 }
 
+resource "aws_security_group" "airflow_sg" {
+  name        = "airflow_sg"
+  description = "Security group to allow ssh and airflow"
+  vpc_id      = aws_vpc.custom_vpc.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["93.21.130.146/32"]
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["93.21.130.146/32"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
 resource "aws_redshift_subnet_group" "redshift_subnet_group" {
   name       = "redshift-subnets"
@@ -360,4 +388,39 @@ resource "aws_db_subnet_group" "database_subnet_group" {
   tags   = {
     Name = "database-subnets"
   }
+}
+
+resource "aws_instance" "airflow_instance" {
+  ami           = data.aws_ami.amazon_linux_ami.id 
+  instance_type = "t2.xlarge" #var.instance_type
+  subnet_id     = aws_subnet.public_subnet.id 
+  key_name      = aws_key_pair.generated_bastion_key.key_name
+  vpc_security_group_ids      = [aws_security_group.airflow_sg.id]
+
+  connection {
+    type = "ssh"
+    host = self.public_ip
+    user = "ec2-user"
+    password = ""
+    timeout  = "5m"
+    
+    private_key = file(var.private_key_path)
+  }
+  provisioner "file" {
+    source      = var.script_path
+    destination = "/tmp/script.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo chmod 400 /tmp/script.sh"
+    ]
+  }
+ 
+  tags = {
+    Name = "Airflow-Instance"
+  }
+  
+  depends_on = [aws_security_group.airflow_sg]
+
 }

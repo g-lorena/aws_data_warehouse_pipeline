@@ -390,31 +390,52 @@ resource "aws_db_subnet_group" "database_subnet_group" {
   }
 }
 
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  # owners      = ["059978233428"]  # Canonical's AWS account ID
+  owners      = ["amazon"]
+
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
 resource "aws_instance" "airflow_instance" {
-  ami           = data.aws_ami.amazon_linux_ami.id 
+  ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.xlarge" #var.instance_type
   subnet_id     = aws_subnet.public_subnet.id 
   key_name      = aws_key_pair.generated_bastion_key.key_name
   vpc_security_group_ids      = [aws_security_group.airflow_sg.id]
-
-  connection {
-    type = "ssh"
-    host = self.public_ip
-    user = "ec2-user"
-    password = ""
-    timeout  = "5m"
-    
-    private_key = file(var.private_key_path)
-  }
+ 
   provisioner "file" {
     source      = var.script_path
     destination = "/tmp/script.sh"
+
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file(var.private_key_path)
+      host     = self.public_ip
+    }
   }
 
   provisioner "remote-exec" {
     inline = [
       "sudo chmod 400 /tmp/script.sh"
     ]
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file(var.private_key_path)
+      host     = self.public_ip
+    }
   }
  
   tags = {

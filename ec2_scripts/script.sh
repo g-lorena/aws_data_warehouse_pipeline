@@ -1,77 +1,39 @@
 #!/bin/bash
 
-# Update and install dependencies
-sudo yum update -y
-#sudo yum install -y python3 python3-pip gcc libpq-devel
-sudo yum install -y gcc libpq-devel make wget tar
+sudo apt update
+sudo apt install python3-pip
+sudo apt install sqlite3
+sudo apt install python3.8-venv
+python3 -m venv venv
+source venv/bin/activate
 
-# install python3
-wget https://www.python.org/ftp/python/3.10.16/Python-3.10.16.tgz
-tar -xzvf Python-3.10.16.tgz
-cd Python-3.10.16
-export LDFLAGS="-L/usr/local/lib"
-export CPPFLAGS="-I/usr/local/include"
-
-./configure --prefix=/usr/local
-make
-sudo make install
-
-cd ../
-
-#Install virtualenv
-sudo /usr/local/bin/python3.10 -m ensurepip --upgrade
-sudo /usr/local/bin/python3.10 -m pip install --upgrade pip
-sudo /usr/local/bin/python3.10 -m pip install virtualenv
-
-sudo pip3 install virtualenv
-virtualenv ~/airflow_env
-source ~/airflow_env/bin/activate
-
-# Install Apache Airflow and necessary providers
-pip install apache-airflow apache-airflow-providers-amazon apache-airflow-providers-postgres apache-airflow-providers-sqlite 
-
-
-wget https://www.sqlite.org/2024/sqlite-autoconf-3470200.tar.gz
-tar -xzvf sqlite-autoconf-3470200.tar.gz
-cd sqlite-autoconf-3470200
-./configure --prefix=/usr/local
-make
-make install
-
-cd ../
-
-# Set up Airflow Standalone
-mkdir -p ~/airflow
-export AIRFLOW_HOME=~/airflow
+sudo apt-get install libpq-dev
+pip install "apache-airflow[postgres]==2.8.0" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.8.0/constraints-3.8.txt"
 airflow db init
-airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com
 
-# Configure DAGs folder
-mkdir -p ~/airflow/dags
-sed -i "s|dags_folder = .*|dags_folder = ~/airflow/dags|" ~/airflow/airflow.cfg
+sudo apt-get install postgresql postgresql-contrib
+sudo -i -u postgres
+psql
 
-# Install dbt-core
-pip install dbt-core
+CREATE DATABASE airflow;
+CREATE USER airflow WITH PASSWORD 'airflow';
+GRANT ALL PRIVILEGES ON DATABASE airflow TO airflow;
 
-# Start Airflow webserver
-nohup airflow webserver -p 8080 &
-nohup airflow scheduler &
+cd airflow
+sed -i 's#sqlite:////home/ubuntu/airflow/airflow.db#postgresql+psycopg2://airflow:airflow@localhost/airflow#g' airflow.cfg
+grep sql_alchemy airflow.cfg
+grep executor airflow.cfg
+sed -i 's#SequentialExecutor#LocalExecutor#g' airflow.cfg
 
-# Verify installations
-echo "Verifying installations..."
-airflow version
-#dbt --version
+airflow db init
+airflow users create -u airflow -f airflow -l airflow -r Admin -e airflow@gmail.com
+
+# mdp : airflow 
+# mdp : airflow
+
+airflow webserver &
+airflow scheduler
+
+#http://your-ec2-public-ip:8080
 
 echo "Installation complete."
-
-
-
-
-
-
-
-
-
-
-
-

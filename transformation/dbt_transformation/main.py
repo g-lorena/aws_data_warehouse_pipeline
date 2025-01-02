@@ -1,11 +1,46 @@
+from dbt.cli.main import dbtRunner, dbtRunnerResult
 import os
 import subprocess
 import re
+from botocore.exceptions import NoCredentialsError
+import boto3
+
+
+# S3 Configuration
+S3_BUCKET = "my-dbt-healthcare-project-bucket-001"
+S3_PREFIX = "models/healthcare/staging/"
+
+# Initialize S3 client
+s3_client = boto3.client('s3')
+
+# Initialize dbt runner
+dbt = dbtRunner()
+
+# create CLI args as a list of strings
+#cli_args = ["run", "--profiles-dir", project_dir]
+
+def run_dbt_command(command, args):
+    """Run a dbt command with the specified arguments."""
+    try:
+        cli_args = [command] + args
+
+        # run the command
+        res: dbtRunnerResult = dbt.invoke(cli_args)
+
+        # inspect the results
+        for r in res.result:
+            print(f"{r.node.name}: {r.status}")
+
+        return res
+    except Exception as e:
+        print(f"Error running dbt {command}: {str(e)}")
+        raise
 
 def run_dbt_macro():
     """Run the dbt macro and capture the output."""
     try:
         # Run the dbt command to execute the macro
+        
         result = subprocess.run(
             ['dbt', 'run-operation', 'generate_models'],
             check=True,
@@ -13,12 +48,12 @@ def run_dbt_macro():
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-
+        
+        
         # Capture the output
         output = result.stdout
 
         lines = output.splitlines()
-        
         
         # Initialize variables to hold model name and SQL content
         model_name = None
@@ -99,5 +134,25 @@ def write_sql_to_file(model_name, sql_content):
         # Print an error message if something goes wrong
         print(f"Error writing file for model {model_name}: {str(e)}")
 
+#Write the generated SQL files to an S3 bucket instead of the local filesystem
+
+def upload_sql_to_s3(model_name, sql_content):
+    try:
+        """Upload the SQL content to an S3 bucket."""
+        
+        cleaned_content = '\n'.join(line for line in sql_content.splitlines() if line.strip())
+
+        # Upload the file to S3
+        s3_client.put_object(
+            Bucket=S3_BUCKET,
+            Key=f"{S3_PREFIX}{model_name}.sql",
+            Body=cleaned_content.encode('utf-8')
+        )
+        
+        print(f"Uploaded SQL content to s3://{S3_BUCKET}/{S3_PREFIX}{model_name}.sql")
+    except NoCredentialsError:
+        print("Credentials not available")
+    except Exception as e:
+        print(f"Error uploading file for model {model_name}: {str(e)}")
 
 run_dbt_macro()

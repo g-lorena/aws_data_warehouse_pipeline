@@ -1,17 +1,31 @@
-/*
+
 module "iam_user" {
   source = "./modules/iam"
   user_name = local.user_name
   redshift_integration_bucket_name = local.redshift_integration_bucket_name
   airbyte_s3_bucket = local.airbyte_s3_bucket
+  dbt_project_bucket = local.dbt_project_bucket_name
 }
-*/
+
+module "s3bucket" {
+  source = "./modules/s3"
+
+  bucket_name   = local.bucket_name
+  redshift_integration_bucket_name = local.redshift_integration_bucket_name
+  raw_repertory = local.raw_repertory
+  airbyte_workspace_id = local.workspace_id
+  airbyte_s3_bucket = local.airbyte_s3_bucket
+  dbt_project_bucket_name = local.dbt_project_bucket_name
+}
+
 
 module "vpc" {
   source = "./modules/vpc"
   private_key_path = local.private_key_path
   public_key_path = local.public_key_path
   script_path = local.script_path
+  iam_instance_profile = module.iam_user.instance_profile_id
+  
 }
 
 /*
@@ -33,17 +47,6 @@ module "rds" {
   vpc_security_group_ids = module.vpc.database_security_group_id
 }
 
-
-module "s3bucket" {
-  source = "./modules/s3"
-
-  bucket_name   = local.bucket_name
-  redshift_integration_bucket_name = local.redshift_integration_bucket_name
-  raw_repertory = local.raw_repertory
-  airbyte_workspace_id = local.workspace_id
-  airbyte_s3_bucket = local.airbyte_s3_bucket
-
-}
 
 module "lambdaLayer" {
   source = "./modules/lambda_layer"

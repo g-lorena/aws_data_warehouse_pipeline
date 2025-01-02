@@ -409,10 +409,11 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "airflow_instance" {
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.xlarge" #var.instance_type
+  instance_type = "t3.small" #var.instance_type
   subnet_id     = aws_subnet.public_subnet.id 
   key_name      = aws_key_pair.generated_bastion_key.key_name
   vpc_security_group_ids      = [aws_security_group.airflow_sg.id]
+  iam_instance_profile = var.iam_instance_profile
  
   provisioner "file" {
     source      = var.script_path

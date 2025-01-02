@@ -12,3 +12,9 @@ variable "script_path" {
   type        = string
   description = "script_path"
 }
+
+variable "iam_instance_profile" {
+  type        = string
+  description = "iam_instance_profile"
+  
+}

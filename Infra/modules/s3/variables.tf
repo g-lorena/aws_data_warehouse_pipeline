@@ -22,3 +22,8 @@ variable "airbyte_s3_bucket" {
   description = "airbyte_s3_bucket"
   type = string
 }
+
+variable "dbt_project_bucket_name" {
+  description = "dbt_project_bucket_name"
+  type = string
+}

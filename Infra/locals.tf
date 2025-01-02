@@ -11,6 +11,8 @@ locals{
   redshift_integration_bucket_name = "my-redshift-integration-bucket-001"
   raw_repertory            = "raw_data"
 
+  dbt_project_bucket_name = "my-dbt-healthcare-project-bucket-001"
+
   #secrets manager 
 
   rds_secret_name = "healthcare-rds-secret-1"

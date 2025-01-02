@@ -19,3 +19,9 @@ resource "aws_s3_object" "raw_zone" {
     key      =  "${var.raw_repertory}/"
     content_type = "application/x-directory"  
 }
+
+resource "aws_s3_bucket" "dbt_project_bucket" {
+  bucket = var.dbt_project_bucket_name
+  force_destroy = true
+  
+}

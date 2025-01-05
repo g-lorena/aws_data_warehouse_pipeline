@@ -18,7 +18,6 @@ COPY macros macros
 COPY dbt_project.yml dbt_project.yml
 COPY profiles.yml profiles.yml
 COPY main.py main.py
-COPY packages.yml packages.yml
 
 # Set default command (optional, overridden by Airflow tasks)
 CMD ["dbt", "--version"]

@@ -49,6 +49,8 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
   
 }
 
+data "aws_caller_identity" "current" {}
+
 data "aws_iam_policy_document" "ec2_s3_policy_document" {
 statement {
     effect    = "Allow"
@@ -57,12 +59,13 @@ statement {
       "s3:GetObject", 
       "s3:ListBucket", 
       "s3:DeleteObject", 
-      "ecr:GetAuthorizationToken",
+     # "ecr:GetAuthorizationToken",
       "ecr:BatchCheckLayerAvailability",
       "ecr:GetRepositoryPolicy",
       "ecr:DescribeRepositories",
       "ecr:ListImages",
       "ecr:BatchGetImage",
+      "ecr:GetDownloadUrlForLayer",
       "ecr:PutImage",
       "ecr:InitiateLayerUpload",
       "ecr:UploadLayerPart",
@@ -71,8 +74,16 @@ statement {
     resources = [
       "arn:aws:s3:::${var.dbt_project_bucket}/*",
       "arn:aws:s3:::${var.dbt_project_bucket}",
+      "arn:aws:ecr:eu-west-3:${data.aws_caller_identity.current.account_id}:repository/healthcare-dbt-project"
     ]
   }
+statement {
+  effect = "Allow"
+  actions = [ "ecr:GetAuthorizationToken" ]
+  resources = [
+      "*"
+    ]
+}
 }
 
 resource "aws_iam_role" "iam_for_ec2" {

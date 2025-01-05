@@ -6,31 +6,8 @@ from botocore.exceptions import NoCredentialsError
 import boto3
 
 
-# Initialize S3 client
-s3_client = boto3.client('s3')
-
-# Initialize dbt runner
-dbt = dbtRunner()
-
 # create CLI args as a list of strings
 #cli_args = ["run", "--profiles-dir", project_dir]
-
-def run_dbt_command(command, args):
-    """Run a dbt command with the specified arguments."""
-    try:
-        cli_args = [command] + args
-
-        # run the command
-        res: dbtRunnerResult = dbt.invoke(cli_args)
-
-        # inspect the results
-        for r in res.result:
-            print(f"{r.node.name}: {r.status}")
-
-        return res
-    except Exception as e:
-        print(f"Error running dbt {command}: {str(e)}")
-        raise
 
 def run_dbt_macro():
     """Run the dbt macro and capture the output."""
@@ -93,6 +70,7 @@ def run_dbt_macro():
         print(f"Error running dbt command: {e}")
         print(f"Stdout: {e.stdout}")
         print(f"Stderr: {e.stderr}")
+        raise
 
 def is_log_line(line):
     """Determine if the line is a log line that should be skipped."""
@@ -132,23 +110,6 @@ def write_sql_to_file(model_name, sql_content):
 
 #Write the generated SQL files to an S3 bucket instead of the local filesystem
 
-def upload_sql_to_s3(model_name, sql_content):
-    try:
-        """Upload the SQL content to an S3 bucket."""
-        
-        cleaned_content = '\n'.join(line for line in sql_content.splitlines() if line.strip())
 
-        # Upload the file to S3
-        s3_client.put_object(
-            Bucket=S3_BUCKET,
-            Key=f"{S3_PREFIX}{model_name}.sql",
-            Body=cleaned_content.encode('utf-8')
-        )
-        
-        print(f"Uploaded SQL content to s3://{S3_BUCKET}/{S3_PREFIX}{model_name}.sql")
-    except NoCredentialsError:
-        print("Credentials not available")
-    except Exception as e:
-        print(f"Error uploading file for model {model_name}: {str(e)}")
-
-run_dbt_macro()
+if __name__ == "__main__":
+    run_dbt_macro()

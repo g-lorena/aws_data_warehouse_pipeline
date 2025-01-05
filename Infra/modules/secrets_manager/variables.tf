@@ -1,7 +1,9 @@
+/*
 variable "rds_secret_name" {
   description = "rds secret name"
   type        = string
 }
+*/
 
 variable "rds_secret_description" {
   description = "rds secret description"
@@ -9,10 +11,12 @@ variable "rds_secret_description" {
   default     = "Secret stored for rds database credentials"
 }
 
+/*
 variable "redshift_secret_name" {
   description = "redshift secret name"
   type        = string
 }
+*/
 
 variable "redshift_secret_description" {
   description = "redshift secret description"

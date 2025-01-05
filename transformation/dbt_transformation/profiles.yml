@@ -8,5 +8,5 @@ dbt_transformation:
       schema: airbyte_internal
       threads: 1
       type: redshift
-      user: "exampleuser"
+      user: "azmk8l132"
   target: dev

@@ -1,5 +1,9 @@
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
 resource "aws_iam_user" "airbyte_user" {
-  name = var.user_name
+  name = "airbyte-user-${random_id.suffix.hex}" #var.user_name
 }
 
 data "aws_iam_policy_document" "airbyte_user_document" {
@@ -49,7 +53,20 @@ data "aws_iam_policy_document" "ec2_s3_policy_document" {
 statement {
     effect    = "Allow"
     actions   = [
-      "s3:PutObject", "s3:GetObject", "s3:ListBucket", "s3:DeletéeObject"
+      "s3:PutObject", 
+      "s3:GetObject", 
+      "s3:ListBucket", 
+      "s3:DeleteObject", 
+      "ecr:GetAuthorizationToken",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:GetRepositoryPolicy",
+      "ecr:DescribeRepositories",
+      "ecr:ListImages",
+      "ecr:BatchGetImage",
+      "ecr:PutImage",
+      "ecr:InitiateLayerUpload",
+      "ecr:UploadLayerPart",
+      "ecr:CompleteLayerUpload"
     ]
     resources = [
       "arn:aws:s3:::${var.dbt_project_bucket}/*",

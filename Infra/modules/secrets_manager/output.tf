@@ -9,7 +9,7 @@ output "rds_secret_name" {
 }
 
 output "generated_username" {
-  value = random_string.rds_db_username.result
+  value = "a${random_string.rds_db_username.result}" #random_string.rds_db_username.result
 }
 
 output "generated_password" {
@@ -18,7 +18,7 @@ output "generated_password" {
 }
 
 output "generated_redshift_username" {
-  value = random_string.redshift_db_username.result
+  value = "a${random_string.redshift_db_username.result}" #random_string.redshift_db_username.result
   #random_password.redshift_db_username.result
 }
 

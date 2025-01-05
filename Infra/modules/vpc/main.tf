@@ -108,16 +108,61 @@ resource "aws_vpc_endpoint" "dynamodb" {
 }
 */
 
+resource "aws_security_group" "vpce" {
+  name        = "vpce-security-group"
+  description = "Security group for VPC Endpoints"
+  vpc_id      = aws_vpc.custom_vpc.id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Allow traffic from anywhere (adjust as needed)
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"  # Allow all outbound traffic
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_vpc_endpoint" "s3" {
   vpc_id             = aws_vpc.custom_vpc.id
   vpc_endpoint_type  = "Gateway"
   service_name       = "com.amazonaws.eu-west-3.s3"
   route_table_ids    = [aws_route_table.private_route_table.id] # You can include multiple route tables
-
   tags = {
     Name = "S3 VPC Endpoint"
   }
 }
+
+resource "aws_vpc_endpoint" "ecr_endpoint" {
+  vpc_id             = aws_vpc.custom_vpc.id
+  vpc_endpoint_type   = "Interface"
+  service_name       = "com.amazonaws.eu-west-3.ecr.dkr"
+  subnet_ids = [ aws_subnet.subnet_az1.id, aws_subnet.subnet_az2.id ]
+  security_group_ids = [ aws_security_group.vpce.id ]
+  
+  tags = {
+    Name = "ECR VPC Endpoint"
+  }
+}
+
+resource "aws_vpc_endpoint" "ecr_api_endpoint" {
+  vpc_id              = aws_vpc.custom_vpc.id
+  private_dns_enabled = true
+  service_name        = "com.amazonaws.eu-west-3.ecr.api"
+  vpc_endpoint_type   = "Interface"
+  subnet_ids = [ aws_subnet.subnet_az1.id, aws_subnet.subnet_az2.id ]
+  security_group_ids = [ aws_security_group.vpce.id ]
+  
+  tags = {
+    Name = "ECR API VPC Endpoint"
+  }
+}
+
 
 # create security group for the web server => we don't need this for our usecase
 resource "aws_security_group" "webserver_security_group" {

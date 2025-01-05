@@ -1,7 +1,6 @@
 
 module "iam_user" {
   source = "./modules/iam"
-  user_name = local.user_name
   redshift_integration_bucket_name = local.redshift_integration_bucket_name
   airbyte_s3_bucket = local.airbyte_s3_bucket
   dbt_project_bucket = local.dbt_project_bucket_name
@@ -28,15 +27,14 @@ module "vpc" {
   
 }
 
-/*
+
 module "secret_manager" {
   source = "./modules/secrets_manager"
-  rds_secret_name = local.rds_secret_name
   rds_secret_description = local.rds_secret_description
-  redshift_secret_name = local.redshift_secret_name
   redshift_secret_description = local.redshift_secret_description
 }
 
+/*
 module "rds" {
   source      = "./modules/rds"
   db_username = module.secret_manager.generated_username  #local.db_username
@@ -46,7 +44,7 @@ module "rds" {
   availability_zone = module.vpc.availability_zone_name
   vpc_security_group_ids = module.vpc.database_security_group_id
 }
-
+*/
 
 module "lambdaLayer" {
   source = "./modules/lambda_layer"
@@ -65,8 +63,6 @@ module "lambdaLayer" {
 
 }
 
-*/
-/*
 
 module "lambdaFunction" {
   
@@ -84,7 +80,7 @@ module "lambdaFunction" {
   db_username       = module.secret_manager.generated_username #local.db_username
   db_password       = module.secret_manager.generated_password #local.db_password
   db_name           = local.db_name
-  rds_endpoint      = module.rds.rds_host
+  rds_endpoint      = local.db_name #module.rds.rds_host
   #DynamoDB_table_name = module.dynamodb.last_extraction_table_name
   #raw_repertory     = local.raw_repertory
   
@@ -136,8 +132,8 @@ module "redshift" {
   cluster_subnet_group_name = module.vpc.aws_redshift_subnet_group_name
 
 }
-*/
-/*
+
+
 module "airbyte" {
   source = "./modules/airbyte"
 
@@ -145,10 +141,10 @@ module "airbyte" {
   
   destination_name = local.destination_name
   #airbyte_connection_name = local.airbyte_connection_name
-  postgres_db_password = local.db_password
+  postgres_db_password = local.db_name #local.db_password
   postgres_db_name = local.db_name
-  postgres_host = module.rds.rds_host
-  postgres_db_username = local.db_username
+  postgres_host = local.db_name #module.rds.rds_host
+  postgres_db_username = local.db_name #local.db_username
   ssh_key = file(local.private_key_path) #module.vpc.private_key
   tunnel_host = module.vpc.tunnel_host
   tunnel_user = local.bastion_ssh_user
@@ -159,9 +155,9 @@ module "airbyte" {
   s3_source_name = local.s3_source_name
 
   redshift_host = module.redshift.redshift_hostname
-  redshift_password = local.master_password
+  redshift_password = module.secret_manager.generated_redshift_password #local.master_password
   redshift_database_name = local.database_name
-  redshift_database_username = local.master_username
+  redshift_database_username = module.secret_manager.generated_redshift_username #local.master_username
 
   s3_to_redshift_connection_name = local.s3_to_redshift_connection_name
   rds_to_redshift_connection_name = local.rds_to_redshift_connection_name
@@ -171,7 +167,11 @@ module "airbyte" {
   access_key_id = module.s3bucket.access_key_id
   secret_access_key = module.s3bucket.secret_access_key
 }
-*/
+
+module "ecr" {
+  source = "./modules/ecr"
+  
+}
 
 /*
 module "cloudwatch_schedule_module_lambda1" {

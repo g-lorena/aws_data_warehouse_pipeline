@@ -6,10 +6,6 @@ from botocore.exceptions import NoCredentialsError
 import boto3
 
 
-# S3 Configuration
-S3_BUCKET = "my-dbt-healthcare-project-bucket-001"
-S3_PREFIX = "models/healthcare/staging/"
-
 # Initialize S3 client
 s3_client = boto3.client('s3')
 

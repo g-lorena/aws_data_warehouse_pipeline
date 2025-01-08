@@ -371,6 +371,13 @@ resource "aws_security_group" "redshift_sg" {
   } 
 
   ingress {
+    from_port =  5439
+    to_port   = 5439
+    protocol    = "tcp"
+    cidr_blocks = [ "${aws_instance.airflow_instance.private_ip}/32"]
+  }
+
+  ingress {
     from_port   = 5439
     to_port     = 5439
     protocol    = "tcp"

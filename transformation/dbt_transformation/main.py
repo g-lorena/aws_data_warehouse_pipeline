@@ -1,11 +1,19 @@
+from dbt.cli.main import dbtRunner, dbtRunnerResult
 import os
 import subprocess
 import re
+from botocore.exceptions import NoCredentialsError
+import boto3
+
+
+# create CLI args as a list of strings
+#cli_args = ["run", "--profiles-dir", project_dir]
 
 def run_dbt_macro():
     """Run the dbt macro and capture the output."""
     try:
         # Run the dbt command to execute the macro
+        
         result = subprocess.run(
             ['dbt', 'run-operation', 'generate_models'],
             check=True,
@@ -13,12 +21,12 @@ def run_dbt_macro():
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-
+        
+        
         # Capture the output
         output = result.stdout
 
         lines = output.splitlines()
-        
         
         # Initialize variables to hold model name and SQL content
         model_name = None
@@ -62,6 +70,7 @@ def run_dbt_macro():
         print(f"Error running dbt command: {e}")
         print(f"Stdout: {e.stdout}")
         print(f"Stderr: {e.stderr}")
+        raise
 
 def is_log_line(line):
     """Determine if the line is a log line that should be skipped."""
@@ -99,5 +108,8 @@ def write_sql_to_file(model_name, sql_content):
         # Print an error message if something goes wrong
         print(f"Error writing file for model {model_name}: {str(e)}")
 
+#Write the generated SQL files to an S3 bucket instead of the local filesystem
 
-run_dbt_macro()
+
+if __name__ == "__main__":
+    run_dbt_macro()

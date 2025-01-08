@@ -96,6 +96,7 @@ resource "aws_route_table_association" "private_subnet2_association" {
     route_table_id = aws_route_table.private_route_table.id
 }
 
+/*
 resource "aws_vpc_endpoint" "dynamodb" {
   vpc_id          = aws_vpc.custom_vpc.id
   vpc_endpoint_type = "Gateway"
@@ -105,17 +106,63 @@ resource "aws_vpc_endpoint" "dynamodb" {
     Name = "DynamoDB VPC Endpoint"
   }
 }
+*/
+
+resource "aws_security_group" "vpce" {
+  name        = "vpce-security-group"
+  description = "Security group for VPC Endpoints"
+  vpc_id      = aws_vpc.custom_vpc.id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Allow traffic from anywhere (adjust as needed)
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"  # Allow all outbound traffic
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
 resource "aws_vpc_endpoint" "s3" {
   vpc_id             = aws_vpc.custom_vpc.id
   vpc_endpoint_type  = "Gateway"
   service_name       = "com.amazonaws.eu-west-3.s3"
   route_table_ids    = [aws_route_table.private_route_table.id] # You can include multiple route tables
-
   tags = {
     Name = "S3 VPC Endpoint"
   }
 }
+
+resource "aws_vpc_endpoint" "ecr_endpoint" {
+  vpc_id             = aws_vpc.custom_vpc.id
+  vpc_endpoint_type   = "Interface"
+  service_name       = "com.amazonaws.eu-west-3.ecr.dkr"
+  subnet_ids = [ aws_subnet.subnet_az1.id, aws_subnet.subnet_az2.id ]
+  security_group_ids = [ aws_security_group.vpce.id ]
+  
+  tags = {
+    Name = "ECR VPC Endpoint"
+  }
+}
+
+resource "aws_vpc_endpoint" "ecr_api_endpoint" {
+  vpc_id              = aws_vpc.custom_vpc.id
+  private_dns_enabled = true
+  service_name        = "com.amazonaws.eu-west-3.ecr.api"
+  vpc_endpoint_type   = "Interface"
+  subnet_ids = [ aws_subnet.subnet_az1.id, aws_subnet.subnet_az2.id ]
+  security_group_ids = [ aws_security_group.vpce.id ]
+  
+  tags = {
+    Name = "ECR API VPC Endpoint"
+  }
+}
+
 
 # create security group for the web server => we don't need this for our usecase
 resource "aws_security_group" "webserver_security_group" {
@@ -324,6 +371,13 @@ resource "aws_security_group" "redshift_sg" {
   } 
 
   ingress {
+    from_port =  5439
+    to_port   = 5439
+    protocol    = "tcp"
+    cidr_blocks = [ "${aws_instance.airflow_instance.private_ip}/32"]
+  }
+
+  ingress {
     from_port   = 5439
     to_port     = 5439
     protocol    = "tcp"
@@ -343,6 +397,32 @@ resource "aws_security_group" "redshift_sg" {
   }
 }
 
+resource "aws_security_group" "airflow_sg" {
+  name        = "airflow_sg"
+  description = "Security group to allow ssh and airflow"
+  vpc_id      = aws_vpc.custom_vpc.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["93.21.130.146/32"]
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["93.21.130.146/32"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
 resource "aws_redshift_subnet_group" "redshift_subnet_group" {
   name       = "redshift-subnets"
@@ -360,4 +440,61 @@ resource "aws_db_subnet_group" "database_subnet_group" {
   tags   = {
     Name = "database-subnets"
   }
+}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  # owners      = ["059978233428"]  # Canonical's AWS account ID
+  owners      = ["amazon"]
+
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+resource "aws_instance" "airflow_instance" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t3.small" #var.instance_type
+  subnet_id     = aws_subnet.public_subnet.id 
+  key_name      = aws_key_pair.generated_bastion_key.key_name
+  vpc_security_group_ids      = [aws_security_group.airflow_sg.id]
+  iam_instance_profile = var.iam_instance_profile
+ 
+  provisioner "file" {
+    source      = var.script_path
+    destination = "/tmp/script.sh"
+
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file(var.private_key_path)
+      host     = self.public_ip
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo chmod 400 /tmp/script.sh"
+    ]
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file(var.private_key_path)
+      host     = self.public_ip
+    }
+  }
+ 
+  tags = {
+    Name = "Airflow-Instance"
+  }
+  
+  depends_on = [aws_security_group.airflow_sg]
+
 }

@@ -11,6 +11,8 @@ locals{
   redshift_integration_bucket_name = "my-redshift-integration-bucket-001"
   raw_repertory            = "raw_data"
 
+  dbt_project_bucket_name = "my-dbt-healthcare-project-bucket-001"
+
   #secrets manager 
 
   rds_secret_name = "healthcare-rds-secret-1"
@@ -86,4 +88,6 @@ locals{
   # VPC 
   private_key_path = "../aws_key/aws-bastion-key.pem"
   public_key_path = "../aws_key/aws-bastion-key.pub"
+
+  script_path = "../ec2_scripts/script.sh" 
 }

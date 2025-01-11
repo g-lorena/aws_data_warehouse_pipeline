@@ -133,8 +133,9 @@ resource "airbyte_connection" "rds_to_redshift" {
     streams = [
       {
         name = "dim_appointments"
-        sync_mode = "incremental_deduped_history" 
+        sync_mode = "incremental_append" 
         primary_key = [[ "appointment_id" ]]
+        /*
         selected_fields = [
         {
         field_path = ["appointment_id"]
@@ -161,11 +162,13 @@ resource "airbyte_connection" "rds_to_redshift" {
         field_path = ["updated_at"]
         }
       ]
+      */
       },
       {
         name = "dim_department"
-        sync_mode = "incremental_deduped_history" 
+        sync_mode = "incremental_append" 
         primary_key = [[ "department_id" ]]
+        /*
         selected_fields = [
         {
         field_path = ["department_id"]
@@ -183,11 +186,13 @@ resource "airbyte_connection" "rds_to_redshift" {
         field_path = ["updated_at"]
         }
       ]
+      */
       },
       {
         name = "dim_doctors"
-        sync_mode = "incremental_deduped_history" 
+        sync_mode = "incremental_append" 
         primary_key = [[ "doctor_id" ]]
+        /*
         selected_fields = [
         {
         field_path = ["doctor_id"]
@@ -214,11 +219,13 @@ resource "airbyte_connection" "rds_to_redshift" {
         field_path = ["updated_at"]
         }
       ]
+      */
       },
       {
         name = "dim_patients"
-        sync_mode = "incremental_deduped_history" 
+        sync_mode = "incremental_append" 
         primary_key = [[ "patient_id" ]]
+        /*
         selected_fields = [
         {
         field_path = ["patient_id"]
@@ -251,6 +258,7 @@ resource "airbyte_connection" "rds_to_redshift" {
         field_path = ["updated_at"]
         }
       ]
+      */
       }
     ]
   }

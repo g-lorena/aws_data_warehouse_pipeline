@@ -3,7 +3,7 @@ WITH treatments as (
 ),
 
 medication as (
-    select * from {{ ref ('stg_medication_data_stream') }}
+    select * from {{ ref ('stg_medication') }}
 ),
 
 medication_usage as (
@@ -15,6 +15,7 @@ medication_usage as (
     from treatments as t 
     left join medication as m 
         on t.medication_name = m.medication_name
+    GROUP BY m.medication_name
 )
 
 SELECT
@@ -24,4 +25,4 @@ SELECT
     avg_treatment_cost_with_medication,
     CURRENT_TIMESTAMP AS created_at,
     CURRENT_TIMESTAMP AS updated_at
-FROM medication_usage;
+FROM medication_usage

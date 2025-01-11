@@ -34,7 +34,7 @@ module "secret_manager" {
   redshift_secret_description = local.redshift_secret_description
 }
 
-/*
+
 module "rds" {
   source      = "./modules/rds"
   db_username = module.secret_manager.generated_username  #local.db_username
@@ -44,7 +44,7 @@ module "rds" {
   availability_zone = module.vpc.availability_zone_name
   vpc_security_group_ids = module.vpc.database_security_group_id
 }
-*/
+
 
 module "lambdaLayer" {
   source = "./modules/lambda_layer"
@@ -78,13 +78,8 @@ module "lambdaFunction" {
   db_username       = module.secret_manager.generated_username 
   db_password       = module.secret_manager.generated_password
   db_name           = local.db_name
-  rds_endpoint      = local.db_name #module.rds.rds_host
-  #DynamoDB_table_name = module.dynamodb.last_extraction_table_name
-  #raw_repertory     = local.raw_repertory
+  rds_endpoint      = module.rds.rds_host
   
-  #aws_region        = local.aws_region
-  #s3_bucket_arn         = module.s3bucket.s3_bucket_arn
-
   vpc_subnet_ids = module.vpc.subnet_ids
   vpc_security_group_ids = module.vpc.lambda_security_group_id
   lambda_layer_arns = [module.lambdaLayer.lamnda_layer_arn]
@@ -120,10 +115,11 @@ module "airbyte" {
   
   destination_name = local.destination_name
   #airbyte_connection_name = local.airbyte_connection_name
-  postgres_db_password = local.db_name #local.db_password
+  postgres_db_password = module.secret_manager.generated_password  #local.db_password
   postgres_db_name = local.db_name
-  postgres_host = local.db_name #module.rds.rds_host
-  postgres_db_username = local.db_name #local.db_username
+  postgres_host = module.rds.rds_host #module.rds.rds_host
+  postgres_db_username = module.secret_manager.generated_username #local.db_username
+
   ssh_key = file(local.private_key_path) #module.vpc.private_key
   tunnel_host = module.vpc.tunnel_host
   tunnel_user = local.bastion_ssh_user

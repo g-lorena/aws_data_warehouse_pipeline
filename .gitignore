@@ -72,3 +72,4 @@ transformation/dbt_transformation/target
 
 transformation/dbt_transformation/.user.yml
 transformation/logs
+transformation/dbt_transformation/package-lock.yml

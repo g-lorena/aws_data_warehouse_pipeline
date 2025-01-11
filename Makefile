@@ -21,7 +21,8 @@ login-ecr:
 	aws ecr get-login-password --region eu-west-3 | docker login --username $(ECR_USER) --password-stdin $(ECR_HOST)
 
 build-docker-image:
-	docker build --platform linux/amd64 -t $(DOCKER_IMAGE) tranformation/dbt_transformation
+	docker build --platform linux/amd64 -t $(DOCKER_IMAGE) transformation/dbt_transformation
+
 
 push-docker-image:
 	docker tag $(DOCKER_IMAGE) $(ECR_IMAGE)

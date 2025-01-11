@@ -35,4 +35,8 @@ models:
     healthcare: 
       staging: 
         materialized: view
+      intermediate: 
+        materialized: view
+      mart: 
+        materialized: view
        # +schema: healthcare

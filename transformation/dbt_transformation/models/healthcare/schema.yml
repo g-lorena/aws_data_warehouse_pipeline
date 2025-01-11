@@ -2,10 +2,13 @@
 version: 2
 
 models:
-  - name: stg_medication_data_stream
+  - name: stg_medication
     description: "Medication data"
     columns:
       - name: medication_id
+        tests:
+        #  - unique
+          - not_null
       - name: category
       - name: medication_name
       - name: cost
@@ -13,10 +16,13 @@ models:
       - name: updated_at
       - name: _ab_source_file_url
       - name: _ab_source_file_last_modified
-  - name: stg_procedure_data_streams
+  - name: stg_procedure
     description: "procedure data"
     columns:
       - name: procedure_code
+        tests:
+          - unique
+          - not_null
       - name: procedure_description
       - name: procedure_cost
       - name: updated_at
@@ -26,7 +32,173 @@ models:
       - name: risk_level
       - name: created_at
       - name: _ab_source_file_last_modified
-
+  - name: stg_appointments
+    description: "Appointments data"
+    columns:
+      - name: appointment_id
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+      - name: doctor_id
+      - name: appointment_date
+      - name: appointment_type
+      - name: diagnosis
+      - name: created_at
+      - name: updated_at
+      - name: _ab_source_file_url
+      - name: _ab_source_file_last_modified
+  - name: stg_department
+    description: "Department data"
+    columns:
+      - name: department_id
+        tests:
+          - unique
+          - not_null
+      - name: department_name
+      - name: department_location
+      - name: created_at
+      - name: updated_at
+      - name: _ab_source_file_url
+      - name: _ab_source_file_last_modified
+  - name: stg_doctors
+    description: "Doctors data"
+    columns:
+      - name: doctor_id
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+      - name: last_name
+      - name: specialization
+      - name: department_id
+      - name: hire_date
+      - name: created_at
+      - name: updated_at
+      - name: _ab_source_file_url
+      - name: _ab_source_file_last_modified
+  - name: stg_patients
+    description: "Patients data"
+    columns:
+      - name: patient_id
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+      - name: last_name
+      - name: gender
+      - name: dob
+      - name: patient_address
+      - name: city
+      - name: country
+      - name: created_at
+      - name: updated_at
+      - name: _ab_source_file_url
+      - name: _ab_source_file_last_modified
+  - name: int_appointments
+    description: "Appointments data"
+    columns:
+      - name: appointment_id
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+      - name: doctor_id
+      - name: department_id
+      - name: appointment_date
+      - name: appointment_type
+        tests:
+          - accepted_values:
+              values: ['Routine Checkup', 'Follow-up Visit', 'Emergency Visit', 'Specialist Consultation', 'Telemedicine', 'Surgery', 'Vaccination']
+      - name: diagnosis
+        tests:
+          - accepted_values:
+              values: ['Hypertension', 'Diabetes Mellitus', 'Chronic Obstructive Pulmonary Disease (COPD)', 'Asthma', 'Coronary Artery Disease', 'Migraine', 'Anxiety Disorder', 'Depression', 'Osteoarthritis', 'Congestive Heart Failure', 'Pneumonia', 'Fracture of bone', 'Skin Infection', 'Urinary Tract Infection', 'Cerebral Palsy'] 
+      - name: created_at
+      - name: updated_at
+  - name: int_treatments
+    description: "Treatment data"
+    columns:
+      - name: treatment_id
+        tests:
+          - unique
+          - not_null
+      - name: appointment_id
+      - name: department_id
+      - name: patient_id
+      - name: doctor_id
+      - name: treatment_date
+      - name: treatment_type
+        tests:
+          - accepted_values:
+              values: ['Medication and Procedure', 'Medication Only', 'Procedure Only', 'No Treatment']
+      - name: medication_name
+      - name: procedure_description
+      - name: treatment_cost
+      - name: created_at
+      - name: updated_at
+  - name: appointments
+    description: "Appointments data"
+    columns:
+      - name: appointment_id
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+      - name: doctor_id
+      - name: department_id
+      - name: appointment_date
+      - name: appointment_type
+        tests:
+          - accepted_values:
+              values: ['Routine Checkup', 'Follow-up Visit', 'Emergency Visit', 'Specialist Consultation', 'Telemedicine', 'Surgery', 'Vaccination']
+      - name: diagnosis
+        tests:
+          - accepted_values:
+              values: ['Hypertension', 'Diabetes Mellitus', 'Chronic Obstructive Pulmonary Disease (COPD)', 'Asthma', 'Coronary Artery Disease', 'Migraine', 'Anxiety Disorder', 'Depression', 'Osteoarthritis', 'Congestive Heart Failure', 'Pneumonia', 'Fracture of bone', 'Skin Infection', 'Urinary Tract Infection', 'Cerebral Palsy'] 
+      - name: created_at
+      - name: updated_at
+  - name: departement_analysis
+    description: "Department analysis"
+    columns:
+      - name: department_id
+        tests:
+          - unique
+          - not_null
+      - name: department_name
+      - name: department_location
+      - name: total_treatments
+      - name: total_costs
+      - name: average_treatment_cost
+      - name: total_appointments
+      - name: medication_revenue
+      - name: procedure_revenue
+      - name: created_at
+      - name: updated_at
+  - name: medicate_usage
+    description: "Medication usage"
+    columns:
+      - name: medication_name
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('int_treatments')
+              field: medication_name
+      - name: total_treatments_with_medication
+      - name: total_medication_cost
+      - name: avg_treatment_cost_with_medication
+      - name: created_at
+      - name: updated_at
+  - name: treatment_outcomes
+    description: "Treatment outcomes"
+    columns:
+      - name: treatment_type
+      - name: total_treatments
+      - name: total_cost
+      - name: avg_treatment_cost
+      - name: created_at
+      - name: updated_at
 
 sources:
   - name: healthcare
@@ -34,7 +206,7 @@ sources:
     tables:
       - name: public_raw__stream_dim_procedure_data_streams
       - name: public_raw__stream_dim_medication_data_stream
-     # - name: public_raw__stream_dim_appointments
-     # - name: public_raw__stream_dim_department
-     # - name: public_raw__stream_dim_doctors
-    #  - name: public_raw__stream_dim_patients
+      - name: public_raw__stream_dim_appointments
+      - name: public_raw__stream_dim_department
+      - name: public_raw__stream_dim_doctors
+      - name: public_raw__stream_dim_patients

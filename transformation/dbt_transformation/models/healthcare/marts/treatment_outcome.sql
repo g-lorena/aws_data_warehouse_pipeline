@@ -17,6 +17,6 @@ SELECT
     total_treatments,
     total_cost,
     avg_treatment_cost,
-    CURRENT_TIMESTAMP AS created_at,
-    CURRENT_TIMESTAMP AS updated_at
-FROM combined_treatment_outcome
+    CURRENT_TIMESTAMP() AS created_at,
+    CURRENT_TIMESTAMP() AS updated_at
+FROM treatment_outcome

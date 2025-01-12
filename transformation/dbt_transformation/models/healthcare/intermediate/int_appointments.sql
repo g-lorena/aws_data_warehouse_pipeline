@@ -9,33 +9,35 @@ doctors as (
 departements as (
     select * from {{ ref ('stg_departement') }}
 ),
+
+random_doctor_department as (
+    select
+        p.patient_id,
+        d.doctor_id,
+        dp.department_id,
+        ROW_NUMBER() OVER (PARTITION BY p.patient_id ORDER BY RANDOM()) as rn
+    from patients as p
+    join doctors as d
+        on p.patient_id IS NOT NULL
+    join departements as dp
+        on d.department_id = dp.department_id
+),
+
 appointments as (
     select
-        
-        CONCAT(
-            'APP_',
-            --TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDDHH24MISS'), -- Timestamp for uniqueness
-            '_',
-            SUBSTRING(MD5(RANDOM()::TEXT), 1, 5) -- Random alphanumeric suffix
-        ) AS appointment_id,
-        
-        p.patient_id,
-        --p.first_name as patient_first_name,
-        --p.last_name as patient_last_name,
-        --p.gender as as patient_gender,
-        --p.dob as patient_dob,
+        concat('APP_', 
+            concat( TO_CHAR({{ dbt.current_timestamp() }}, 'YYYYMMDDHH24MISS'), 
+                concat('_', SUBSTRING(MD5(RANDOM()::TEXT), 1, 5)))
+            ) AS appointment_id, 
 
-        d.doctor_id as doctor_id,
-        dp.department_id as department_id,
-        --d.first_name as doctor_first_name,
-        --d.last_name as doctor_last_name,
+        r.patient_id as patient_id,
+        r.doctor_id as doctor_id,
+        r.department_id,
 
-        -- Randomly assign an appointment type
-
+     -- Randomly assign an appointment date
         {{ dateadd(datepart="day", interval=1, from_date_or_timestamp="'2023-01-01'") }} AS appointment_date,
-        
-        --DATEADD(day, FLOOR(RANDOM() * 365), '2023-01-01') 
 
+    -- Randomly assign an appointment type
         CASE
             WHEN RANDOM() < 0.15 THEN 'Routine Checkup'
             WHEN RANDOM() < 0.3 THEN 'Follow-up Visit'
@@ -46,7 +48,7 @@ appointments as (
             ELSE 'Vaccination'
         END AS appointment_type,
 
-        -- Randomly assign a diagnosis
+    -- Randomly assign a diagnosis
         CASE
             WHEN RANDOM() < 0.067 THEN 'Hypertension'
             WHEN RANDOM() < 0.133 THEN 'Diabetes Mellitus'
@@ -66,11 +68,8 @@ appointments as (
         END AS diagnosis,
     {{ dbt.current_timestamp() }} AS created_at,
     {{ dbt.current_timestamp() }} AS updated_at
-
-    from patients as p 
-    cross join doctors as d 
-    join departements as dp 
-        on d.department_id = dp.department_id
+    from random_doctor_department as r 
+    where r.rn = 1
 )
 
 SELECT

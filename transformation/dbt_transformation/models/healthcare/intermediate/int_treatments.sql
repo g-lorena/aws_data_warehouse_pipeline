@@ -3,19 +3,24 @@ WITH medication as (
 ),
 appointments as (
     select * from {{ ref('int_appointments') }}
-)
+),
 
 procedures as (
     select * from {{ ref('stg_procedure') }}
-)
+),
 
 base_treatments AS (
     SELECT
         -- Generate a unique treatment ID
-        CONCAT('TREAT_', MD5(CONCAT(a.appointment_id, '_', RANDOM()::TEXT))) AS treatment_id,
+        concat('TREAT_', 
+                concat(a.appointment_id, 
+                concat('_', SUBSTRING(MD5(RANDOM()::TEXT), 1, 5)))) AS treatment_id,
+
+
         a.appointment_id,
         a.patient_id,
         a.doctor_id,
+        a.department_id,
         a.appointment_date AS treatment_date,
         -- Placeholder fields for treatment specifics
         CURRENT_TIMESTAMP AS created_at,
@@ -46,13 +51,13 @@ combined_treatments AS (
     SELECT
         t.treatment_id,
         t.appointment_id,
-        t.departement_id,
+        t.department_id,
         t.patient_id,
         t.doctor_id,
         t.treatment_date,
         COALESCE(m.medication_name, 'No Medication') AS medication_name,
         COALESCE(pr.procedure_description, 'No Procedure') AS procedure_description,
-        (COALESCE(m.medication_cost, 0) + COALESCE(pr.procedure_cost, 0)) AS treatment_cost,
+        (COALESCE(CAST(m.medication_cost AS FLOAT), 0) + COALESCE(CAST(pr.procedure_cost AS FLOAT), 0)) AS treatment_cost,
         CASE
             WHEN m.medication_id IS NOT NULL AND pr.procedure_code IS NOT NULL THEN 'Medication and Procedure'
             WHEN m.medication_id IS NOT NULL THEN 'Medication Only'
@@ -70,7 +75,7 @@ combined_treatments AS (
 SELECT
     treatment_id,
     appointment_id,
-    departement_id,
+    department_id,
     patient_id,
     doctor_id,
     treatment_date,

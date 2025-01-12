@@ -1,3 +1,5 @@
+
+
 WITH treatments as (
   select * from {{ ref ('int_treatments') }}
 ),
@@ -15,6 +17,7 @@ medication_usage as (
     from treatments as t 
     left join medication as m 
         on t.medication_name = m.medication_name
+    GROUP BY m.medication_name
 )
 
 SELECT
@@ -22,6 +25,6 @@ SELECT
     total_treatments_with_medication,
     total_medication_cost,
     avg_treatment_cost_with_medication,
-    CURRENT_TIMESTAMP AS created_at,
-    CURRENT_TIMESTAMP AS updated_at
+    CURRENT_TIMESTAMP() AS created_at,
+    CURRENT_TIMESTAMP() AS updated_at
 FROM medication_usage

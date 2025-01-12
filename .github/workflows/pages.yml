@@ -51,10 +51,6 @@ jobs:
       - name: Install dependencies
         run: |
          pip install -r requirements.txt
-        
-      - name: Navigate to dbt directory
-        run: |
-          cd DBT_PROFILES_DIR
          
       - name: Create dbt documentation
         run: |

@@ -1,3 +1,12 @@
+{{ config(
+    pre_hook="{{ drop_when_not_incremental(this, is_incremental() )}}",
+    post_hook=[
+        "OPTIMIZE {{ this }} ZORDER BY (department_id)",
+        "ANALYZE TABLE {{ this }} COMPURE STATISTICS FOR ALL COLUMNS"
+    ]
+    unique_key='department_id'
+)}}
+
 WITH departements as (
   select * from {{ ref ('stg_departement') }}
 ),
@@ -43,6 +52,6 @@ SELECT
     total_appointments,
     medication_revenue, 
     procedure_revenue,
-    CURRENT_TIMESTAMP AS created_at,
-    CURRENT_TIMESTAMP AS updated_at
+    CURRENT_TIMESTAMP() AS created_at,
+    CURRENT_TIMESTAMP() AS updated_at
 FROM department_aggregates

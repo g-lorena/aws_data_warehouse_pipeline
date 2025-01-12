@@ -36,7 +36,8 @@ models:
       staging: 
         materialized: view
       intermediate: 
-        materialized: view
+        +materialized: view
+        +incremental_strategy: "insert_overwrite"
       mart: 
         materialized: view
        # +schema: healthcare

@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
   
 env:
-  DBT_PROFILES_DIR: transformation/dbt_transformation
+  DBT_PROFILES_DIR: ${{secrets.DBT_PROFILES_DIR}} #transformation/dbt_transformation
   DBT_TARGET: dev
   DBT_REDSHIFT_DATABASE: ${{secrets.DBT_REDSHIFT_DATABASE}}
   DBT_REDSHIFT_PWD: ${{secrets.DBT_REDSHIFT_PWD}}
@@ -35,10 +35,8 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: 'g-lorena.github.io' #${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }} #'g-lorena.github.io'#
     runs-on: ubuntu-latest
-    env:
-      DBT_PROFILES_DIR: transformation/dbt_transformation
     steps:
       - name: Checkout
         uses: actions/checkout@v3

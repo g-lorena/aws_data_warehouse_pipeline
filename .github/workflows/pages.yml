@@ -50,6 +50,10 @@ jobs:
         run: |
          pip install -r requirements.txt
          dbt --version
+         
+      - name: List directory contents to debug path
+        run: |
+          ls -l
 
       - name: Set up SSH tunnel to Redshift
         run : |

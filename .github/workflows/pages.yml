@@ -53,10 +53,11 @@ jobs:
 
       - name: Set up SSH tunnel to Redshift
         run : |
-          chmod 600 ./aws_key/aws-bastion-key.pem
+          chmod 600 aws_key/aws-bastion-key.pem
 
-          ssh -i ./aws_key/aws-bastion-key.pem -L 5439:my-healthcare-redshift-cluster.cmzewdchmvkc.eu-west-3.redshift.amazonaws.com:5439 ec2-user@ec2-51-44-122-143.eu-west-3.compute.amazonaws.com
-         
+          ssh -i aws_key/aws-bastion-key.pem -L 5439:my-healthcare-redshift-cluster.cmzewdchmvkc.eu-west-3.redshift.amazonaws.com:5439 ec2-user@ec2-51-44-122-143.eu-west-3.compute.amazonaws.com
+        working-directory: ./
+
       - name: Create dbt documentation
         run: |
           dbt deps

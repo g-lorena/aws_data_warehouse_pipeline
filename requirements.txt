@@ -1,3 +1,4 @@
 Faker
 sqlalchemy
 psycopg2-binary
+dbt-redshift==1.9.0

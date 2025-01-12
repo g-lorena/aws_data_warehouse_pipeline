@@ -48,7 +48,7 @@ models:
       - name: updated_at
       - name: _ab_source_file_url
       - name: _ab_source_file_last_modified
-  - name: stg_department
+  - name: stg_departement
     description: "Department data"
     columns:
       - name: department_id
@@ -175,7 +175,7 @@ models:
       - name: procedure_revenue
       - name: created_at
       - name: updated_at
-  - name: medicate_usage
+  - name: medication_usage
     description: "Medication usage"
     columns:
       - name: medication_name
@@ -190,7 +190,7 @@ models:
       - name: avg_treatment_cost_with_medication
       - name: created_at
       - name: updated_at
-  - name: treatment_outcomes
+  - name: treatment_outcome
     description: "Treatment outcomes"
     columns:
       - name: treatment_type

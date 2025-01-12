@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
   
 env:
-  DBT_PROFILES_DIR: ./transformation/dbt_transformation
+  DBT_PROFILES_DIR: ./
   DBT_TARGET: dev
   DBT_REDSHIFT_DATABASE: ${{secrets.DBT_REDSHIFT_DATABASE}}
   DBT_REDSHIFT_PWD: ${{secrets.DBT_REDSHIFT_PWD}}
@@ -56,12 +56,13 @@ jobs:
           dbt deps
           dbt docs generate
         env:
-          DBT_PROFILES_DIR: ./transformation/dbt_transformation
+          DBT_PROFILES_DIR: ./
           DBT_TARGET: dev
           DBT_REDSHIFT_DATABASE: ${{secrets.DBT_REDSHIFT_DATABASE}}
           DBT_REDSHIFT_PWD: ${{secrets.DBT_REDSHIFT_PWD}}
           DBT_REDSHIFT_HOST: ${{secrets.DBT_REDSHIFT_HOST}}
           DBT_REDSHIFT_USER: ${{secrets.DBT_REDSHIFT_USER}}
+        working-directory: transformation/dbt_transformation
 
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3

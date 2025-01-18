@@ -34,7 +34,7 @@ module "secret_manager" {
   redshift_secret_description = local.redshift_secret_description
 }
 
-/*
+
 module "rds" {
   source      = "./modules/rds"
   db_username = module.secret_manager.generated_username  #local.db_username
@@ -44,7 +44,7 @@ module "rds" {
   availability_zone = module.vpc.availability_zone_name
   vpc_security_group_ids = module.vpc.database_security_group_id
 }
-*/
+
 
 module "lambdaLayer" {
   source = "./modules/lambda_layer"
@@ -80,7 +80,7 @@ module "lambdaFunction" {
   db_username       = module.secret_manager.generated_username #local.db_username
   db_password       = module.secret_manager.generated_password #local.db_password
   db_name           = local.db_name
-  rds_endpoint      = local.db_name #module.rds.rds_host
+  rds_endpoint      = module.rds.rds_host
   #DynamoDB_table_name = module.dynamodb.last_extraction_table_name
   #raw_repertory     = local.raw_repertory
   
@@ -173,15 +173,15 @@ module "ecr" {
   
 }
 
-/*
 module "cloudwatch_schedule_module_lambda1" {
   source                   = "./modules/eventbridge"
   schedule_name            = "trigger_every_1_hour"
-  schedule_value           = "cron(0 * * * ? *)"
+  schedule_value           = "cron(*/30 0 * * ? *)"
   aws_lambda_arn           = module.lambdaFunction.lambda1_function_arn 
   aws_lambda_function_name = module.lambdaFunction.lambda1_function_name 
 }
 
+/*
 module "cloudwatch_schedule_module_lambda2" {
   source                   = "./modules/eventbridge"
   schedule_name            = "trigger_daily"

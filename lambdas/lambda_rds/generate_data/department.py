@@ -16,8 +16,10 @@ def generate_concatenated_id():
 
 department_names = [
     "Internal Medicine", "Pediatrics", "Surgery", "Cardiology", "Neurology",
-    "Oncology", "Radiology", "Pathology", "Emergency Medicine", "Administration",
-    "Finance", "Human Resources", "Marketing", "IT", "Legal"
+    "Oncology", "Radiology", "Pathology", "Emergency Medicine", "Anesthesiology", 
+    "Emergency Room (ER)", "Orthopedics", "Gastroenterology","Endocrinology",
+    "Psychiatry", "Urology", "Dermatology", "Pulmonology", "Nephrology", "Plastic Surgery",
+    "Hematology"
 ]
 
 def generate_departments(num_departement):

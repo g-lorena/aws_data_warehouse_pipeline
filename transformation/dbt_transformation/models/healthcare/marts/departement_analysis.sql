@@ -3,7 +3,7 @@
     post_hook=[
         "OPTIMIZE {{ this }} ZORDER BY (department_id)",
         "ANALYZE TABLE {{ this }} COMPURE STATISTICS FOR ALL COLUMNS"
-    ]
+    ],
     unique_key='department_id'
 )}}
 

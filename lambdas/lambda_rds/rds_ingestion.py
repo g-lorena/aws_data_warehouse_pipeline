@@ -52,7 +52,7 @@ def lambda_handler(event, context):
         print("Database connection failed.")
         return {'statusCode': 500, 'body': 'Database connection failed.'}
     
-    operation_choice = random.choice(['insert', 'update'])
+    operation_choice = random.choice(['insert'])
     
     try:
         if operation_choice == 'insert':
@@ -63,19 +63,20 @@ def lambda_handler(event, context):
                 #insert_procedure_data(engine)
                 #update_last_extraction_time("procedure", dynamo_table)
 
+                #insert_departement_data(engine)
+
+                #insert_doctors_data(engine)
+
                 insert_patient_data(engine)
-                #update_last_extraction_time("patients", dynamo_table)
-                
-                insert_departement_data(engine)
-                #update_last_extraction_time("department", dynamo_table)
-                
-                insert_doctors_data(engine)
-                #update_last_extraction_time("doctors", dynamo_table)
-                
+
                 insert_appointments_data(engine)
+
+                #update_last_extraction_time("patients", dynamo_table)
+                #update_last_extraction_time("department", dynamo_table)
+                #update_last_extraction_time("doctors", dynamo_table)
                 #update_last_extraction_time("appointments", dynamo_table)
                 
-                insert_treatment_data(engine)
+                #insert_treatment_data(engine)
                 #update_last_extraction_time("treatement", dynamo_table)
 
                 return {'statusCode': 200, 'body': 'Insert operation completed.'}
@@ -95,6 +96,7 @@ def lambda_handler(event, context):
                 #update_last_extraction_time("procedure", dynamo_table)
                 
                 update_patients(engine)
+                
                 #update_last_extraction_time("patients", dynamo_table)
                 
                 update_departement(engine)

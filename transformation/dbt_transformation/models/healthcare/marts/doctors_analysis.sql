@@ -6,29 +6,27 @@
         post_hook=[
             "ANALYZE {{ this }};" 
         ],
-        unique_key='appointment_id'
+        unique_key='doctor_id'
 )}}
 
-WITH appointments as (
+with doctors as (
     select 
-        * 
-    from {{ ref('int_appointments') }}
+        *
+    from {{ ref('int_doctors') }}
     where 1=1
     {% if is_incremental() %}
-       AND updated_at > (SELECT MAX(updated_at) FROM {{ this }})
-
+        AND updated_at > (SELECT MAX(updated_at) FROM {{ this }})
     {% endif %}
-
 )
 
-SELECT
-    appointment_id,
-    patient_id,
+select 
     doctor_id,
-    department_id,
-    appointment_date,
-    appointment_type,
-    diagnosis,
+    first_name,
+    specialization,
+    total_appointments,
+    total_treatments,
+    total_patients,
+    total_revenue,
     created_at,
     updated_at
-FROM appointments
+from doctors

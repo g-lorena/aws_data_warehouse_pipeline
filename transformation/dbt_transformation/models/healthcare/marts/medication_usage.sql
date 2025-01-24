@@ -1,7 +1,18 @@
 
 
-WITH treatments as (
-  select * from {{ ref ('int_treatments') }}
+WITH appointment_medication as (
+  select 
+    appointment_id,
+    patient_id,
+    doctor_id,
+    department_id,
+    appointment_date,
+    appointment_type,
+    diagnosis,
+    total_medications,
+    total_quantity,
+    total_medication_cost
+  from {{ ref ('int_appointment_medication') }}
 ),
 
 medication as (
@@ -25,6 +36,6 @@ SELECT
     total_treatments_with_medication,
     total_medication_cost,
     avg_treatment_cost_with_medication,
-    CURRENT_TIMESTAMP() AS created_at,
-    CURRENT_TIMESTAMP() AS updated_at
+    CURRENT_TIMESTAMP AS created_at,
+    CURRENT_TIMESTAMP AS updated_at
 FROM medication_usage

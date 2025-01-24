@@ -6,40 +6,41 @@
         post_hook=[
             "ANALYZE {{ this }};" 
         ],
-        unique_key='department_id'
+        unique_key='patient_id'
 )}}
 
-WITH department_aggregates as (
+WITH patients_aggregates as (
   select 
-    department_id,
-    department_name,
-    department_location,
-    total_appointments
+    patient_id,
+    gender,
+    total_appointments,
     total_treatments,
-    total_revenue,
+    total_spent_on_procedures,
+    total_spent_on_medications,
+    total_spent_on_treatments,
     created_at,
     updated_at
   from {{ ref ('int_departement') }}
 ),
 
-department_aggregates_analysis as (
+patients_aggregates_analysis as  (
     select 
       * 
-    from department_aggregates
+    from patients_aggregates
     where 1=1
         {% if is_incremental() %}
           AND updated_at > (SELECT MAX(updated_at) FROM {{ this }})
         {% endif %}
 )
 
-SELECT
-    department_id,
-    department_name,
-    department_location,
+select 
+    patient_id,
+    gender,
     total_appointments,
     total_treatments,
-    total_revenue,
+    total_spent_on_procedures,
+    total_spent_on_medications,
+    total_spent_on_treatments,
     created_at,
     updated_at
-    
-FROM department_aggregates_analysis
+from patients_aggregates_analysis

@@ -96,6 +96,8 @@ resource "aws_lambda_function" "lambda_1" {
       DB_PASSWORD = var.db_password
       DB_NAME = var.db_name
       DB_HOST = var.rds_endpoint
+      DST_BUCKET = var.dst_bucket_name
+      RAW_FOLDER = var.raw_repertory
     }
   }
   

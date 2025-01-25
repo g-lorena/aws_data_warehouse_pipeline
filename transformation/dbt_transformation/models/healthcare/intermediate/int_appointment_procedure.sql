@@ -1,30 +1,32 @@
 with procedures  as (
     select 
-        procedure_cost
-    from {{ ref ('stg_procedures') }}
+        procedure_cost,
+        procedure_code
+    from {{ ref ('stg_procedure') }}
 ),
 
 procedures_performed as (
     select 
         procedure_performed_id, 
         appointment_id,
-        duration
+        duration,
+        procedure_code
     from {{ ref ('stg_procedures_performed') }}
 ),
 
 based_procedures as (
     select 
-        p.procedure_performed_id, 
-        p.appointment_id,
+        pp.procedure_performed_id, 
+        pp.appointment_id,
        -- p.notes,
        -- p.created_at,
        -- p.procedure_code,
-        p.duration,
+        pp.duration,
        -- p.updated_at,
        -- pp.procedure_name,
        -- pp.procedure_category,
        -- pp.risk_level,
-        pp.procedure_cost
+        p.procedure_cost
     from procedures_performed as pp
     join procedures as p
         on pp.procedure_code = p.procedure_code
@@ -38,7 +40,7 @@ aggregate_procedures as (
         sum(bp.procedure_cost) as total_procedure_cost
     from based_procedures as bp
     group by bp.appointment_id
-),
+)
 
 select 
     appointment_id,
@@ -51,5 +53,5 @@ select
     total_procedures,
     total_duration,
     total_procedure_cost
-from app_procedures
+from aggregate_procedures
     

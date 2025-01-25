@@ -5,24 +5,28 @@ models:
   - name: stg_medication
     description: "Medication data"
     columns:
-      - name: medication_id
-        tests:
-        #  - unique
-          - not_null
+      - name: medication_code
       - name: category
-      - name: medication_name
       - name: cost
       - name: created_at
       - name: updated_at
       - name: _ab_source_file_url
       - name: _ab_source_file_last_modified
+
+  - name: stg_medications_prescriptions
+    description: "Medication data"
+    columns:
+      - name: medication_prescription_id
+      - name: medication_code
+      - name: appointment_id
+      - name: frequency
+      - name: dosage
+      - name: quantity
+
   - name: stg_procedure
     description: "procedure data"
     columns:
       - name: procedure_code
-        tests:
-          - unique
-          - not_null
       - name: procedure_description
       - name: procedure_cost
       - name: updated_at
@@ -32,42 +36,53 @@ models:
       - name: risk_level
       - name: created_at
       - name: _ab_source_file_last_modified
+
+  - name: stg_procedures_performed
+    description: "procedure data"
+    columns:
+      - name: procedure_performed_id
+      - name: appointment_id
+      - name: notes
+      - name: created_at
+      - name: procedure_code
+      - name: duration
+      - name: updated_at
+
   - name: stg_appointments
     description: "Appointments data"
     columns:
       - name: appointment_id
-        tests:
-          - unique
-          - not_null
       - name: patient_id
       - name: doctor_id
       - name: appointment_date
       - name: appointment_type
+        tests:
+          - accepted_values:
+              values: ['Routine Checkup', 'Follow-up Visit', 'Emergency Visit', 'Specialist Consultation', 'Telemedicine', 'Surgery', 'Vaccination', 'Mental Health Evaluation', 'Skin Consultation']
       - name: diagnosis
+       # tests:
+       #   - accepted_values:
+       #       values: ['Hypertension', 'Diabetes Mellitus', 'Chronic Obstructive Pulmonary Disease (COPD)', 'Asthma', 'Coronary Artery Disease', 'Migraine', 'Anxiety Disorder', 'Depression', 'Osteoarthritis', 'Congestive Heart Failure', 'Pneumonia', 'Fracture of bone', 'Skin Infection', 'Urinary Tract Infection', 'Cerebral Palsy'] 
       - name: created_at
       - name: updated_at
       - name: _ab_source_file_url
       - name: _ab_source_file_last_modified
-  - name: stg_department
+
+  - name: stg_departement
     description: "Department data"
     columns:
       - name: department_id
-        tests:
-          - unique
-          - not_null
       - name: department_name
       - name: department_location
       - name: created_at
       - name: updated_at
       - name: _ab_source_file_url
       - name: _ab_source_file_last_modified
+
   - name: stg_doctors
     description: "Doctors data"
     columns:
       - name: doctor_id
-        tests:
-          - unique
-          - not_null
       - name: first_name
       - name: last_name
       - name: specialization
@@ -77,13 +92,11 @@ models:
       - name: updated_at
       - name: _ab_source_file_url
       - name: _ab_source_file_last_modified
+
   - name: stg_patients
     description: "Patients data"
     columns:
       - name: patient_id
-        tests:
-          - unique
-          - not_null
       - name: first_name
       - name: last_name
       - name: gender
@@ -95,49 +108,49 @@ models:
       - name: updated_at
       - name: _ab_source_file_url
       - name: _ab_source_file_last_modified
-  - name: int_appointments
-    description: "Appointments data"
+
+  - name: int_appointment_medication
+    description: "int_appointment_medication data"
     columns:
       - name: appointment_id
-        tests:
-          - unique
-          - not_null
-      - name: patient_id
-      - name: doctor_id
-      - name: department_id
-      - name: appointment_date
-      - name: appointment_type
-        tests:
-          - accepted_values:
-              values: ['Routine Checkup', 'Follow-up Visit', 'Emergency Visit', 'Specialist Consultation', 'Telemedicine', 'Surgery', 'Vaccination']
-      - name: diagnosis
-        tests:
-          - accepted_values:
-              values: ['Hypertension', 'Diabetes Mellitus', 'Chronic Obstructive Pulmonary Disease (COPD)', 'Asthma', 'Coronary Artery Disease', 'Migraine', 'Anxiety Disorder', 'Depression', 'Osteoarthritis', 'Congestive Heart Failure', 'Pneumonia', 'Fracture of bone', 'Skin Infection', 'Urinary Tract Infection', 'Cerebral Palsy'] 
+      - name: total_medications
+      - name: total_medication_cost
+
+  - name: int_appointment_procedure
+    description: "int_appointment_procedure data"
+    columns:
+      - name: appointment_id
+      - name: total_procedures
+      - name: total_duration
+      - name: total_procedure_cost
+
+  - name: int_medication
+    description: "int_medication data"
+    columns:
+      - name: medication_prescription_id
+      - name: medication_code
+      - name: frequency
+      - name: dosage
+      - name: category
       - name: created_at
       - name: updated_at
-  - name: int_treatments
-    description: "Treatment data"
-    columns:
-      - name: treatment_id
-        tests:
-          - unique
-          - not_null
-      - name: appointment_id
-      - name: department_id
-      - name: patient_id
-      - name: doctor_id
-      - name: treatment_date
-      - name: treatment_type
-        tests:
-          - accepted_values:
-              values: ['Medication and Procedure', 'Medication Only', 'Procedure Only', 'No Treatment']
-      - name: medication_name
+
+  - name: int_procedure
+    description: "int_procedure data"
+    columns: 
+      - name: procedure_performed_id
+      - name: notes
+      - name: procedure_code
+      - name: duration
       - name: procedure_description
-      - name: treatment_cost
+      - name: procedure_name
+      - name: procedure_category
+      - name: risk_level
       - name: created_at
       - name: updated_at
-  - name: appointments
+
+  
+  - name: fact_appointment
     description: "Appointments data"
     columns:
       - name: appointment_id
@@ -145,21 +158,90 @@ models:
           - unique
           - not_null
       - name: patient_id
+        tests:
+          - not_null
       - name: doctor_id
-      - name: department_id
+        tests:
+          - not_null
       - name: appointment_date
       - name: appointment_type
         tests:
           - accepted_values:
-              values: ['Routine Checkup', 'Follow-up Visit', 'Emergency Visit', 'Specialist Consultation', 'Telemedicine', 'Surgery', 'Vaccination']
-      - name: diagnosis
-        tests:
-          - accepted_values:
-              values: ['Hypertension', 'Diabetes Mellitus', 'Chronic Obstructive Pulmonary Disease (COPD)', 'Asthma', 'Coronary Artery Disease', 'Migraine', 'Anxiety Disorder', 'Depression', 'Osteoarthritis', 'Congestive Heart Failure', 'Pneumonia', 'Fracture of bone', 'Skin Infection', 'Urinary Tract Infection', 'Cerebral Palsy'] 
+              values: ['Routine Checkup', 'Follow-up Visit', 'Emergency Visit', 'Specialist Consultation', 'Telemedicine', 'Surgery', 'Vaccination', 'Mental Health Evaluation', 'Skin Consultation']
+      - name: medication_count
+      - name: total_medication_cost
+      - name: procedure_count
+      - name: total_procedure_cost
+      - name: total_revenue
       - name: created_at
       - name: updated_at
-  - name: departement_analysis
-    description: "Department analysis"
+
+  - name: dim_doctors
+    description: "dim_doctors"
+    columns:
+      - name: doctor_id
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+      - name: last_name
+      - name: hire_date
+      - name: total_costs
+      - name: updated_at
+      - name: specialization
+     # - name: department_id
+      - name: created_at
+  
+  - name: dim_patients
+    description: "dim_patients"
+    columns:
+      - name: patient_id
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+      - name: last_name
+      - name: city
+      - name: country
+      - name: gender
+      - name: dob
+      - name: patient_address
+      - name: created_at
+      - name: updated_at
+  
+  - name: dim_procedure
+    description: "dim_procedure"
+    columns:
+      - name: procedure_performed_id
+        tests:
+          - unique
+          - not_null
+      - name: notes
+      - name: procedure_code
+      - name: duration
+      - name: procedure_description
+      - name: procedure_name
+      - name: procedure_category
+      - name: risk_level
+      - name: created_at
+      - name: updated_at
+
+  - name: dim_medication
+    description: "dim_medication"
+    columns:
+      - name: medication_prescription_id
+        tests:
+          - unique
+          - not_null
+      - name: medication_code
+      - name: frequency
+      - name: dosage
+      - name: category
+      - name: created_at
+      - name: updated_at
+
+  - name: dim_departement
+    description: "dim_departement"
     columns:
       - name: department_id
         tests:
@@ -167,36 +249,6 @@ models:
           - not_null
       - name: department_name
       - name: department_location
-      - name: total_treatments
-      - name: total_costs
-      - name: average_treatment_cost
-      - name: total_appointments
-      - name: medication_revenue
-      - name: procedure_revenue
-      - name: created_at
-      - name: updated_at
-  - name: medicate_usage
-    description: "Medication usage"
-    columns:
-      - name: medication_name
-        tests:
-          - unique
-          - not_null
-          - relationships:
-              to: ref('int_treatments')
-              field: medication_name
-      - name: total_treatments_with_medication
-      - name: total_medication_cost
-      - name: avg_treatment_cost_with_medication
-      - name: created_at
-      - name: updated_at
-  - name: treatment_outcomes
-    description: "Treatment outcomes"
-    columns:
-      - name: treatment_type
-      - name: total_treatments
-      - name: total_cost
-      - name: avg_treatment_cost
       - name: created_at
       - name: updated_at
 

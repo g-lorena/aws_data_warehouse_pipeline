@@ -3,7 +3,7 @@ with medications as (
         medication_code,
         category,
         cost
-    from {{ ref ('stg_medications') }}
+    from {{ ref ('stg_medication') }}
 ),
 
 medications_prescribed as (
@@ -14,7 +14,7 @@ medications_prescribed as (
         quantity,
         frequency,
         dosage
-    from {{ ref ('stg_medications_prescribed') }}
+    from {{ ref ('stg_medications_prescriptions') }}
 ),
 
 based_medications as (
@@ -41,7 +41,7 @@ aggregate_medications as (
         --sum(bm.cost) as total_medication_cost
     from based_medications as bm
     group by bm.appointment_id
-),
+)
 
 select 
     appointment_id,
@@ -54,4 +54,4 @@ select
     total_medications,
     --total_quantity,
     total_medication_cost
-from app_medications
+from aggregate_medications

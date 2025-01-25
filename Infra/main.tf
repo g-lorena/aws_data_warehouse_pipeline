@@ -53,8 +53,6 @@ module "lambdaLayer" {
   layer_zip_path    = local.layer_zip_path
   layer_name        = local.layer_name
 
-  #path_to_system_folder = local.path_to_system_folder
-
   lambda_layer_bucket_name = local.lambda_layer_bucket_name
   lambda_layer             = local.lambda_layer
 
@@ -77,16 +75,11 @@ module "lambdaFunction" {
   timeout               = local.timeout
   runtime               = local.runtime
 
-  db_username       = module.secret_manager.generated_username #local.db_username
-  db_password       = module.secret_manager.generated_password #local.db_password
+  db_username       = module.secret_manager.generated_username 
+  db_password       = module.secret_manager.generated_password
   db_name           = local.db_name
   rds_endpoint      = module.rds.rds_host
-  #DynamoDB_table_name = module.dynamodb.last_extraction_table_name
-  #raw_repertory     = local.raw_repertory
-  
-  #aws_region        = local.aws_region
-  #s3_bucket_arn         = module.s3bucket.s3_bucket_arn
-
+     
   vpc_subnet_ids = module.vpc.subnet_ids
   vpc_security_group_ids = module.vpc.lambda_security_group_id
   lambda_layer_arns = [module.lambdaLayer.lamnda_layer_arn]
@@ -98,33 +91,14 @@ module "lambdaFunction" {
 
   dst_bucket_name = local.redshift_integration_bucket_name
   raw_repertory = local.raw_repertory
-
-  #s3_bucket_redshift_integration_arn = module.s3bucket.s3_bucket_redshift_integration_arn
-
-  #path_to_source_folder_3 = local.path_to_source_folder_3
-  #path_to_output_3 = local.path_to_output_3
-  #function_name_3 = local.function_name_3
-  #function_handler_3 = local.function_handler_3
-  #REDSHIFT_ROLE_ARN = module.redshift.redshift_role_arn
-
-#  redshift_integration_bucket_id = module.s3bucket.s3_bucket_redshift_integration_id
-
-  #REDSHIFT_DB = local.database_name
-  #REDSHIFT_USER = local.master_username
-  #REDSHIFT_PASSWORD = local.master_password
-  #REDSHIFT_HOST = module.redshift.redshift_hostname
-  #aws_redshift_cluster_endpoint = module.redshift.redshift_endpoint
-
-  #bucket_id = module.s3bucket.s3_bucket_redshift_integration_id
-
 }
 
 module "redshift" {
   source                   = "./modules/redshift"
   cluster_identifier = local.cluster_identifier
   database_name = local.database_name
-  master_username = module.secret_manager.generated_redshift_username #local.master_username
-  master_password = module.secret_manager.generated_redshift_password #local.master_password
+  master_username = module.secret_manager.generated_redshift_username 
+  master_password = module.secret_manager.generated_redshift_password 
   node_type = local.node_type
   cluster_type = local.cluster_type
   availability_zone = module.vpc.availability_zone_name
@@ -141,10 +115,11 @@ module "airbyte" {
   
   destination_name = local.destination_name
   #airbyte_connection_name = local.airbyte_connection_name
-  postgres_db_password = local.db_name #local.db_password
+  postgres_db_password = module.secret_manager.generated_password  #local.db_password
   postgres_db_name = local.db_name
-  postgres_host = local.db_name #module.rds.rds_host
-  postgres_db_username = local.db_name #local.db_username
+  postgres_host = module.rds.rds_host #module.rds.rds_host
+  postgres_db_username = module.secret_manager.generated_username #local.db_username
+
   ssh_key = file(local.private_key_path) #module.vpc.private_key
   tunnel_host = module.vpc.tunnel_host
   tunnel_user = local.bastion_ssh_user

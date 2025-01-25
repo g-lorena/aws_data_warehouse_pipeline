@@ -7,17 +7,14 @@ locals{
   lambda_layer_bucket_name = "my-lambda-layer-bucket-00113"
   lambda_layer             = "lambda_layer"
   bucket_name = "my-project-test-101"
-
   redshift_integration_bucket_name = "my-redshift-integration-bucket-001"
   raw_repertory            = "raw_data"
 
   dbt_project_bucket_name = "my-dbt-healthcare-project-bucket-001"
 
   #secrets manager 
-
   rds_secret_name = "healthcare-rds-secret-1"
   rds_secret_description = "Credentials for RDS"
-
   redshift_secret_name = "healthcare-redshift-secret-1"
   redshift_secret_description = "Credentials for redshift"
 
@@ -29,13 +26,11 @@ locals{
   layer_zip_path    = "python.zip"
   layer_name        = "my_lambda_requirements_layer"
   requirements_path = "../requirements.txt"
-
   compatible_layer_runtimes = ["python3.9"]
   compatible_architectures  = ["x86_64"] 
 
   # lambda function 1
   path_to_source_folder = "../lambdas/lambda_rds"
-  #path_to_source_file = "../etl/extract"
   path_to_output   = "lambda_rds.zip"
   function_name_1    = "rds_ingestion"
   function_handler_1 = "rds_ingestion.lambda_handler"
@@ -50,13 +45,7 @@ locals{
   path_to_output_2 = "lambda_to_s3.zip"
   function_name_2 = "lambda_to_s3"
   function_handler_2 = "lambda_to_s3.lambda_handler"
-/*
-  # lambda function 3
-  path_to_source_folder_3 = "../lambdas/lambda_to_redshift"
-  path_to_output_3 = "load_to_redshift.zip"
-  function_name_3 = "load_to_redshift"
-  function_handler_3 = "load_to_redshift.lambda_handler"
-*/  
+
   #rds
   #db_username = "lorena" #credentials in secret manager
   #db_password = "YourStrongPass12345!" #credentials in secret manager

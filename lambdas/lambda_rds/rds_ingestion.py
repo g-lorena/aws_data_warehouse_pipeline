@@ -1,6 +1,7 @@
 import os
 import random
 from datetime import datetime
+import pandas as pd
 
 import boto3
 from delete_data.delete_departement import delete_departement
@@ -11,9 +12,9 @@ from delete_data.delete_patient import delete_patients
 from insert_data.insert_appointment import insert_appointments_data
 from insert_data.insert_departement import insert_departement_data
 from insert_data.insert_doctor import insert_doctors_data
-#from insert_data.insert_medication import insert_medications_data
+from insert_data.insert_medication import insert_medications_data
 from insert_data.insert_patient import insert_patient_data
-#from insert_data.insert_procedure import insert_procedure_data
+from insert_data.insert_procedure import insert_procedure_data
 from insert_data.insert_treatment import insert_treatment_data
 from sqlalchemy import create_engine, text
 from update_data.update_appointement import update_appointments
@@ -38,14 +39,44 @@ DB_HOST = os.environ.get("DB_HOST")
 
 DB_PORT = '5432'
 
+s3_client = boto3.client('s3')
+S3_BUCKET = os.environ.get("DST_BUCKET")
+RAW_FOLDER = os.environ.get("RAW_FOLDER")
 
-#DynamoDB_NAME = os.environ.get("DynamoDB_NAME")
-#dynamodb = boto3.resource('dynamodb')
-#dynamo_table = dynamodb.Table(DynamoDB_NAME)
+def load_medications_from_s3():
+    file_key = get_latest_file_from_s3('medications')
+    obj = s3_client.get_object(Bucket=S3_BUCKET, Key=file_key)
+    medications_df = pd.read_csv(obj['Body'])
+    medication_codes = medications_df['medication_code'].tolist()
+    return medication_codes
+
+def load_procedure_from_s3():
+    file_key = get_latest_file_from_s3('procedures')
+    obj = s3_client.get_object(Bucket=S3_BUCKET, Key=file_key)
+    medications_df = pd.read_csv(obj['Body'])
+    procedure_codes = medications_df['procedure_code'].tolist()
+    return procedure_codes
+
+def get_latest_file_from_s3(table_name):
+    # List the objects in the folder
+    prefix = f"{RAW_FOLDER}/{table_name}/"
+    response = s3_client.list_objects_v2(Bucket=S3_BUCKET, Prefix=prefix)
+    
+    # Get the list of file keys
+    file_keys = [obj['Key'] for obj in response.get('Contents', [])]
+    
+    # Sort the file keys by timestamp (reverse order, so latest is first)
+    if file_keys:
+        latest_file_key = sorted(file_keys, reverse=True)[0]  # Get the most recent file
+        return latest_file_key
+    return None
 
 
 def lambda_handler(event, context):
     engine = connect_to_postgres(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
+
+    procedure_codes = load_procedure_from_s3()
+    medication_codes = load_medications_from_s3()
 
     if engine is None:
         # Return early if engine couldn't connect
@@ -75,6 +106,10 @@ def lambda_handler(event, context):
                 #update_last_extraction_time("department", dynamo_table)
                 #update_last_extraction_time("doctors", dynamo_table)
                 #update_last_extraction_time("appointments", dynamo_table)
+
+                insert_medication_data(engine, medication_codes)
+
+                insert_procedure_data(engine, procedure_codes)
                 
                 #insert_treatment_data(engine)
                 #update_last_extraction_time("treatement", dynamo_table)
@@ -108,7 +143,7 @@ def lambda_handler(event, context):
                 update_appointments(engine)
                 #update_last_extraction_time("appointments", dynamo_table)
                 
-                update_treatments(engine)
+                #update_treatments(engine)
                 #update_last_extraction_time("treatement", dynamo_table)
                 
                 return {'statusCode': 200, 'body': 'Update operation completed.'}

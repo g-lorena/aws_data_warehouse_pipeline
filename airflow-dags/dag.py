@@ -16,7 +16,7 @@ redshift_password = Variable.get("REDSHIFT_PWD")
 
 # Define the DAG
 dag = DAG(
-    'dbt_project_ecr_dag',  # Name of your DAG
+    'dag',  # Name of your DAG
     default_args=default_args,
     schedule_interval='@daily',  # Schedule to run daily, change if needed
     catchup=False,
@@ -26,7 +26,7 @@ dag = DAG(
 # Task 3: Run DBT models in Docker
 run_dbt = DockerOperator(
     task_id="run_dbt_project",  # Running DBT models
-    image="623838372493.dkr.ecr.eu-west-3.amazonaws.com/healthcare-dbt-project:1.0.2",  # Your Docker image
+    image="623838372493.dkr.ecr.eu-west-3.amazonaws.com/healthcare-dbt-project:1.0.4",  # Your Docker image
     command="dbt run",  # Run DBT with the correct profiles dir
     docker_url="unix://var/run/docker.sock",  # Use the default Docker socket
     network_mode="bridge",  # Use bridge networking

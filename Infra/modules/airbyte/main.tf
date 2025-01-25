@@ -44,7 +44,7 @@ resource "airbyte_source_s3" "my_source_s3" {
     bucket                = var.s3bucket
     streams = [
       {
-        name = "medication_data_stream"
+        name = "medication"
         
         days_to_sync_if_history_is_full = 6
         format = {
@@ -58,7 +58,7 @@ resource "airbyte_source_s3" "my_source_s3" {
         ]
       },
       {
-        name = "procedure_data_streams"
+        name = "procedure"
         days_to_sync_if_history_is_full = 7
         format = {
           csv_format = {
@@ -133,8 +133,9 @@ resource "airbyte_connection" "rds_to_redshift" {
     streams = [
       {
         name = "dim_appointments"
-        sync_mode = "incremental_deduped_history" 
+        sync_mode = "incremental_append" 
         primary_key = [[ "appointment_id" ]]
+        /*
         selected_fields = [
         {
         field_path = ["appointment_id"]
@@ -161,11 +162,13 @@ resource "airbyte_connection" "rds_to_redshift" {
         field_path = ["updated_at"]
         }
       ]
+      */
       },
       {
         name = "dim_department"
-        sync_mode = "incremental_deduped_history" 
+        sync_mode = "incremental_append" 
         primary_key = [[ "department_id" ]]
+        /*
         selected_fields = [
         {
         field_path = ["department_id"]
@@ -183,11 +186,13 @@ resource "airbyte_connection" "rds_to_redshift" {
         field_path = ["updated_at"]
         }
       ]
+      */
       },
       {
         name = "dim_doctors"
-        sync_mode = "incremental_deduped_history" 
+        sync_mode = "incremental_append" 
         primary_key = [[ "doctor_id" ]]
+        /*
         selected_fields = [
         {
         field_path = ["doctor_id"]
@@ -214,11 +219,13 @@ resource "airbyte_connection" "rds_to_redshift" {
         field_path = ["updated_at"]
         }
       ]
+      */
       },
       {
         name = "dim_patients"
-        sync_mode = "incremental_deduped_history" 
+        sync_mode = "incremental_append" 
         primary_key = [[ "patient_id" ]]
+        /*
         selected_fields = [
         {
         field_path = ["patient_id"]
@@ -251,6 +258,7 @@ resource "airbyte_connection" "rds_to_redshift" {
         field_path = ["updated_at"]
         }
       ]
+      */
       }
     ]
   }
@@ -267,7 +275,7 @@ resource "airbyte_connection" "s3_to_redshift" {
   configurations = {
     streams = [ 
       {
-      name = "medication_data_stream"
+      name = "dim_medication" 
       sync_mode = "full_refresh_append"
       primary_key = [[ "medication_id" ]]
       #cursor_field = ["updated_at"]
@@ -294,7 +302,7 @@ resource "airbyte_connection" "s3_to_redshift" {
     #cursor_field = ["updated_at"]
     },
     {
-      name = "procedure_data_streams"
+      name = "dim_procedure"
       sync_mode = "full_refresh_append"
       #cursor_field = ["updated_at"]
       primary_key = [[ "procedure_code" ]]

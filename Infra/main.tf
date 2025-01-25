@@ -35,8 +35,6 @@ module "secret_manager" {
 }
 
 
-
-/*
 module "rds" {
   source      = "./modules/rds"
   db_username = module.secret_manager.generated_username  #local.db_username
@@ -93,15 +91,12 @@ module "lambdaFunction" {
 
   dst_bucket_name = local.redshift_integration_bucket_name
   raw_repertory = local.raw_repertory
-
 }
 
 module "redshift" {
   source                   = "./modules/redshift"
   cluster_identifier = local.cluster_identifier
   database_name = local.database_name
-  master_username = module.secret_manager.generated_redshift_username 
-  master_password = module.secret_manager.generated_redshift_password 
   master_username = module.secret_manager.generated_redshift_username 
   master_password = module.secret_manager.generated_redshift_password 
   node_type = local.node_type

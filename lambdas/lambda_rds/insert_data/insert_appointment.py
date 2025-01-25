@@ -11,7 +11,7 @@ def insert_appointments_data(engine):
         print("No patient_id found. Please insert patients first.")
         return
 
-    df_appointments = generate_appointments(30, doctor_ids, patient_ids)
+    df_appointments = generate_appointments(50000, doctor_ids, patient_ids)
 
     if not df_appointments.empty:
         push_dataframe_to_rds(df_appointments, 'appointments', engine)

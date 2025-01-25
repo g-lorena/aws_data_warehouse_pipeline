@@ -256,7 +256,6 @@ sources:
   - name: healthcare
     schema: airbyte_internal
     tables:
-      - name: public_raw__stream_dim_procedure_data_streams
       - name: public_raw__stream_dim_medication
       - name: public_raw__stream_dim_medications_prescriptions
       - name: public_raw__stream_dim_procedures_performed

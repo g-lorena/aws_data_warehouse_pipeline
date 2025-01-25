@@ -57,6 +57,8 @@ based_appointments as (
 unique_based_appointments as (
     select *, row_number() over(partition by appointment_id) as row_number
     from based_appointments
+    where medication_count > 0 
+       or procedure_count > 0
 ),
 
 based_appointments_data as (

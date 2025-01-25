@@ -79,7 +79,7 @@ module "lambdaFunction" {
   db_password       = module.secret_manager.generated_password
   db_name           = local.db_name
   rds_endpoint      = module.rds.rds_host
-  
+     
   vpc_subnet_ids = module.vpc.subnet_ids
   vpc_security_group_ids = module.vpc.lambda_security_group_id
   lambda_layer_arns = [module.lambdaLayer.lamnda_layer_arn]
@@ -148,15 +148,15 @@ module "ecr" {
   
 }
 
-/*
 module "cloudwatch_schedule_module_lambda1" {
   source                   = "./modules/eventbridge"
   schedule_name            = "trigger_every_1_hour"
-  schedule_value           = "cron(0 * * * ? *)"
+  schedule_value           = "cron(*/30 0 * * ? *)"
   aws_lambda_arn           = module.lambdaFunction.lambda1_function_arn 
   aws_lambda_function_name = module.lambdaFunction.lambda1_function_name 
 }
 
+/*
 module "cloudwatch_schedule_module_lambda2" {
   source                   = "./modules/eventbridge"
   schedule_name            = "trigger_daily"

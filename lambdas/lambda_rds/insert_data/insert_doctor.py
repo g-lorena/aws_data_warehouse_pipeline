@@ -7,7 +7,7 @@ def insert_doctors_data(engine):
         print("No departments found. Please insert departments first.")
         return
     
-    df_doctors = generate_doctors(20, departements_ids)
+    df_doctors = generate_doctors(100, departements_ids)
     if not df_doctors.empty:
         push_dataframe_to_rds(df_doctors, 'doctors', engine)
     else:

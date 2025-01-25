@@ -1,4 +1,13 @@
-
+{{ config(
+        materialized='incremental',
+        pre_hook=[
+           "{{ drop_when_not_incremental(this, is_incremental()) }}" 
+        ],
+        post_hook=[
+            "ANALYZE {{ this }};" 
+        ],
+        unique_key='appointment_id'
+)}}
 
 with appointments as (
     select

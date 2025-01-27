@@ -15,7 +15,7 @@ WITH parsed_data AS (
                 JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(_airbyte_data), 'diagnosis') AS diagnosis
             ,
                 JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(_airbyte_data), 'created_at') AS created_at
-    FROM {{ source ("healthcare", "public_raw__stream_dim_appointments") }}
+    FROM {{ source ("healthcare", "public_raw__stream_airbyte_healthcare_appointments") }}
 )
 SELECT 
         patient_id,
@@ -26,4 +26,4 @@ SELECT
         appointment_type,
         diagnosis,
         created_at
-FROM parsed_data
+FROM parsed_data  

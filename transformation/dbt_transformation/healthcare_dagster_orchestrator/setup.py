@@ -13,7 +13,7 @@ setup(
         "dagster",
         "dagster-cloud",
         "dagster-dbt",
-        "dbt-redshift<1.9",
+        "dbt-redshift<1.10",
     ],
     extras_require={
         "dev": [

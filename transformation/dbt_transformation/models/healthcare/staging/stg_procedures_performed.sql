@@ -13,7 +13,7 @@ WITH parsed_data AS (
                 JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(_airbyte_data), 'duration') AS duration
             ,
                 JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(_airbyte_data), 'updated_at') AS updated_at
-    FROM {{ source ("healthcare", "public_raw__stream_dim_procedures_performed") }}
+    FROM {{ source ("healthcare", "public_raw__stream_airbyte_healthcare_procedures_performed") }}
 )
 SELECT 
         procedure_performed_id,
@@ -23,4 +23,4 @@ SELECT
         procedure_code,
         duration,
         updated_at
-FROM parsed_data
+FROM parsed_data  

@@ -11,8 +11,6 @@ defs = Definitions(
     resources={
         "dbt": DbtCliResource(project_dir=dbt_transformation_project),
         "airbyte": healthacare_airbyte_workspace,
-        #"REDSHIFT_DATABASE": EnvVar('REDSHIFT_DATABASE'),
-        #"REDSHIFT_PWD":EnvVar('REDSHIFT_PWD')
     },
     schedules=[
         ScheduleDefinition(

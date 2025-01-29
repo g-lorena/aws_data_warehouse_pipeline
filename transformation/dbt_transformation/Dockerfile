@@ -16,6 +16,7 @@ COPY tests tests
 COPY snapshots snapshots
 COPY macros macros
 COPY dbt_project.yml dbt_project.yml
+COPY packages.yml packages.yml
 COPY profiles.yml profiles.yml
 COPY main.py main.py
 

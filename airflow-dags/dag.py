@@ -22,11 +22,25 @@ dag = DAG(
     catchup=False,
 )
 
+# Task 1: Install DBT dependencies using dbt deps
+install_dbt_deps = DockerOperator(
+    task_id="install_dbt_deps",  # Install DBT dependencies
+    image="623838372493.dkr.ecr.eu-west-3.amazonaws.com/healthcare-dbt-project:1.0.5",  # Your Docker image
+    command="dbt deps",  # Run dbt deps to install dependencies
+    docker_url="unix://var/run/docker.sock",  # Use the default Docker socket
+    network_mode="bridge",  # Use bridge networking
+    environment={
+        "REDSHIFT_DATABASE": redshift_database,
+        "REDSHIFT_PWD": redshift_password
+    },
+    force_pull=True,
+    dag=dag,
+)
 
 # Task 3: Run DBT models in Docker
 run_dbt = DockerOperator(
     task_id="run_dbt_project",  # Running DBT models
-    image="623838372493.dkr.ecr.eu-west-3.amazonaws.com/healthcare-dbt-project:1.0.4",  # Your Docker image
+    image="623838372493.dkr.ecr.eu-west-3.amazonaws.com/healthcare-dbt-project:1.0.5",  # Your Docker image
     command="dbt run",  # Run DBT with the correct profiles dir
     docker_url="unix://var/run/docker.sock",  # Use the default Docker socket
     network_mode="bridge",  # Use bridge networking
@@ -42,5 +56,5 @@ run_dbt = DockerOperator(
     dag=dag,
 )
 
-run_dbt  # Ensure main.py runs before DBT models
+install_dbt_deps >> run_dbt  # Ensure main.py runs before DBT models
 

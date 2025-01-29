@@ -15,7 +15,7 @@ WITH parsed_data AS (
                 JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(_airbyte_data), 'medication_code') AS medication_code
             ,
                 JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(_airbyte_data), 'created_at') AS created_at
-    FROM {{ source ("healthcare", "public_raw__stream_dim_medications_prescriptions") }}
+    FROM {{ source ("healthcare", "public_raw__stream_airbyte_healthcare_medications_prescriptions") }}
 )
 SELECT 
         medication_prescription_id,

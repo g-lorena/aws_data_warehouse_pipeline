@@ -9,7 +9,7 @@ WITH parsed_data AS (
                 JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(_airbyte_data), 'created_at') AS created_at
             ,
                 JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(_airbyte_data), 'updated_at') AS updated_at
-    FROM {{ source ("healthcare", "public_raw__stream_dim_department") }}
+    FROM {{ source ("healthcare", "public_raw__stream_airbyte_healthcare_department") }}
 )
 SELECT 
         department_id,

@@ -278,7 +278,10 @@ resource "airbyte_connection" "s3_to_redshift" {
       name = "dim_medication" 
       sync_mode = "full_refresh_append"
       primary_key = [[ "medication_id" ]]
+
       #cursor_field = ["updated_at"]
+
+      /*
       selected_fields = [
         {
         field_path = ["medication_id"]
@@ -299,6 +302,7 @@ resource "airbyte_connection" "s3_to_redshift" {
         field_path = ["updated_at"]
         }
       ]
+      */
     #cursor_field = ["updated_at"]
     },
     {
@@ -306,6 +310,7 @@ resource "airbyte_connection" "s3_to_redshift" {
       sync_mode = "full_refresh_append"
       #cursor_field = ["updated_at"]
       primary_key = [[ "procedure_code" ]]
+      /*
       selected_fields = [
         {
         field_path = ["procedure_code"]
@@ -332,6 +337,7 @@ resource "airbyte_connection" "s3_to_redshift" {
         field_path = ["updated_at"]
         }
       ]
+      */
     }
     ]
   }

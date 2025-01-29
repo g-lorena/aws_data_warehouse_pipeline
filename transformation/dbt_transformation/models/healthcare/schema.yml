@@ -256,11 +256,11 @@ sources:
   - name: healthcare
     schema: airbyte_internal
     tables:
-      - name: public_raw__stream_dim_medication
-      - name: public_raw__stream_dim_medications_prescriptions
-      - name: public_raw__stream_dim_procedures_performed
-      - name: public_raw__stream_dim_procedure
-      - name: public_raw__stream_dim_appointments
-      - name: public_raw__stream_dim_department
-      - name: public_raw__stream_dim_doctors
-      - name: public_raw__stream_dim_patients
+      - name: public_raw__stream_airbyte_healthcare_s3_medication
+      - name: public_raw__stream_airbyte_healthcare_medications_prescriptions
+      - name: public_raw__stream_airbyte_healthcare_procedures_performed
+      - name: public_raw__stream_airbyte_healthcare_s3_procedure
+      - name: public_raw__stream_airbyte_healthcare_appointments
+      - name: public_raw__stream_airbyte_healthcare_department
+      - name: public_raw__stream_airbyte_healthcare_doctors
+      - name: public_raw__stream_airbyte_healthcare_patients

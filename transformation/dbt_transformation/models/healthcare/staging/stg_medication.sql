@@ -13,7 +13,7 @@ WITH parsed_data AS (
                 JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(_airbyte_data), 'created_at') AS created_at
             ,
                 JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(_airbyte_data), '_ab_source_file_last_modified') AS _ab_source_file_last_modified
-    FROM {{ source ("healthcare", "public_raw__stream_dim_medication") }}
+    FROM {{ source ("healthcare", "public_raw__stream_airbyte_healthcare_s3_medication") }}
 )
 SELECT 
         category,

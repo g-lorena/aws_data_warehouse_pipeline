@@ -41,15 +41,12 @@ jobs:
         run: |
           make build-docker-image
           make push-docker-image
-
-      - name: Deploy DAGs to EC2 via Bastion Host
-        run: |
-          # Write the private key to a file
-          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
-          chmod 400 key.pem
-
-          # Use scp with the bastion host
-          scp -o "ProxyCommand ssh -W %h:%p -i key.pem ec2-user@${{ secrets.BASTION_HOST }}" \
-              -i key.pem \
-              airflow-dags/* \
-              ec2-user@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/airflow/dags
+      
+      - name: Deploy DAGs to EC2 via SSM
+        uses: aws-actions/aws-ssm-remote@v1
+        with:
+          instance-ids: ${{ secrets.EC2_INSTANCE_ID }}  # ID of the target EC2 instance
+          commands: |
+            mkdir -p /home/${{ secrets.EC2_USER }}/airflow/dags
+            cp -r airflow-dags/* /home/${{ secrets.EC2_USER }}/airflow/dags
+          working-directory: .  # Use the root of the repositor

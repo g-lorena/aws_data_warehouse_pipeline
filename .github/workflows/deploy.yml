@@ -5,13 +5,19 @@ on:
     branches:
       - feat/*  # Change this if needed
 
+env:
+  TF_LOG: INFO
+  AWS_REGION: ${{ secrets.AWS_REGION }}
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        shell: bash
+        working-directory: .
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Git checkout
+        uses: actions/checkout@v3
 
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1

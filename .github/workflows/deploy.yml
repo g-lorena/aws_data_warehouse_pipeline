@@ -25,6 +25,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: GitHub-OIDC-TERRAFORM
+          audience: sts.amazonaws.com
 
       #- name: Set up AWS credentials
       #  uses: aws-actions/configure-aws-credentials@v2

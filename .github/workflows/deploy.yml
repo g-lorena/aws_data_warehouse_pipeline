@@ -42,11 +42,14 @@ jobs:
           make build-docker-image
           make push-docker-image
 
-      - name: Deploy DAGs to EC2
+      - name: Deploy DAGs to EC2 via Bastion Host
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          host: ${{ secrets.BASTION_HOST }}  # Public IP of the bastion host
+          username: ${{ secrets.BASTION_USER }}  # Username for the bastion host
+          key: ${{ secrets.EC2_SSH_KEY }}  # Private SSH key
           source: "airflow-dags/*"
           target: "/home/${{ secrets.EC2_USER }}/airflow/dags"
+          proxy_host: ${{ secrets.EC2_HOST }}  # Private IP of the target EC2 instance
+          proxy_username: ${{ secrets.EC2_USER }}  # Username for the target EC2 instance
+          proxy_port: 22

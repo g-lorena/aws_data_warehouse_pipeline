@@ -4,10 +4,9 @@ on:
   push:
     branches:
       - feat/*  # Change this if needed
-
-env:
-  TF_LOG: INFO
-  AWS_REGION: ${{ secrets.AWS_REGION }}
+permissions:
+      id-token: write # This is required for aws oidc connection
+      contents: read # This is required for actions/checkout
 jobs:
   deploy:
     runs-on: ubuntu-latest

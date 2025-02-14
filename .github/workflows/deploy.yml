@@ -43,10 +43,13 @@ jobs:
           make push-docker-image
       
       - name: Deploy DAGs to EC2 via SSM
-        uses: aws-actions/aws-ssm-remote@v1
-        with:
-          instance-ids: ${{ secrets.EC2_INSTANCE_ID }}  # ID of the target EC2 instance
-          commands: |
-            mkdir -p /home/${{ secrets.EC2_USER }}/airflow/dags
-            cp -r airflow-dags/* /home/${{ secrets.EC2_USER }}/airflow/dags
-          working-directory: .  # Use the root of the repositor
+        run: |
+          # Use the AWS CLI to send commands via SSM
+          aws ssm send-command \
+            --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
+            --document-name "AWS-RunShellScript" \
+            --parameters 'commands=[
+              "mkdir -p /home/${{ secrets.EC2_USER }}/airflow/dags",
+              "cp -r airflow-dags/* /home/${{ secrets.EC2_USER }}/airflow/dags"
+            ]' \
+            --region ${{ secrets.AWS_REGION }}

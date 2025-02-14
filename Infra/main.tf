@@ -5,7 +5,7 @@ module "iam_user" {
   airbyte_s3_bucket = local.airbyte_s3_bucket
   dbt_project_bucket = local.dbt_project_bucket_name
 }
-
+/*
 module "s3bucket" {
   source = "./modules/s3"
 
@@ -16,7 +16,7 @@ module "s3bucket" {
   airbyte_s3_bucket = local.airbyte_s3_bucket
   dbt_project_bucket_name = local.dbt_project_bucket_name
 }
-
+*/
 
 module "vpc" {
   source = "./modules/vpc"
@@ -27,7 +27,7 @@ module "vpc" {
   
 }
 
-
+/*
 module "secret_manager" {
   source = "./modules/secrets_manager"
   rds_secret_description = local.rds_secret_description
@@ -142,36 +142,24 @@ module "airbyte" {
   access_key_id = module.s3bucket.access_key_id
   secret_access_key = module.s3bucket.secret_access_key
 }
-
+*/
 module "ecr" {
   source = "./modules/ecr"
   
 }
 
-module "cloudwatch_schedule_module_lambda1" {
-  source                   = "./modules/eventbridge"
-  schedule_name            = "trigger_every_1_hour"
-  schedule_value           = "cron(*/30 0 * * ? *)"
-  aws_lambda_arn           = module.lambdaFunction.lambda1_function_arn 
-  aws_lambda_function_name = module.lambdaFunction.lambda1_function_name 
-}
+#module "cloudwatch_schedule_module_lambda1" {
+#  source                   = "./modules/eventbridge"
+#  schedule_name            = "trigger_every_1_hour"
+#  schedule_value           = "cron(*/30 0 * * ? *)"
+#  aws_lambda_arn           = module.lambdaFunction.lambda1_function_arn 
+#  aws_lambda_function_name = module.lambdaFunction.lambda1_function_name 
+#}
 
-/*
-module "cloudwatch_schedule_module_lambda2" {
-  source                   = "./modules/eventbridge"
-  schedule_name            = "trigger_daily"
-  schedule_value           = "cron(0 0 * * ? *)"
-  aws_lambda_arn           = module.lambdaFunction.lambda2_function_arn
-  aws_lambda_function_name = module.lambdaFunction.lambda2_function_name
-}
-
-
-*/
-
-/*
-
-module "dynamodb" {
-  source = "./modules/dynamodb"
-}
-
-*/
+#module "cloudwatch_schedule_module_lambda2" {
+#  source                   = "./modules/eventbridge"
+#  schedule_name            = "trigger_daily"
+#  schedule_value           = "cron(0 0 * * ? *)"
+#  aws_lambda_arn           = module.lambdaFunction.lambda2_function_arn
+#  aws_lambda_function_name = module.lambdaFunction.lambda2_function_name
+#}

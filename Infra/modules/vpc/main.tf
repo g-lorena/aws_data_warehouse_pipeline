@@ -469,7 +469,7 @@ resource "aws_instance" "airflow_instance" {
  
   provisioner "file" {
     source      = var.script_path
-    destination = "/tmp/script.sh"
+    destination = "/tmp/script_2.sh"
 
     connection {
       type     = "ssh"
@@ -481,7 +481,7 @@ resource "aws_instance" "airflow_instance" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod 400 /tmp/script.sh"
+      "sudo chmod 700 /tmp/script_2.sh"
     ]
     connection {
       type     = "ssh"
@@ -489,6 +489,19 @@ resource "aws_instance" "airflow_instance" {
       private_key = file(var.private_key_path)
       host     = self.public_ip
     }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo /tmp/script_2.sh"
+    ]
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file(var.private_key_path)
+      host     = self.public_ip
+    }
+   
   }
  
   tags = {

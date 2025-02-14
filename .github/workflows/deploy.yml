@@ -48,5 +48,5 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "./airflow-dags/*"
+          source: "airflow-dags/*"
           target: "/home/${{ secrets.EC2_USER }}/airflow/dags"

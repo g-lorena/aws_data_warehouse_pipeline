@@ -42,10 +42,10 @@ jobs:
       #    make build-docker-image
       #    make push-docker-image
 
-      - name: add ssh-agent
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+      #- name: add ssh-agent
+      #  uses: webfactory/ssh-agent@v0.9.0
+      #  with:
+      #    ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
       - name: List files in airflow-dags
         run: ls -l airflow-dags/
@@ -59,17 +59,13 @@ jobs:
           host: ${{ secrets.BASTION_HOST }}  # Bastion public IP
           username: ec2-user  # or ubuntu depending on the host OS
           key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          proxy_host: ${{ secrets.EC2_HOST }}
-          proxy_username: ${{ secrets.EC2_USER }} 
+          proxy_host: ${{ secrets.EC2_HOST }} 
+          proxy_username: ${{ secrets.EC2_USER }}
           script: |
-            scp -o StrictHostKeyChecking=no -r ./airflow-dags/* ${EC2_USER}@${EC2_HOST}:/home/${EC2_USER}/airflow/dags/
-          debug: true
-          #script: |
-          #  ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
+            # ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
             # SCP command without specifying private key because of agent forwarding
-          #  scp -o StrictHostKeyChecking=no airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
-          #  EOF
+            scp -o StrictHostKeyChecking=no airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
+            EOF
 
       #- name: Test SSH Connection to Bastion
       #  run: ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.BASTION_HOST }} "echo 'Connected to Bastion'"

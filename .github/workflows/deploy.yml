@@ -47,8 +47,8 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-      - name: Get Public IP of GitHub Runner
-        run: curl -s https://checkip.amazonaws.com
+      #- name: Get Public IP of GitHub Runner
+      #  run: curl -s https://checkip.amazonaws.com
 
       - name: Copy DAGs to EC2 via Bastion
         uses: appleboy/ssh-action@v1.2.0
@@ -57,17 +57,20 @@ jobs:
           username: ec2-user  # or ubuntu depending on the host OS
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "Successfully connected to the Bastion host!"
+            ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
+            # SCP command without specifying private key because of agent forwarding
+            scp -o StrictHostKeyChecking=no airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
+            EOF
 
-      - name: Test SSH Connection to Bastion
-        run: ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.BASTION_HOST }} "echo 'Connected to Bastion'"
+      #- name: Test SSH Connection to Bastion
+      #  run: ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.BASTION_HOST }} "echo 'Connected to Bastion'"
 
       
-      - name: Deploy DAGs to EC2 via Bastion host
-        run: |
+      #- name: Deploy DAGs to EC2 via Bastion host
+      #  run: |
           # set up SSH tunnel to the private ec2 via bastion host
-          ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
-          scp -o StrictHostKeyChecking=no airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
-          EOF
+      #    ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
+      #    scp -o StrictHostKeyChecking=no airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
+      #    EOF
 
 

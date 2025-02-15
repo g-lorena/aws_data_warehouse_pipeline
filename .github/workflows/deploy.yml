@@ -41,15 +41,16 @@ jobs:
         run: |
           make build-docker-image
           make push-docker-image
+
+      - uses: webfactory/ssh-agent@v0.9.0
+          with:
+            ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
       
-      - name: Deploy DAGs to EC2 via SSM
+      - name: Deploy DAGs to EC2 via Bastion host
         run: |
-          # Use the AWS CLI to send commands via SSM
-          aws ssm send-command \
-            --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
-            --document-name "AWS-RunShellScript" \
-            --parameters 'commands=[
-              "mkdir -p /home/${{ secrets.EC2_USER }}/airflow/dags",
-              "cp -r airflow-dags/* /home/${{ secrets.EC2_USER }}/airflow/dags"
-            ]' \
-            --region ${{ secrets.AWS_REGION }}
+          # set up SSH tunnel to the private ec2 via bastion host
+          ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
+          scp -o StrictHostKeyChecking=no airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
+          EOF
+
+

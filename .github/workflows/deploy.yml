@@ -62,14 +62,13 @@ jobs:
           proxy_host: ${{ secrets.EC2_HOST }} 
           proxy_username: ${{ secrets.EC2_USER }}
           script: |
-             ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
-            # SCP command without specifying private key because of agent forwarding
+            ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
             scp -o StrictHostKeyChecking=no airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
             EOF
 
       #- name: Test SSH Connection to Bastion
       #  run: ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.BASTION_HOST }} "echo 'Connected to Bastion'"
-
+      # # SCP command without specifying private key because of agent forwarding
       
       #- name: Deploy DAGs to EC2 via Bastion host
       #  run: |

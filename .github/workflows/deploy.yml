@@ -71,7 +71,7 @@ jobs:
           #proxy_host: ${{ secrets.EC2_HOST }} 
           #proxy_username: ${{ secrets.EC2_USER }}
           script: |
-            scp -i /tmp/aws-bastion-key.pem -o StrictHostKeyChecking=no airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
+            scp -i /tmp/aws-bastion-key.pem -o StrictHostKeyChecking=no -r /home/ec2-user/airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
 
           #ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
           #EOF

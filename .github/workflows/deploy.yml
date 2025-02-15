@@ -47,6 +47,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
+      - name: List files in airflow-dags
+        run: ls -l airflow-dags/
+
       #- name: Get Public IP of GitHub Runner
       #  run: curl -s https://checkip.amazonaws.com
 

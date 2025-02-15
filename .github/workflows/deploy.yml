@@ -47,6 +47,10 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
+      - name: Get Public IP of GitHub Runner
+        run: curl -s https://checkip.amazonaws.com
+
+
       - name: Test SSH Connection to Bastion
         run: ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.BASTION_HOST }} "echo 'Connected to Bastion'"
 

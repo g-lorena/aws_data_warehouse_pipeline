@@ -53,6 +53,10 @@ jobs:
       #- name: Get Public IP of GitHub Runner
       #  run: curl -s https://checkip.amazonaws.com
 
+      - name: Copy DAGs to Bastion
+        run: |
+          scp -i /tmp/aws-bastion-key.pem -o StrictHostKeyChecking=no -r airflow-dags ec2-user@${{ secrets.BASTION_HOST }}:/tmp/
+
       - name: Copy DAGs to EC2 via Bastion
         uses: appleboy/ssh-action@v1.2.0
         with: 

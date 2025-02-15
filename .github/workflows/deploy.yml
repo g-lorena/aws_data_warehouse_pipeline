@@ -33,14 +33,14 @@ jobs:
       #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       #    aws-region: eu-west-3  # Change this to your AWS region
 
-      - name: Log in to Amazon ECR
-        run: |
-          make login-ecr
+      #- name: Log in to Amazon ECR
+      #  run: |
+      #    make login-ecr
 
-      - name: Build and push Docker image
-        run: |
-          make build-docker-image
-          make push-docker-image
+      #- name: Build and push Docker image
+      #  run: |
+      #    make build-docker-image
+      #    make push-docker-image
 
       - name: add ssh-agent
         uses: webfactory/ssh-agent@v0.9.0
@@ -61,9 +61,10 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           proxy_host: ${{ secrets.EC2_HOST }}
-          proxy_username: ubuntu
-          source: ./airflow-dags/*  # Local path or repository path for the DAG files
-          target: /home/ubuntu/airflow/dags  # Target path on EC2
+          proxy_username: ${{ secrets.EC2_USER }} 
+          script: |
+            scp -o StrictHostKeyChecking=no -r ./airflow-dags/* ${EC2_USER}@${EC2_HOST}:/home/${EC2_USER}/airflow/dags/
+
           #script: |
           #  ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
             # SCP command without specifying private key because of agent forwarding

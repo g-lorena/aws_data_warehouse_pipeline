@@ -50,6 +50,14 @@ jobs:
       - name: Get Public IP of GitHub Runner
         run: curl -s https://checkip.amazonaws.com
 
+      - name: Copy DAGs to EC2 via Bastion
+        uses: appleboy/ssh-action@v1.2.0
+        with: 
+          host: ${{ secrets.BASTION_HOST }}  # Bastion public IP
+          username: ec2-user  # or ubuntu depending on the host OS
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Successfully connected to the Bastion host!"
 
       - name: Test SSH Connection to Bastion
         run: ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.BASTION_HOST }} "echo 'Connected to Bastion'"

@@ -1,0 +1,54 @@
+name: Deploy to AWS ECR and EC2
+
+on:
+  push:
+    branches:
+      - feat/*  # Change this if needed
+permissions:
+      id-token: write # This is required for aws oidc connection
+      contents: read # This is required for actions/checkout
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: .
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials from AWS account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GitHub-OIDC-TERRAFORM
+          audience: sts.amazonaws.com
+
+      - name: Log in to Amazon ECR
+        run: |
+          make login-ecr
+
+      - name: Build and push Docker image
+        run: |
+          make build-docker-image
+          make push-docker-image
+
+      - name: Copy DAGs from GitHub Runner to Bastion
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.BASTION_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "airflow-dags/*"
+          target: "/home/ec2-user/airflow-dags"
+
+      - name: Copy DAGs to EC2 via Bastion
+        uses: appleboy/ssh-action@v1.2.0
+        with: 
+          host: ${{ secrets.BASTION_HOST }}  # Bastion public IP
+          username: ec2-user  # or ubuntu depending on the host OS
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            scp -i /tmp/aws-bastion-key.pem -o StrictHostKeyChecking=no -r /home/ec2-user/airflow-dags/airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags

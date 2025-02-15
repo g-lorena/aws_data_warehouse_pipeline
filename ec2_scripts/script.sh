@@ -9,7 +9,7 @@ source venv/bin/activate
 
 sudo apt-get install libpq-dev
 pip install "apache-airflow[postgres]==2.8.0" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.8.0/constraints-3.8.txt"
-airflow db init
+#airflow db init
 
 sudo apt-get install postgresql postgresql-contrib
 sudo -i -u postgres

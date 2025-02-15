@@ -83,7 +83,30 @@ statement {
   resources = [
       "*"
     ]
-}
+  }
+
+statement {
+    effect = "Allow"
+    actions = [
+      "ssm:DescribeAssociation",
+      "ssm:GetDeployablePatchSnapshotForInstance",
+      "ssm:GetDocument",
+      "ssm:DescribeDocument",
+      "ssm:GetManifest",
+      "ssm:GetParameter",
+      "ssm:GetParameters",
+      "ssm:ListAssociations",
+      "ssm:ListInstanceAssociations",
+      "ssm:PutInventory",
+      "ssm:PutComplianceItems",
+      "ssm:PutConfigurePackageResult",
+      "ssm:UpdateAssociationStatus",
+      "ssm:UpdateInstanceAssociationStatus",
+      "ssm:UpdateInstanceInformation"
+    ]
+    resources = [ "*" ]
+  }
+
 }
 
 resource "aws_iam_role" "iam_for_ec2" {

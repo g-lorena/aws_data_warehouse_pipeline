@@ -279,7 +279,8 @@ resource "aws_security_group" "bastion_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["93.21.130.146/32", "13.37.4.46/32", "13.37.142.60/32", "35.181.124.238/32"] 
+    #cidr_blocks = ["93.21.130.146/32", "13.37.4.46/32", "13.37.142.60/32", "35.181.124.238/32", "20.161.77.246/32"]
+    cidr_blocks = ["0.0.0.0/0"] 
   }
 
   ingress {
@@ -406,7 +407,8 @@ resource "aws_security_group" "airflow_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["93.21.130.146/32"]
+    #cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [ aws_security_group.bastion_sg.id ]
   }
 
   ingress {
@@ -469,7 +471,7 @@ resource "aws_instance" "airflow_instance" {
  
   provisioner "file" {
     source      = var.script_path
-    destination = "/tmp/script.sh"
+    destination = "/tmp/script_2.sh"
 
     connection {
       type     = "ssh"
@@ -481,7 +483,7 @@ resource "aws_instance" "airflow_instance" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod 400 /tmp/script.sh"
+      "sudo chmod 700 /tmp/script_2.sh"
     ]
     connection {
       type     = "ssh"
@@ -489,6 +491,19 @@ resource "aws_instance" "airflow_instance" {
       private_key = file(var.private_key_path)
       host     = self.public_ip
     }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo /tmp/script_2.sh"
+    ]
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file(var.private_key_path)
+      host     = self.public_ip
+    }
+   
   }
  
   tags = {

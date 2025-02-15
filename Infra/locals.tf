@@ -78,5 +78,5 @@ locals{
   private_key_path = "../aws_key/aws-bastion-key.pem"
   public_key_path = "../aws_key/aws-bastion-key.pub"
 
-  script_path = "../ec2_scripts/script.sh" 
+  script_path = "../ec2_scripts/script_2.sh" 
 }

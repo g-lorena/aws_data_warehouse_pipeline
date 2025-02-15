@@ -26,32 +26,14 @@ jobs:
           role-session-name: GitHub-OIDC-TERRAFORM
           audience: sts.amazonaws.com
 
-      #- name: Set up AWS credentials
-      #  uses: aws-actions/configure-aws-credentials@v2
-      #  with:
-      #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #    aws-region: eu-west-3  # Change this to your AWS region
+      - name: Log in to Amazon ECR
+        run: |
+          make login-ecr
 
-      #- name: Log in to Amazon ECR
-      #  run: |
-      #    make login-ecr
-
-      #- name: Build and push Docker image
-      #  run: |
-      #    make build-docker-image
-      #    make push-docker-image
-
-      #- name: add ssh-agent
-      #  uses: webfactory/ssh-agent@v0.9.0
-      #  with:
-      #    ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
-
-      - name: List files in airflow-dags
-        run: ls -l airflow-dags/
-
-      #- name: Get Public IP of GitHub Runner
-      #  run: curl -s https://checkip.amazonaws.com
+      - name: Build and push Docker image
+        run: |
+          make build-docker-image
+          make push-docker-image
 
       - name: Copy DAGs from GitHub Runner to Bastion
         uses: appleboy/scp-action@master
@@ -68,23 +50,5 @@ jobs:
           host: ${{ secrets.BASTION_HOST }}  # Bastion public IP
           username: ec2-user  # or ubuntu depending on the host OS
           key: ${{ secrets.EC2_SSH_KEY }}
-          #proxy_host: ${{ secrets.EC2_HOST }} 
-          #proxy_username: ${{ secrets.EC2_USER }}
           script: |
             scp -i /tmp/aws-bastion-key.pem -o StrictHostKeyChecking=no -r /home/ec2-user/airflow-dags/airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
-
-          #ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
-          #EOF
-
-      #- name: Test SSH Connection to Bastion
-      #  run: ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.BASTION_HOST }} "echo 'Connected to Bastion'"
-      # # SCP command without specifying private key because of agent forwarding
-      
-      #- name: Deploy DAGs to EC2 via Bastion host
-      #  run: |
-          # set up SSH tunnel to the private ec2 via bastion host
-      #    ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
-      #    scp -o StrictHostKeyChecking=no airflow-dags/* ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/airflow/dags
-      #    EOF
-
-

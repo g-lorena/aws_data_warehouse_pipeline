@@ -15,6 +15,8 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 sudo apt update
 sudo apt install -y postgresql-12 postgresql-contrib-12
 
+#sudo pip install apache-airflow-providers-docker
+
 # Start and enable PostgreSQL service
 sudo systemctl start postgresql
 sudo systemctl enable postgresql
@@ -123,3 +125,5 @@ echo "Installation complete. Access Airflow at http://$(curl -s ifconfig.me):808
 
 # Explicitly exit the script
 exit 0
+
+

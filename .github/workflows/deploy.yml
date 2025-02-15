@@ -64,7 +64,7 @@ jobs:
           proxy_username: ${{ secrets.EC2_USER }} 
           script: |
             scp -o StrictHostKeyChecking=no -r ./airflow-dags/* ${EC2_USER}@${EC2_HOST}:/home/${EC2_USER}/airflow/dags/
-
+          debug: true
           #script: |
           #  ssh -o StrictHostKeyChecking=no -A ec2-user@${{ secrets.BASTION_HOST }} << 'EOF'
             # SCP command without specifying private key because of agent forwarding
